@@ -13,11 +13,20 @@ extension Contentful {
         let id: String
         let title: String
         let shelfIDs: [String]
+        let info: String
         let createdAt: Date
         let updatedAt: Date
         
         var shelves: [Contentful.Shelf] {
-            return Contentful.LocalStorage.shelves.filter { shelfIDs.contains($0.id) }
+            var shelves: [Contentful.Shelf] = []
+            
+            for id in shelfIDs {
+                if let shelf = Contentful.LocalStorage.shelves.first(where: { $0.id == id }) {
+                    shelves.append(shelf)
+                }
+            }
+            
+            return shelves
         }
         
         init?(json: [String : Any]) {
@@ -29,6 +38,7 @@ extension Contentful {
             self.id        = id
             self.title     = title
             self.shelfIDs  = json.dictionary(forKey: "fields").array(forKey: "shelves").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
+            self.info      = json.dictionary(forKeys: "fields").string(forKey: "description") ?? ""
             self.createdAt = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
             self.updatedAt = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
         }

@@ -19,8 +19,8 @@ final class SeriesCell: CollectionViewCell {
         
         containerView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .white
-            $0.containerCornerRadius = 3
+            $0.backgroundColor = .lightBackground
+            $0.containerCornerRadius = 4
         }
         
         imageView.add(toSuperview: containerView.container).customize {

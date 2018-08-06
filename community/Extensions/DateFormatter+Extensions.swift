@@ -16,4 +16,5 @@ extension DateFormatter {
     
     static let iso8601      = DateFormatter(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     static let yearMonthDay = DateFormatter(format: "yyyy-MM-dd")
+    static let readable     = DateFormatter(format: "MMMM d, yyyy")
 }

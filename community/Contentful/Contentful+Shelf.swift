@@ -13,14 +13,38 @@ extension Contentful {
         let id: String
         let name: String
         let postIDs: [String]
+        let shelfIDs: [String]
         let createdAt: Date
         let updatedAt: Date
+        
+        var icon: Icon {
+            switch name.lowercased() {
+            case "community":       return .community
+            case "decision making": return .decision
+            case "parenting":       return .child
+            case "finances":        return .dollar
+            case "moneywise":       return .money
+            default:                return .infoCircle
+            }
+        }
         
         var posts: [Contentful.Post] {
             return (
                 Contentful.LocalStorage.externalPosts.filter { postIDs.contains($0.id) }.map(Contentful.Post.external) +
                 Contentful.LocalStorage.textPosts.filter { postIDs.contains($0.id) }.map(Contentful.Post.text)
             ).sorted(by: { $0.updatedAt < $1.updatedAt })
+        }
+        
+        var shelves: [Contentful.Shelf] {
+            var shelves: [Contentful.Shelf] = []
+            
+            for id in shelfIDs {
+                if let shelf = Contentful.LocalStorage.shelves.first(where: { $0.id == id }) {
+                    shelves.append(shelf)
+                }
+            }
+            
+            return shelves
         }
         
         init?(json: [String : Any]) {
@@ -32,8 +56,13 @@ extension Contentful {
             self.id        = id
             self.name      = name
             self.postIDs   = json.dictionary(forKey: "fields").array(forKey: "posts").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
+            self.shelfIDs  = json.dictionary(forKey: "fields").array(forKey: "shelves").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
             self.createdAt = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
             self.updatedAt = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
+            
+            if postIDs.isEmpty, shelfIDs.isEmpty {
+                return nil
+            }
         }
     }
 

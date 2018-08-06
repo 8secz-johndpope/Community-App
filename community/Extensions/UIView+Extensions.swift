@@ -8,6 +8,15 @@
 import UIKit
 import Alexandria
 
+extension UILayoutGuide {
+    
+    convenience init(superview: UIView) {
+        self.init()
+        superview.addLayoutGuide(self)
+    }
+    
+}
+
 extension UIViewAnimationCurve {
     var animationOptionsCurve: UIViewAnimationOptions {
         switch self {
@@ -80,6 +89,55 @@ extension UIView {
     func add(toSuperview superview: UIView, at index: Int) -> Self {
         superview.insertSubview(self, at: index)
         return self
+    }
+    
+    func constrainClose(width: CGFloat = .closeButtonWidth, height: CGFloat = .closeButtonWidth) {
+        constrainWidth(to: width).constrainHeight(to: height)
+    }
+    
+    func pinBetween(topAnchor: NSLayoutYAxisAnchor, bottomAnchor: NSLayoutYAxisAnchor, in superview: UIView, atPriority priority: UILayoutPriority = .required) {
+        
+        let topGuide = UILayoutGuide(superview: superview).customize {
+            $0.leadingAnchor.constraint(equalTo: superview.leadingAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+            $0.trailingAnchor.constraint(equalTo: superview.trailingAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+            $0.topAnchor.constraint(equalTo: topAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+            $0.bottomAnchor.constraint(equalTo: self.topAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+        }
+        
+        UILayoutGuide(superview: superview).customize {
+            $0.leadingAnchor.constraint(equalTo: superview.leadingAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+            $0.trailingAnchor.constraint(equalTo: superview.trailingAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+            $0.topAnchor.constraint(equalTo: self.bottomAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+            $0.bottomAnchor.constraint(equalTo: bottomAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+            $0.heightAnchor.constraint(equalTo: topGuide.heightAnchor).customize {
+                $0.priority = priority
+                $0.isActive = true
+            }
+        }
     }
     
 }

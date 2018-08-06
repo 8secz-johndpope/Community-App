@@ -34,7 +34,6 @@ extension Contentful {
                 let title = json.dictionary(forKey: "fields").string(forKey: "title"),
                 let content = json.dictionary(forKey: "fields").string(forKey: "content"),
                 let publishDate = json.dictionary(forKey: "fields").date(forKey: "publishDate", formatter: .yearMonthDay),
-                let authorID = json.dictionary(forKeys: "fields", "author", "sys").string(forKey: "id"),
                 let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue")
             else { return nil }
             
@@ -42,7 +41,7 @@ extension Contentful {
             self.title            = title
             self.content          = content
             self.publishDate      = publishDate
-            self.authorID         = authorID
+            self.authorID         = json.dictionary(forKeys: "fields", "author", "sys").string(forKey: "id") ?? ""
             self.postImageAssetID = json.dictionary(forKeys: "fields", "postImage", "sys").string(forKey: "id") ?? ""
             self.isInTable        = isInTable
             self.createdAt        = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()

@@ -24,7 +24,7 @@ extension Contentful {
         
         static var tablePosts: [Contentful.Post] {
             let posts = externalPosts.map(Contentful.Post.external) + textPosts.map(Contentful.Post.text)
-            return posts.sorted(by: { $0.updatedAt < $1.updatedAt }).filter { $0.isInTable }
+            return posts.sorted(by: { $0.publishDate > $1.publishDate }).filter { $0.isInTable }
         }
     }
     

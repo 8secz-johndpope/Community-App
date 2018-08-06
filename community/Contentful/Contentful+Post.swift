@@ -18,6 +18,13 @@ extension Contentful {
 
 extension Contentful.Post {
     
+    var publishDate: Date {
+        switch self {
+        case .text(let post):     return post.publishDate
+        case .external(let post): return post.publishDate
+        }
+    }
+    
     var createdAt: Date {
         switch self {
         case .text(let post):     return post.createdAt

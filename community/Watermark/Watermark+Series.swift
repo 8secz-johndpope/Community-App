@@ -28,6 +28,11 @@ extension Watermark {
         let summary: String
         let images: [ImageAsset.Size : ImageAsset]
         let messageCount: Int
+        let dateRange: [Date]
+        
+        var latestDate: Date {
+            return dateRange.last ?? Date()
+        }
         
         var wideImage: ImageAsset? {
             return images[.wide]
@@ -52,6 +57,28 @@ extension Watermark {
                 .square : json.dictionary(forKey: "images").initialize(forKey: "square"),
                 .wide   : json.dictionary(forKey: "images").initialize(forKey: "wide"),
             ])
+            self.dateRange = json.array(forKey: "date_range")
+                .compactMap { $0 as? String }
+                .compactMap { DateFormatter.yearMonthDay.date(from: $0) }
+                .sorted(by: <)
+            
+            if self.images.isEmpty {
+                return nil
+            }
+            
+            let excludedSeries: [String] = [
+                "re|engage Testimonies",
+                "Re-Engage",
+                "Fort Worth: Conflict",
+                "Plano: The Outsiders",
+                "Launch 2016",
+                "Launch 2017",
+                "Launch 2018"
+            ]
+            
+            if excludedSeries.contains(title) {
+                return nil
+            }
         }
         
         var description: String {

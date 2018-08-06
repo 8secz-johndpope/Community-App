@@ -77,7 +77,7 @@ class ShadowView: UIView {
         didSet { update() }
     }
     
-    var shadowOpacity: Float = 0.1 {
+    var shadowOpacity: Float = 0.3 {
         didSet { update() }
     }
     

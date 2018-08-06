@@ -13,25 +13,78 @@ final class PantryViewController: ViewController {
     private var shelves: [Contentful.Shelf] = []
     
     private let collectionView = UICollectionView(layout: .vertical(lineSpacing: 0))
+    private let shadowView     = ShadowView()
+    private let headerView     = UIView()
+    private let tableLabel     = UILabel()
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return false
+    }
     
     override func setup() {
         super.setup()
         
-        shelves = Contentful.LocalStorage.pantry?.shelves ?? []
+        navigationController?.isNavigationBarHidden = true
         
-        view.backgroundColor = .white
+        shelves = Contentful.LocalStorage.pantry?.shelves.filter { !$0.postIDs.isEmpty } ?? []
+        
+        view.backgroundColor = .lightBackground
         
         collectionView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(ShelfCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .white
+            $0.backgroundColor = .lightBackground
             $0.showsVerticalScrollIndicator = false
+            $0.alwaysBounceVertical = true
+            $0.contentInset.top = 60
+        }
+        
+        headerView.add(toSuperview: view).customize {
+            $0.pinLeading(to: view).pinTrailing(to: view)
+            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 60)
+            $0.backgroundColor = .clear
+        }
+        
+        shadowView.add(toSuperview: view, behind: headerView).customize {
+            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
+            $0.pinTop(to: headerView).pinBottom(to: headerView)
+            $0.backgroundColor = .white
+            $0.shadowOpacity = 0.2
+            $0.alpha = 0
+        }
+        
+        UIButton().add(toSuperview: headerView).customize {
+            $0.pinBottom(to: headerView).pinTrailing(to: headerView)
+            $0.constrainWidth(to: 60).constrainHeight(to: 60)
+            $0.titleLabel?.font = .fontAwesome(.regular, size: 20)
+            $0.setTitle(Icon.infoCircle.string, for: .normal)
+            $0.setTitleColor(.grayBlue, for: .normal)
+            $0.addTarget(for: .touchUpInside) {
+                guard let info = Contentful.LocalStorage.pantry?.info else { return }
+                UIAlertController.alert(message: info).addAction(title: "OK").present()
+            }
+        }
+        
+        tableLabel.add(toSuperview: headerView).customize {
+            $0.pinBottom(to: headerView).constrainHeight(to: 60)
+            $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
+            $0.font = .bold(size: 25)
+            $0.textColor = .grayBlue
+            $0.text = "The Pantry"
         }
         
         Notifier.onPantryChanged.subscribePast(with: self) { [weak self] in
-            self?.shelves = Contentful.LocalStorage.pantry?.shelves ?? []
+            self?.shelves = Contentful.LocalStorage.pantry?.shelves.filter { !$0.postIDs.isEmpty } ?? []
             self?.collectionView.reloadData()
         }.onQueue(.main)
     }
@@ -39,6 +92,10 @@ final class PantryViewController: ViewController {
 }
 
 extension PantryViewController: UICollectionViewDataSource {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        shadowView.alpha = scrollView.adjustedOffset.y.map(from: 0...20, to: 0...1).limited(0, 1)
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return shelves.count
@@ -55,122 +112,11 @@ extension PantryViewController: UICollectionViewDataSource {
 extension PantryViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.width, height: 215)
+        return CGSize(width: collectionView.width, height: 60)
     }
     
-}
-
-final class ShelfCell: CollectionViewCell {
-    
-    private var posts: [Contentful.Post] = []
-    
-    private let gradientView   = GradientView(gradient: .shelf, direction: .vertical)
-    private let titleLabel     = UILabel()
-    private let collectionView = UICollectionView(layout: CarouselFlowLayout.shelfContent)
-    
-    override func setup() {
-        super.setup()
-        
-        contentView.clipsToBounds = true
-        
-        gradientView.add(toSuperview: contentView).customize {
-            $0.constrainEdgesToSuperview()
-        }
-        
-        titleLabel.add(toSuperview: contentView).customize {
-            $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
-            $0.pinTop(to: contentView, plus: .padding).constrainSize(toFit: .vertical)
-            $0.font = .extraBold(size: 20)
-            $0.textColor = .dark
-        }
-        
-        collectionView.add(toSuperview: contentView).customize {
-            $0.pinLeading(to: contentView).pinTrailing(to: contentView)
-            $0.pinBottom(to: contentView).constrainHeight(to: .shelfCellHeight)
-            $0.registerCell(Cell.self)
-            $0.dataSource = self
-            $0.delegate = self
-            $0.backgroundColor = .clear
-            $0.showsHorizontalScrollIndicator = false
-            $0.decelerationRate = UIScrollViewDecelerationRateFast
-            $0.clipsToBounds = false
-        }
-        
-        ShadowView(superview: contentView).customize {
-            $0.pinLeading(to: contentView).pinTrailing(to: contentView)
-            $0.pinTop(to: contentView, .bottom).constrainHeight(to: 100)
-        }
-    }
-    
-    func configure(shelf: Contentful.Shelf) {
-        posts = shelf.posts
-        
-        titleLabel.text = shelf.name
-        collectionView.reloadData()
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        posts = []
-        titleLabel.text = nil
-        collectionView.reloadData()
-    }
-    
-}
-
-extension ShelfCell: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return posts.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: Cell = collectionView.dequeueCell(for: indexPath)
-        cell.configure(post: posts[indexPath.row])
-        return cell
-    }
-    
-}
-
-extension ShelfCell: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
-}
-
-extension ShelfCell {
-    
-    final class Cell: CollectionViewCell {
-        
-        private let shadowView = ShadowView()
-        private let titleLabel = UILabel()
-        
-        override func setup() {
-            super.setup()
-            
-            shadowView.add(toSuperview: contentView).customize {
-                $0.constrainEdgesToSuperview()
-                $0.backgroundColor = .white
-            }
-            
-            titleLabel.add(toSuperview: contentView).customize {
-                $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
-                $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical)
-                $0.font = .bold(size: 18)
-                $0.textAlignment = .center
-                $0.textColor = .dark
-                $0.numberOfLines = 0
-            }
-            
-        }
-        
-        func configure(post: Contentful.Post) {
-            titleLabel.text = post.title
-        }
-        
-        override func prepareForReuse() {
-            super.prepareForReuse()
-            titleLabel.text = nil
-        }
-        
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        navigationController?.pushViewController(ShelfViewController(shelf: shelves[indexPath.row]), animated: true)
     }
     
 }

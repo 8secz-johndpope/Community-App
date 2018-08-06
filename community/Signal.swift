@@ -8,26 +8,21 @@
 import Foundation
 
 enum Notifier {
-//    static let onAuthorsChanged       = Signal<Void>()
-//    static let onAssetsChanged        = Signal<Void>()
-//    static let onExternalPostsChanged = Signal<Void>()
-//    static let onTextPostsChanged     = Signal<Void>()
-//    static let onShelvesChanged       = Signal<Void>()
     static let onTableChanged         = Signal<Void>()
     static let onPantryChanged        = Signal<Void>()
 }
 
-/// Create instances of `Signal` and assign them to public constants on your class for each event type that your
+/// Create instances of `Signal` and assign them to constants on your class for each event type that your
 /// class fires.
-final public class Signal<T> {
+final class Signal<T> {
     
-    public typealias SignalCallback = (T) -> Void
+    typealias SignalCallback = (T) -> Void
     
     /// The number of times the `Signal` has fired.
-    public private(set) var fireCount: Int = 0
+    private(set) var fireCount: Int = 0
     
     /// Whether or not the `Signal` should retain a reference to the last data it was fired with. Defaults to false.
-    public var retainLastData: Bool = false {
+    var retainLastData: Bool = false {
         didSet {
             if !retainLastData {
                 lastDataFired = nil
@@ -37,10 +32,10 @@ final public class Signal<T> {
     
     /// The last data that the `Signal` was fired with. In order for the `Signal` to retain the last fired data, its
     /// `retainLastFired`-property needs to be set to true
-    public private(set) var lastDataFired: T? = nil
+    private(set) var lastDataFired: T? = nil
     
     /// All the observers of to the `Signal`.
-    public var observers:[AnyObject] {
+    var observers:[AnyObject] {
         return signalListeners.compactMap { $0.observer }
     }
     
@@ -50,7 +45,7 @@ final public class Signal<T> {
     ///
     /// - parameter retainLastData: Whether or not the Signal should retain a reference to the last data it was fired
     ///   with. Defaults to false.
-    public init(retainLastData: Bool = false) {
+    init(retainLastData: Bool = false) {
         self.retainLastData = retainLastData
     }
     
@@ -61,7 +56,7 @@ final public class Signal<T> {
     /// - parameter callback: The closure to invoke whenever the `Signal` fires.
     /// - returns: A `SignalSubscription` that can be used to cancel or filter the subscription.
     @discardableResult
-    public func subscribe(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
+    func subscribe(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
         flushCancelledListeners()
         let signalListener = SignalSubscription<T>(observer: observer, callback: callback);
         signalListeners.append(signalListener)
@@ -76,7 +71,7 @@ final public class Signal<T> {
     ///   subscription is automatically cancelled.
     /// - parameter callback: The closure to invoke when the signal fires for the first time.
     @discardableResult
-    public func subscribeOnce(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
+    func subscribeOnce(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
         let signalListener = self.subscribe(with: observer, callback: callback)
         signalListener.once = true
         return signalListener
@@ -89,7 +84,7 @@ final public class Signal<T> {
     ///   subscription is automatically cancelled.
     /// - parameter callback: The closure to invoke whenever the `Signal` fires.
     @discardableResult
-    public func subscribePast(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
+    func subscribePast(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
         let signalListener = self.subscribe(with: observer, callback: callback)
         if let lastDataFired = lastDataFired {
             signalListener.callback(lastDataFired)
@@ -105,7 +100,7 @@ final public class Signal<T> {
     ///   subscription is automatically cancelled.
     /// - parameter callback: The closure to invoke whenever the signal fires.
     @discardableResult
-    public func subscribePastOnce(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
+    func subscribePastOnce(with observer: AnyObject, callback: @escaping SignalCallback) -> SignalSubscription<T> {
         let signalListener = self.subscribe(with: observer, callback: callback)
         if let lastDataFired = lastDataFired {
             signalListener.callback(lastDataFired)
@@ -120,7 +115,7 @@ final public class Signal<T> {
     /// Fires the `Singal`.
     ///
     /// - parameter data: The data to fire the `Signal` with.
-    public func fire(_ data: T) {
+    func fire(_ data: T) {
         fireCount += 1
         lastDataFired = retainLastData ? data : nil
         flushCancelledListeners()
@@ -133,7 +128,7 @@ final public class Signal<T> {
     /// Cancels all subscriptions for an observer.
     ///
     /// - parameter observer: The observer whose subscriptions to cancel
-    public func cancelSubscription(for observer: AnyObject) {
+    func cancelSubscription(for observer: AnyObject) {
         signalListeners = signalListeners.filter {
             if let definiteListener: AnyObject = $0.observer {
                 return definiteListener !== observer
@@ -143,12 +138,12 @@ final public class Signal<T> {
     }
     
     /// Cancels all subscriptions for the `Signal`.
-    public func cancelAllSubscriptions() {
+    func cancelAllSubscriptions() {
         signalListeners.removeAll()
     }
     
     /// Clears the last fired data from the `Signal` and resets the fire count.
-    public func clearLastData() {
+    func clearLastData() {
         lastDataFired = nil
     }
     
@@ -166,15 +161,15 @@ final public class Signal<T> {
 }
 
 /// A SignalLister represenents an instance and its association with a `Signal`.
-final public class SignalSubscription<T> {
-    public typealias SignalCallback = (T) -> Void
-    public typealias SignalFilter = (T) -> Bool
+final class SignalSubscription<T> {
+    typealias SignalCallback = (T) -> Void
+    typealias SignalFilter = (T) -> Bool
     
     // The observer.
-    weak public var observer: AnyObject?
+    weak var observer: AnyObject?
     
     /// Whether the observer should be removed once it observes the `Signal` firing once. Defaults to false.
-    public var once = false
+    var once = false
     
     fileprivate var queuedData: T?
     fileprivate var filter: (SignalFilter)?
@@ -197,7 +192,7 @@ final public class SignalSubscription<T> {
     /// - parameter predicate: A closure that can decide whether the `Signal` fire should be dispatched to its observer.
     /// - returns: Returns self so you can chain calls.
     @discardableResult
-    public func filter(_ predicate: @escaping SignalFilter) -> SignalSubscription {
+    func filter(_ predicate: @escaping SignalFilter) -> SignalSubscription {
         self.filter = predicate
         return self
     }
@@ -210,7 +205,7 @@ final public class SignalSubscription<T> {
     /// - parameter sampleInterval: The number of seconds to delay dispatch.
     /// - returns: Returns self so you can chain calls.
     @discardableResult
-    public func sample(every sampleInterval: TimeInterval) -> SignalSubscription {
+    func sample(every sampleInterval: TimeInterval) -> SignalSubscription {
         self.sampleInterval = sampleInterval
         return self
     }
@@ -222,13 +217,13 @@ final public class SignalSubscription<T> {
     /// - parameter queue: A queue for performing the observer's calls.
     /// - returns: Returns self so you can chain calls.
     @discardableResult
-    public func onQueue(_ queue: DispatchQueue) -> SignalSubscription {
+    func onQueue(_ queue: DispatchQueue) -> SignalSubscription {
         self.dispatchQueue = queue
         return self
     }
     
     /// Cancels the observer. This will cancelSubscription the listening object from the `Signal`.
-    public func cancel() {
+    func cancel() {
         self.observer = nil
     }
     
@@ -282,6 +277,6 @@ final public class SignalSubscription<T> {
 infix operator => : AssignmentPrecedence
 
 /// Helper operator to fire signal data.
-public func =><T> (signal: Signal<T>, data: T) -> Void {
+func =><T> (signal: Signal<T>, data: T) -> Void {
     signal.fire(data)
 }

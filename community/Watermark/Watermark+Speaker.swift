@@ -52,7 +52,10 @@ extension Watermark.Speaker {
         "Wes Butler"        : "http://cms-cloud.watermark.org/_tf300/Wes-Butler_1.jpg",
         "Beau Fournet"      : "http://cms-cloud.watermark.org/_tf300/Beau-Fornet.jpg",
         "Gary Stroope"      : "http://cms-cloud.watermark.org/_tf300/Gary-Stroope.jpg",
-        "Jeff Parker"       : "http://cms-cloud.watermark.org/_tf300/Jeff-Parker.jpg"
+        "Jeff Parker"       : "http://cms-cloud.watermark.org/_tf300/Jeff-Parker.jpg",
+        "David Leventhal"   : "http://cms-cloud.watermark.org/_tf300/Elder-Headshot-DL-LR.jpg",
+        "Jermaine Harrison" : "http://cms-cloud.watermark.org/_tf300/Jermaine-Harrison.jpg",
+        "David Penuel"      : "http://cms-cloud.watermark.org/_tf300/IMG_2628.JPG"
     ]
     
 }

@@ -69,10 +69,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             dequeue()
         }
         
-        Watermark.API.Series.fetch { result in
-            print("Series: \(result.value?.count ?? -1)")
-        }
-        
         return true
     }
 

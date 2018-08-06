@@ -10,7 +10,7 @@ import Alexandria
 
 final class TabBarViewController: UITabBarController {
     
-    private let tabBarView = TabBar(tabs: .table, .pantry, .messages, .settings)
+    private let tabBarView = TabBar(tabs: .table, .pantry, .messages)
     
     var tabs: [Tab] {
         return tabBarView.tabs
@@ -83,8 +83,8 @@ extension TabBarViewController {
         
         var viewController: UIViewController {
             switch self {
-            case .table:    return HomeViewController()
-            case .pantry:   return PantryViewController()
+            case .table:    return TableViewController()
+            case .pantry:   return UINavigationController(rootViewController: PantryViewController())
             case .messages: return MessageListViewController()
             case .settings: return UIViewController()
             }
@@ -126,13 +126,15 @@ extension TabBarViewController {
         }
         
         func setup() {
-            backgroundColor = .white
+            backgroundColor = .lightBackground
+            
             shadowOffset = CGSize(width: 0, height: -10)
+            shadowOpacity = 0.1
             
             container.add(toSuperview: self).customize {
                 $0.pinLeading(to: self).pinTrailing(to: self)
                 $0.pinTop(to: self).constrainHeight(to: 49)
-                $0.backgroundColor = .white
+                $0.backgroundColor = .lightBackground
             }
             
             stackView.add(toSuperview: container).customize {
@@ -216,7 +218,7 @@ extension TabBarViewController {
                 springDamping = 0.5
                 
                 backgroundView.customize {
-                    $0.backgroundColor = .white
+                    $0.backgroundColor = .lightBackground
                     $0.shadowOpacity = 0
                 }
                 

@@ -22,13 +22,13 @@ final class MessageCell: CollectionViewCell {
         
         containerView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .white
-            $0.containerCornerRadius = 3
+            $0.backgroundColor = .lightBackground
+            $0.containerCornerRadius = 4
         }
         
         imageView.add(toSuperview: containerView.container).customize {
             $0.pinLeading(to: containerView.container).pinTrailing(to: containerView.container)
-            $0.pinTop(to: containerView.container)
+            $0.pinTop(to: containerView.container).constrainHeight(to: $0, .width, times: 9/16)
             $0.contentMode = .scaleAspectFill
             $0.isHidden = true
             $0.clipsToBounds = true
@@ -37,13 +37,18 @@ final class MessageCell: CollectionViewCell {
         infoView.add(toSuperview: containerView.container).customize {
             $0.pinLeading(to: containerView.container).pinTrailing(to: containerView.container)
             $0.pinBottom(to: containerView.container).pinTop(to: imageView, .bottom)
-            $0.constrainHeight(to: .infoHeight)
+        }
+        
+        UIView(superview: infoView).customize {
+            $0.pinLeading(to: infoView).pinTrailing(to: infoView)
+            $0.pinTop(to: infoView).constrainHeight(to: 1)
+            $0.backgroundColor = .lightest
         }
         
         let holderView = UIView(superview: infoView).customize {
             $0.pinLeading(to: infoView, plus: .padding).pinTrailing(to: infoView, plus: -.padding)
             $0.pinCenterY(to: infoView)
-            $0.backgroundColor = .white
+            $0.backgroundColor = .lightBackground
         }
         
         titleLabel.add(toSuperview: holderView).customize {
@@ -55,9 +60,9 @@ final class MessageCell: CollectionViewCell {
             $0.numberOfLines = 0
         }
         
-        speakerLabel.add(toSuperview: infoView).customize {
+        speakerLabel.add(toSuperview: holderView).customize {
             $0.pinLeading(to: holderView).pinTrailing(to: holderView)
-            $0.pinTop(to: titleLabel, .bottom).pinBottom(to: holderView)
+            $0.pinTop(to: titleLabel, .bottom, plus: 5).pinBottom(to: holderView)
             $0.constrainSize(toFit: .vertical)
             $0.font = .regular(size: 12)
             $0.textColor = .dark
@@ -87,6 +92,20 @@ final class MessageCell: CollectionViewCell {
         
         imageView.cancel()
         imageView.isHidden = true
+    }
+    
+    static func size(forMessage message: Watermark.Message, in collectionView: UICollectionView) -> CGSize {
+        let cellWidth = collectionView.width - .padding * 2
+        let labelWidth = cellWidth - .padding * 2
+        
+        let imageHeight = cellWidth * 9/16
+        let titleHeight = message.title.size(boundingWidth: labelWidth, font: .bold(size: 16)).height
+        let speakerHeight = message.speakers.map { $0.name }.joined(separator: ", ").size(boundingWidth: labelWidth, font: .regular(size: 12)).height
+        
+        return CGSize(
+            width: cellWidth,
+            height: imageHeight + .padding * 0.75 + titleHeight + 5 + speakerHeight + .padding * 0.75
+        )
     }
     
 }

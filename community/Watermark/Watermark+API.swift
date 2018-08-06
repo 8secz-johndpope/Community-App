@@ -44,8 +44,28 @@ extension Watermark.API {
     enum Messages {
         
         @discardableResult
+        static func fetch(id: Int, completion: @escaping (Result<Watermark.Message, Watermark.API.Error>) -> Void) -> URLSessionDataTask {
+            let request = Watermark.API.createRequest(endpoint: .messages(.id(id)))
+            return Watermark.API.fetch(request: request) { result in
+                switch result {
+                case .success(let data):
+                    let json = JSONSerialization.dictionary(from: data)
+                    
+                    if let series = Watermark.Message(json: json.dictionary(forKey: "message")) {
+                        completion(.success(series))
+                    }
+                    else {
+                        completion(.failure(.unknown))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+        @discardableResult
         static func fetch(_ completion: @escaping (Result<[Watermark.Message], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
-            let request = Watermark.API.createRequest(endpoint: .messages, parameters: ["filter[tag_id]" : "1,40"])
+            let request = Watermark.API.createRequest(endpoint: .messages(.all), parameters: ["filter[tag_id]" : "1,40"])
             return Watermark.API.fetch(request: request) { result in
                 switch result {
                 case .success(let data):
@@ -65,7 +85,7 @@ extension Watermark.API {
         
         @discardableResult
         static func fetch(seriesID: Int, _ completion: @escaping (Result<[Watermark.Message], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
-            let request = Watermark.API.createRequest(endpoint: .messages, parameters: ["filter[series_id]" : "\(seriesID)"])
+            let request = Watermark.API.createRequest(endpoint: .messages(.all), parameters: ["filter[series_id]" : "\(seriesID)"])
             return Watermark.API.fetch(request: request) { result in
                 switch result {
                 case .success(let data):
@@ -87,12 +107,24 @@ extension Watermark.API {
     
     enum Series {
         
+        enum Tag: Int {
+            case sunday = 1
+            case porch = 40
+            
+            var speakers: String {
+                switch self {
+                case .sunday: return ""//"2,187,3,162,52"
+                case .porch:  return ""
+                }
+            }
+        }
+        
         @discardableResult
-        static func fetch(_ completion: @escaping (Result<[Watermark.Series], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
+        static func fetch(tag: Tag, _ completion: @escaping (Result<[Watermark.Series], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
             let request = Watermark.API.createRequest(endpoint: .series(.all), parameters: [
-                "limit" : "5",
-                "filter[speaker_id]" : "2,187,3,162,52",
-                "filter[tag_id]" : "1,40"
+                "limit" : "10",
+                "filter[speaker_id]" : tag.speakers,
+                "filter[tag_id]" : "\(tag.rawValue)"
             ])
             return Watermark.API.fetch(request: request) { result in
                 switch result {
@@ -143,17 +175,29 @@ extension Watermark.API {
     }
     
     enum Endpoint {
-        case messages
+        case messages(Message)
         case series(Series)
         case speakers
         case tags
         
         var path: String {
             switch self {
-            case .messages:             return "messages"
-            case .series(let series):   return series.path
-            case .speakers:             return "speakers"
-            case .tags:                 return "tags"
+            case .messages(let message): return message.path
+            case .series(let series):    return series.path
+            case .speakers:              return "speakers"
+            case .tags:                  return "tags"
+            }
+        }
+        
+        enum Message {
+            case all
+            case id(Int)
+            
+            var path: String {
+                switch self {
+                case .all:        return "messages"
+                case .id(let id): return "messages/\(id)"
+                }
             }
         }
         
