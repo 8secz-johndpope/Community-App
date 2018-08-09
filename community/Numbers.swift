@@ -16,6 +16,7 @@ extension CGFloat {
     static let textInset: CGFloat           = .padding - 4
     static let mediaProgressHeight: CGFloat = 4
     static let closeButtonWidth: CGFloat    = 58
+    static let tablePostHeight: CGFloat     = 300
     
     static var messageVideoHeight: CGFloat {
         return UIScreen.main.width * 0.75

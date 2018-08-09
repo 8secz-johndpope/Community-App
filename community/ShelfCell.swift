@@ -24,17 +24,17 @@ final class ShelfCell: CollectionViewCell {
         super.setup()
         
         contentView.clipsToBounds = true
-        contentView.backgroundColor = .lightBackground
+        contentView.backgroundColor = .clear
         
         iconView.add(toSuperview: contentView).customize {
-            $0.pinCenterX(to: contentView, .leading, plus: .padding * 1.5).pinCenterY(to: contentView)
+            $0.pinCenterX(to: contentView, .leading, plus: .padding * 2).pinCenterY(to: contentView)
             $0.constrainSize(toFit: .vertical, .horizontal)
             $0.font = .fontAwesome(.solid, size: 20)
             $0.textColor = .dark
         }
         
         titleLabel.add(toSuperview: contentView).customize {
-            $0.pinLeading(to: contentView, plus: .padding * 3)
+            $0.pinLeading(to: contentView, plus: .padding * 3.5)
             $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 18)
             $0.textColor = .dark
@@ -46,12 +46,6 @@ final class ShelfCell: CollectionViewCell {
             $0.textColor = .dark
             $0.font = .fontAwesome(.light, size: 15)
             $0.set(icon: .chevronRight)
-        }
-        
-        UIView(superview: contentView).customize {
-            $0.pinLeading(to: contentView).pinTrailing(to: contentView)
-            $0.pinBottom(to: contentView).constrainHeight(to: 1)
-            $0.backgroundColor = .lightest
         }
     }
     

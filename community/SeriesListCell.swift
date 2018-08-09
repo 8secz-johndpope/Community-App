@@ -12,7 +12,7 @@ final class SeriesListCell: CollectionViewCell {
     
     private var series: [Watermark.Series] = []
     
-    private let collectionView = UICollectionView(layout: CarouselFlowLayout.seriesContent)
+    private let collectionView = UICollectionView(layout: .horizontal(lineSpacing: .padding, sectionInset: UIEdgeInsets(left: .padding, right: .padding)))
     
     override func setup() {
         super.setup()
@@ -57,6 +57,10 @@ extension SeriesListCell: UICollectionViewDataSource {
 }
 
 extension SeriesListCell: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return .seriesSize
+    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let series = self.series.at(indexPath.row) else { return }

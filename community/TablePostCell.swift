@@ -11,35 +11,42 @@ import Alexandria
 
 final class TablePostCell: CollectionViewCell {
     
-    private let containerView = ContainerShadowView()
-    private let titleLabel    = UILabel()
-    private let dateLabel     = UILabel()
+    private let shadowView = ContainerShadowView()
+    private let imageView  = LoadingImageView()
+    private let titleLabel = UILabel()
+    private let dateLabel  = UILabel()
     
     override func setup() {
         super.setup()
         
         contentView.clipsToBounds = false
         
-        containerView.add(toSuperview: contentView).customize {
+        shadowView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .grayBlue
-            $0.containerCornerRadius = 4
+            $0.backgroundColor = .lightBackground
+            $0.containerCornerRadius = 8
+            $0.shadowOpacity = 0.1
         }
         
-        titleLabel.add(toSuperview: containerView.container).customize {
-            $0.pinLeading(to: containerView.container, plus: .padding).pinTrailing(to: containerView.container, plus: -.padding)
-            $0.pinTop(to: containerView.container, plus: .padding).constrainSize(toFit: .vertical)
-            $0.font = .bold(size: 20)
+        imageView.add(toSuperview: shadowView.container).customize {
+            $0.constrainEdgesToSuperview()
+            $0.showDimmer = true
+        }
+        
+        dateLabel.add(toSuperview: contentView).customize {
+            $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
+            $0.pinBottom(to: contentView, plus: -.padding).constrainSize(toFit: .vertical)
+            $0.font = .regular(size: 14)
             $0.textAlignment = .left
-            $0.numberOfLines = 3
             $0.textColor = .lightBackground
         }
         
-        dateLabel.add(toSuperview: containerView.container).customize {
-            $0.pinLeading(to: containerView.container, plus: .padding).pinTrailing(to: containerView.container, plus: -.padding)
-            $0.pinTop(to: titleLabel, .bottom, plus: 10).constrainSize(toFit: .vertical)
-            $0.font = .regular(size: 15)
+        titleLabel.add(toSuperview: contentView).customize {
+            $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
+            $0.pinBottom(to: dateLabel, .top, plus: -.padding/2).constrainSize(toFit: .vertical)
+            $0.font = .semiBold(size: 16)
             $0.textAlignment = .left
+            $0.numberOfLines = 2
             $0.textColor = .lightBackground
         }
         

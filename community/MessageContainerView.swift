@@ -21,7 +21,7 @@ final class MessageContainerView: ShadowView {
     var progress: CGFloat = 0 {
         didSet {
             progressView.update(progress: progress)
-            progressButtonHolder.centerX = 60 + progress * progressView.width
+            progressButtonHolder.centerX = leftProgressOffset + progress * progressView.width
             progressButtonHolder.centerY = progressView.centerY
         }
     }
@@ -35,8 +35,7 @@ final class MessageContainerView: ShadowView {
     weak var delegate: MessageContainerViewDelegate?
     
     private let playbackInfoView     = UIView()
-    private let currentTimeLabel     = UILabel()
-    private let durationLabel        = UILabel()
+    private let timeLabel            = UILabel()
     private let playPauseButton      = UIButton()
     private let progressView         = MediaProgressView()
     private let progressButtonHolder = UIView()
@@ -47,8 +46,22 @@ final class MessageContainerView: ShadowView {
     
     private var startingProgress: CGFloat = 0
     private var duration: TimeInterval = 0
+    private var isShowingPlaybackControls = true
+    private let leftProgressOffset: CGFloat = 70
     
     private let feedback = UIImpactFeedbackGenerator(style: .light)
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        if isShowingPlaybackControls {
+            return super.point(inside: point, with: event)
+        }
+        else {
+            if playbackInfoView.frame.contains(point) {
+                return false
+            }
+            return super.point(inside: point, with: event)
+        }
+    }
     
     required init(message: Watermark.Message) {
         self.message = message
@@ -65,7 +78,7 @@ final class MessageContainerView: ShadowView {
 extension MessageContainerView {
     
     func resetProgressButton() {
-        progressButtonHolder.center = CGPoint(x: 60, y: progressView.centerY)
+        progressButtonHolder.center = CGPoint(x: leftProgressOffset, y: progressView.centerY)
     }
     
     func update(isPlaying: Bool) {
@@ -93,24 +106,6 @@ extension MessageContainerView {
             $0.pinTop(to: self).constrainHeight(to: 50)
         }
         
-        durationLabel.add(toSuperview: playbackInfoView).customize {
-            $0.pinTrailing(to: playbackInfoView, plus: -.padding).pinBottom(to: playbackInfoView, .top)
-            $0.constrainSize(toFit: .horizontal, .vertical)
-            $0.font = .regular(size: 14)
-            $0.textColor = .lightBackground
-            $0.textAlignment = .center
-            $0.text = "0:00"
-        }
-        
-        currentTimeLabel.add(toSuperview: playbackInfoView).customize {
-            $0.pinLeading(to: playbackInfoView, plus: 60).pinBottom(to: playbackInfoView, .top)
-            $0.constrainSize(toFit: .horizontal, .vertical)
-            $0.font = .regular(size: 14)
-            $0.textColor = .lightBackground
-            $0.textAlignment = .center
-            $0.text = "0:00"
-        }
-        
         playPauseButton.add(toSuperview: playbackInfoView).customize {
             $0.pinLeading(to: playbackInfoView).constrainWidth(to: 60)
             $0.pinTop(to: playbackInfoView).pinBottom(to: playbackInfoView)
@@ -124,14 +119,23 @@ extension MessageContainerView {
             }
         }
         
+        timeLabel.add(toSuperview: playbackInfoView).customize {
+            $0.pinTrailing(to: playbackInfoView, plus: -.padding).pinCenterY(to: playbackInfoView)
+            $0.constrainWidth(to: 85).constrainSize(toFit: .vertical)
+            $0.font = .regular(size: 14)
+            $0.textColor = .lightBackground
+            $0.textAlignment = .right
+            $0.text = "00:00 / 00:00"
+        }
+        
         progressView.add(toSuperview: playbackInfoView).customize {
-            $0.pinLeading(to: playPauseButton, .trailing).pinTrailing(to: playbackInfoView, plus: -.padding)
+            $0.pinLeading(to: playPauseButton, .trailing, plus: 10).pinTrailing(to: timeLabel, .leading, plus: -.padding)
             $0.pinCenterY(to: playbackInfoView)
             $0.isUserInteractionEnabled = false
         }
         
         progressButtonHolder.add(toSuperview: playbackInfoView).customize {
-            $0.centerX = 60
+            $0.centerX = leftProgressOffset
             $0.size = CGSize(width: 30, height: 30)
             $0.backgroundColor = .clear
             $0.addGesture(type: .pan) { [weak self] in
@@ -211,13 +215,13 @@ extension MessageContainerView {
     
     func update(currentTime: TimeInterval, duration: TimeInterval) {
         self.duration = duration
-        
-        currentTimeLabel.text = Int(currentTime).timeString
-        durationLabel.text = Int(duration).timeString
+        timeLabel.text = "\(Int(currentTime).timeString) / \(Int(duration).timeString)"
     }
     
     func update(isProgressButtonVisible: Bool) {
         if isProgressButtonVisible {
+            isShowingPlaybackControls = true
+            
             playbackInfoView.alpha = 0
             
             UIView.animate(withDuration: 0.25) {
@@ -225,6 +229,8 @@ extension MessageContainerView {
             }
         }
         else {
+            isShowingPlaybackControls = false
+            
             UIView.animate(withDuration: 0.25) {
                 self.playbackInfoView.alpha = 0
             }
@@ -243,7 +249,8 @@ extension MessageContainerView {
         }
         
         let translation = gesture.translation(in: self)
-        let progress = (startingProgress + translation.x / (width - .padding * 2)).limited(0, 1)
+        let progressWidth = progressView.width.limited(100, width)
+        let progress = (startingProgress + translation.x / progressWidth).limited(0, 1)
         
         if [.ended, .cancelled].contains(gesture.state) {
             UIView.animate(withDuration: 0.25) {
@@ -264,10 +271,10 @@ extension MessageContainerView {
         progressButtonHolder.centerY = progressView.centerY
         
         if let progress = progress {
-            progressButtonHolder.centerX = 60 + progress * progressView.width
+            progressButtonHolder.centerX = leftProgressOffset + progress * progressView.width
             
             if duration > 0 {
-                currentTimeLabel.text = Int(Double(progress) * duration).timeString
+                timeLabel.text = "\(Int(Double(progress) * duration).timeString) / \(Int(duration).timeString)"
             }
         }
     }

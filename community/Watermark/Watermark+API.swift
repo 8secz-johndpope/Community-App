@@ -119,6 +119,28 @@ extension Watermark.API {
             }
         }
         
+        static func fetchLatest(completion: @escaping (Result<[Watermark.Series], Watermark.API.Error>) -> Void) {
+            let processor = SimpleSerialProcessor()
+            
+            var series: [Watermark.Series] = []
+            
+            processor.enqueue { dequeue in
+                Watermark.API.Series.fetch(tag: .sunday) { result in
+                    series = result.value ?? []
+                    dequeue()
+                }
+            }
+            
+            processor.enqueue { dequeue in
+                Watermark.API.Series.fetch(tag: .porch) { result in
+                    series.append(contentsOf: result.value ?? [])
+                    series.sort(by: { $0.latestDate > $1.latestDate })
+                    dequeue()
+                    completion(.success(series))
+                }
+            }
+        }
+        
         @discardableResult
         static func fetch(tag: Tag, _ completion: @escaping (Result<[Watermark.Series], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
             let request = Watermark.API.createRequest(endpoint: .series(.all), parameters: [

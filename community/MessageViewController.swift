@@ -128,8 +128,8 @@ final class MessageViewController: ViewController, StatusBarViewController {
             $0.contentInsetAdjustmentBehavior = .never
         }
         
-        UIView(superview: scrollView).customize {
-            $0.pinTop(to: scrollView).pinBottom(to: containerView, .top)
+        UIView().add(toSuperview: scrollView, behind: containerView).customize {
+            $0.pinTop(to: scrollView).pinBottom(to: containerView, .top, plus: 50)
             $0.pinLeading(to: scrollView).pinTrailing(to: scrollView).constrainWidth(to: scrollView)
             $0.backgroundColor = .clear
             

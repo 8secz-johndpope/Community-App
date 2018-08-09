@@ -23,6 +23,7 @@ enum Icon: Int {
     case infoCircle   = 0xf05a
     case chevronRight = 0xf054
     case chevronLeft  = 0xf053
+    case search       = 0xf002
     
     var string: String {
         return String(format: "%C", rawValue)
