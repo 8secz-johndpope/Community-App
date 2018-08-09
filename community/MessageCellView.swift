@@ -1,5 +1,5 @@
 //
-//  MessageCell.swift
+//  MessageCellView.swift
 //  community
 //
 //  Created by Jonathan Landon on 7/14/18.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MessageCell: CollectionViewCell {
+final class MessageCellView: View {
     
     private let containerView = ContainerShadowView()
     private let imageView     = LoadingImageView()
@@ -18,9 +18,9 @@ final class MessageCell: CollectionViewCell {
     override func setup() {
         super.setup()
         
-        contentView.clipsToBounds = false
+        clipsToBounds = false
         
-        containerView.add(toSuperview: contentView).customize {
+        containerView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
             $0.backgroundColor = .lightBackground
             $0.containerCornerRadius = 4
@@ -36,7 +36,8 @@ final class MessageCell: CollectionViewCell {
         
         infoView.add(toSuperview: containerView.container).customize {
             $0.pinLeading(to: containerView.container).pinTrailing(to: containerView.container)
-            $0.pinBottom(to: containerView.container).pinTop(to: imageView, .bottom)
+            $0.pinTop(to: imageView, .bottom).pinBottom(to: containerView.container)
+            $0.backgroundColor = .lightBackground
         }
         
         UIView(superview: infoView).customize {
@@ -47,7 +48,7 @@ final class MessageCell: CollectionViewCell {
         
         let holderView = UIView(superview: infoView).customize {
             $0.pinLeading(to: infoView, plus: .padding).pinTrailing(to: infoView, plus: -.padding)
-            $0.pinCenterY(to: infoView)
+            $0.pinTop(to: infoView, plus: .padding/2).pinBottom(to: infoView, plus: -.padding/2)
             $0.backgroundColor = .lightBackground
         }
         
@@ -82,30 +83,6 @@ final class MessageCell: CollectionViewCell {
         else {
             imageView.isHidden = true
         }
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        titleLabel.text = nil
-        speakerLabel.text = nil
-        
-        imageView.cancel()
-        imageView.isHidden = true
-    }
-    
-    static func size(forMessage message: Watermark.Message, in collectionView: UICollectionView) -> CGSize {
-        let cellWidth = collectionView.width - .padding * 2
-        let labelWidth = cellWidth - .padding * 2
-        
-        let imageHeight = cellWidth * 9/16
-        let titleHeight = message.title.size(boundingWidth: labelWidth, font: .bold(size: 16)).height
-        let speakerHeight = message.speakers.map { $0.name }.joined(separator: ", ").size(boundingWidth: labelWidth, font: .regular(size: 12)).height
-        
-        return CGSize(
-            width: cellWidth,
-            height: imageHeight + .padding * 0.75 + titleHeight + 5 + speakerHeight + .padding * 0.75
-        )
     }
     
 }

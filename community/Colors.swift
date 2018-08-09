@@ -33,4 +33,5 @@ struct Gradient {
     static let shelf     = Gradient(colors: .lightest, .lightBackground)
     static let empty     = Gradient(colors: #colorLiteral(red: 0.9294117647, green: 0.9450980392, blue: 0.968627451, alpha: 1), #colorLiteral(red: 0.7882352941, green: 0.8431372549, blue: 0.9137254902, alpha: 1))   // #EDF1F7, #C9D7E9
     static let emptyDark = Gradient(colors: #colorLiteral(red: 0.7294117647, green: 0.8, blue: 0.8901960784, alpha: 1), #colorLiteral(red: 0.862745098, green: 0.8941176471, blue: 0.9411764706, alpha: 1))   // #BACCE3, #DCE4F0
+    static let messages  = Gradient(colors: #colorLiteral(red: 0.9764705882, green: 0.431372549, blue: 0.3568627451, alpha: 1), #colorLiteral(red: 0.8196078431, green: 0.5098039216, blue: 0.231372549, alpha: 1))
 }

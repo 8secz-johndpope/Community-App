@@ -61,56 +61,73 @@ final class StackView: UIView {
         }
     }
     
-    func configure(elements: [Element]) {
+    @discardableResult
+    func configure(elements: [Element]) -> [UIView] {
         reset()
+        
+        var addedViews: [UIView] = []
         
         for element in elements {
             switch element {
             case .spacer(let space):
-                UIView(stackview: stackView).customize {
-                    switch stackView.axis {
-                    case .horizontal: $0.constrainWidth(to: space)
-                    case .vertical:   $0.constrainHeight(to: space)
+                addedViews.append(
+                    UIView(stackview: stackView).customize {
+                        switch stackView.axis {
+                        case .horizontal: $0.constrainWidth(to: space)
+                        case .vertical:   $0.constrainHeight(to: space)
+                        }
                     }
-                }
+                )
             case .label(let text):
-                UILabel(stackview: stackView).customize {
-                    $0.attributedText = text
-                    $0.numberOfLines = 0
-                }
-            case .view(let backgroundColor, let size):
-                UIView(stackview: stackView).customize {
-                    $0.backgroundColor = backgroundColor
-                    switch stackView.axis {
-                    case .horizontal: $0.constrainWidth(to: size)
-                    case .vertical:   $0.constrainHeight(to: size)
+                addedViews.append(
+                    UILabel(stackview: stackView).customize {
+                        $0.attributedText = text
+                        $0.numberOfLines = 0
                     }
-                }
+                )
+            case .view(let backgroundColor, let size):
+                addedViews.append(
+                    UIView(stackview: stackView).customize {
+                        $0.backgroundColor = backgroundColor
+                        switch stackView.axis {
+                        case .horizontal: $0.constrainWidth(to: size)
+                        case .vertical:   $0.constrainHeight(to: size)
+                        }
+                    }
+                )
             case .button(let title, let height, let callback):
-                UIButton().add(toStackview: stackView).customize {
-                    $0.setTitle(title, for: .normal)
-                    $0.setBackgroundColor(.random, for: .normal)
-                    $0.constrainHeight(to: height)
-                    $0.addTarget(for: .touchUpInside, actionClosure: callback)
-                }
+                addedViews.append(
+                    UIButton().add(toStackview: stackView).customize {
+                        $0.setTitle(title, for: .normal)
+                        $0.setBackgroundColor(.random, for: .normal)
+                        $0.constrainHeight(to: height)
+                        $0.addTarget(for: .touchUpInside, actionClosure: callback)
+                    }
+                )
             case .stack(let stack):
-                stack.add(toStackview: stackView)
+                addedViews.append(stack.add(toStackview: stackView))
             case .custom(let view):
-                UIStackView(stackview: stackView).customize {
-                    $0.axis = stackView.axis
-                    $0.alignment = view.hasWidthConstraint ? .center : .fill
-                    $0.addArrangedSubview(view)
-                }
+                addedViews.append(
+                    UIStackView(stackview: stackView).customize {
+                        $0.axis = stackView.axis
+                        $0.alignment = view.hasWidthConstraint ? .center : .fill
+                        $0.addArrangedSubview(view)
+                    }
+                )
             case .customPadding(let view, let padding):
-                UIStackView(stackview: stackView).customize {
-                    $0.axis = .vertical
-                    $0.alignment = view.hasWidthConstraint ? .center : .fill
-                    $0.addArrangedSubview(view)
-                    $0.layoutMargins = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
-                    $0.isLayoutMarginsRelativeArrangement = true
-                }
+                addedViews.append(
+                    UIStackView(stackview: stackView).customize {
+                        $0.axis = .vertical
+                        $0.alignment = view.hasWidthConstraint ? .center : .fill
+                        $0.addArrangedSubview(view)
+                        $0.layoutMargins = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
+                        $0.isLayoutMarginsRelativeArrangement = true
+                    }
+                )
             }
         }
+        
+        return addedViews
     }
     
     required init?(coder aDecoder: NSCoder) {

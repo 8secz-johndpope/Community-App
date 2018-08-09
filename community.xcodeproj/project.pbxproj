@@ -81,9 +81,9 @@
 		817298F620FED10400596B35 /* Watermark+ScriptureReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817298F520FED10400596B35 /* Watermark+ScriptureReference.swift */; };
 		817298F820FED61100596B35 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817298F720FED61100596B35 /* DeepLink.swift */; };
 		817BB7B72113BE58005DE341 /* ShelfCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817BB7B62113BE58005DE341 /* ShelfCell.swift */; };
-		817BB7B92113C0E6005DE341 /* SeriesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817BB7B82113C0E6005DE341 /* SeriesListCell.swift */; };
+		817BB7B92113C0E6005DE341 /* SeriesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817BB7B82113C0E6005DE341 /* SeriesSectionView.swift */; };
 		817BB7BB2113C100005DE341 /* TablePostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817BB7BA2113C100005DE341 /* TablePostCell.swift */; };
-		817E11BF210941D800EB51A6 /* SmallMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817E11BE210941D800EB51A6 /* SmallMessageCell.swift */; };
+		817E11BF210941D800EB51A6 /* SmallMessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817E11BE210941D800EB51A6 /* SmallMessageCellView.swift */; };
 		817E11C121094E0300EB51A6 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817E11C021094E0300EB51A6 /* String+Extensions.swift */; };
 		81938BCC20F9AA2A0080DEFF /* Alexandria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813B0FD720F9AA1B0067579D /* Alexandria.framework */; };
 		81938BCE20F9ABC70080DEFF /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81938BCD20F9ABC70080DEFF /* CollectionViewCell.swift */; };
@@ -140,7 +140,6 @@
 		81CFC91E20FB0C87006BF518 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91D20FB0C87006BF518 /* VideoView.swift */; };
 		81CFC92020FB0CCE006BF518 /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91F20FB0CCE006BF518 /* DispatchQueue+Extensions.swift */; };
 		81EA5675211919C2005F25DB /* TableSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA5674211919C1005F25DB /* TableSectionView.swift */; };
-		81EA567921191C47005F25DB /* MessageSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA567821191C47005F25DB /* MessageSectionView.swift */; };
 		81EA567B21191EF0005F25DB /* PantrySectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA567A21191EF0005F25DB /* PantrySectionView.swift */; };
 		81EA567D21191F2C005F25DB /* SelfSizingCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA567C21191F2C005F25DB /* SelfSizingCollectionView.swift */; };
 		81EA568121192670005F25DB /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA568021192670005F25DB /* StackView.swift */; };
@@ -156,7 +155,7 @@
 		81ED74F120FA87BF00BE1F4C /* LoadingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74F020FA87BF00BE1F4C /* LoadingImageView.swift */; };
 		81ED74F320FA886100BE1F4C /* Nuke.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81ED74F220FA886100BE1F4C /* Nuke.framework */; };
 		81ED74F520FA887500BE1F4C /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74F420FA887500BE1F4C /* UIImageView+Extensions.swift */; };
-		81ED74F720FA8A4800BE1F4C /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74F620FA8A4800BE1F4C /* MessageCell.swift */; };
+		81ED74F720FA8A4800BE1F4C /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74F620FA8A4800BE1F4C /* MessageCellView.swift */; };
 		81ED74F920FA8C7100BE1F4C /* SeriesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */; };
 		81ED74FB20FA8EAD00BE1F4C /* Contentful+LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74FA20FA8EAD00BE1F4C /* Contentful+LocalStorage.swift */; };
 		81ED74FD20FA8F1100BE1F4C /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74FC20FA8F1100BE1F4C /* Signal.swift */; };
@@ -269,9 +268,9 @@
 		817298F520FED10400596B35 /* Watermark+ScriptureReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Watermark+ScriptureReference.swift"; sourceTree = "<group>"; };
 		817298F720FED61100596B35 /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		817BB7B62113BE58005DE341 /* ShelfCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfCell.swift; sourceTree = "<group>"; };
-		817BB7B82113C0E6005DE341 /* SeriesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesListCell.swift; sourceTree = "<group>"; };
+		817BB7B82113C0E6005DE341 /* SeriesSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesSectionView.swift; sourceTree = "<group>"; };
 		817BB7BA2113C100005DE341 /* TablePostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablePostCell.swift; sourceTree = "<group>"; };
-		817E11BE210941D800EB51A6 /* SmallMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallMessageCell.swift; sourceTree = "<group>"; };
+		817E11BE210941D800EB51A6 /* SmallMessageCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallMessageCellView.swift; sourceTree = "<group>"; };
 		817E11C021094E0300EB51A6 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		81938BCD20F9ABC70080DEFF /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		81938BCF20F9ABD70080DEFF /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
@@ -327,7 +326,6 @@
 		81CFC91D20FB0C87006BF518 /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		81CFC91F20FB0CCE006BF518 /* DispatchQueue+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Extensions.swift"; sourceTree = "<group>"; };
 		81EA5674211919C1005F25DB /* TableSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSectionView.swift; sourceTree = "<group>"; };
-		81EA567821191C47005F25DB /* MessageSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSectionView.swift; sourceTree = "<group>"; };
 		81EA567A21191EF0005F25DB /* PantrySectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PantrySectionView.swift; sourceTree = "<group>"; };
 		81EA567C21191F2C005F25DB /* SelfSizingCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfSizingCollectionView.swift; sourceTree = "<group>"; };
 		81EA568021192670005F25DB /* StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
@@ -343,7 +341,7 @@
 		81ED74F020FA87BF00BE1F4C /* LoadingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImageView.swift; sourceTree = "<group>"; };
 		81ED74F220FA886100BE1F4C /* Nuke.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nuke.framework; path = Carthage/Build/iOS/Nuke.framework; sourceTree = "<group>"; };
 		81ED74F420FA887500BE1F4C /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
-		81ED74F620FA8A4800BE1F4C /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
+		81ED74F620FA8A4800BE1F4C /* MessageCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesCell.swift; sourceTree = "<group>"; };
 		81ED74FA20FA8EAD00BE1F4C /* Contentful+LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contentful+LocalStorage.swift"; sourceTree = "<group>"; };
 		81ED74FC20FA8F1100BE1F4C /* Signal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signal.swift; sourceTree = "<group>"; };
@@ -475,7 +473,7 @@
 				81938C2320FA6A110080DEFF /* Button.swift */,
 				81ED74DD20FA763C00BE1F4C /* MessageListViewController.swift */,
 				81ED74F020FA87BF00BE1F4C /* LoadingImageView.swift */,
-				81ED74F620FA8A4800BE1F4C /* MessageCell.swift */,
+				81ED74F620FA8A4800BE1F4C /* MessageCellView.swift */,
 				81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */,
 				81ED74FC20FA8F1100BE1F4C /* Signal.swift */,
 				8101D33720FACD530085BF0D /* TextPostViewController.swift */,
@@ -493,8 +491,8 @@
 				81206A0720FD77ED00696D32 /* Numerable.swift */,
 				81206A0B20FD7D5300696D32 /* Operators.swift */,
 				817298F720FED61100596B35 /* DeepLink.swift */,
-				817E11BE210941D800EB51A6 /* SmallMessageCell.swift */,
-				817BB7B82113C0E6005DE341 /* SeriesListCell.swift */,
+				817E11BE210941D800EB51A6 /* SmallMessageCellView.swift */,
+				817BB7B82113C0E6005DE341 /* SeriesSectionView.swift */,
 				817BB7BA2113C100005DE341 /* TablePostCell.swift */,
 				81EA567A21191EF0005F25DB /* PantrySectionView.swift */,
 				81EA567C21191F2C005F25DB /* SelfSizingCollectionView.swift */,
@@ -504,7 +502,6 @@
 				816A4F842116906000179C76 /* ShelfViewController.swift */,
 				81EA5674211919C1005F25DB /* TableSectionView.swift */,
 				816A4F862116AEE200179C76 /* AsyncTextAttachment.swift */,
-				81EA567821191C47005F25DB /* MessageSectionView.swift */,
 				81EA568021192670005F25DB /* StackView.swift */,
 				81ED74DF20FA7A8100BE1F4C /* Watermark */,
 				81938C1E20FA40BE0080DEFF /* Contentful */,
@@ -834,7 +831,7 @@
 				817298F420FEB38A00596B35 /* Int+Extensions.swift in Sources */,
 				81938C0920F9B8FF0080DEFF /* CharacterSet+Extensions.swift in Sources */,
 				81938C1520F9BE260080DEFF /* Result.swift in Sources */,
-				817BB7B92113C0E6005DE341 /* SeriesListCell.swift in Sources */,
+				817BB7B92113C0E6005DE341 /* SeriesSectionView.swift in Sources */,
 				817BB7B72113BE58005DE341 /* ShelfCell.swift in Sources */,
 				81CFC91620FB008A006BF518 /* SelfSizingTextView.swift in Sources */,
 				81206A0820FD77ED00696D32 /* Numerable.swift in Sources */,
@@ -871,7 +868,7 @@
 				817298F620FED10400596B35 /* Watermark+ScriptureReference.swift in Sources */,
 				81EA568121192670005F25DB /* StackView.swift in Sources */,
 				81206A0420FD738300696D32 /* Timer+Extensions.swift in Sources */,
-				81ED74F720FA8A4800BE1F4C /* MessageCell.swift in Sources */,
+				81ED74F720FA8A4800BE1F4C /* MessageCellView.swift in Sources */,
 				81938BD020F9ABD70080DEFF /* View.swift in Sources */,
 				81ED74F520FA887500BE1F4C /* UIImageView+Extensions.swift in Sources */,
 				81206A0620FD77C600696D32 /* MediaProgressView.swift in Sources */,
@@ -887,9 +884,8 @@
 				81938C1B20F9C1280080DEFF /* Contentful+Entry.swift in Sources */,
 				81ED74EB20FA7BDD00BE1F4C /* Watermark+Tag.swift in Sources */,
 				81938C1D20FA3EB40080DEFF /* Contentful+Asset.swift in Sources */,
-				81EA567921191C47005F25DB /* MessageSectionView.swift in Sources */,
 				81938BF320F9B0CB0080DEFF /* Numbers.swift in Sources */,
-				817E11BF210941D800EB51A6 /* SmallMessageCell.swift in Sources */,
+				817E11BF210941D800EB51A6 /* SmallMessageCellView.swift in Sources */,
 				81938C1320F9BE040080DEFF /* URLRequest+Extensions.swift in Sources */,
 				81938BFF20F9B8890080DEFF /* Contentful+Author.swift in Sources */,
 				81ED74E920FA7BC500BE1F4C /* Watermark+Series.swift in Sources */,

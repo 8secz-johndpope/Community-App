@@ -1,5 +1,5 @@
 //
-//  SeriesListCell.swift
+//  SeriesSectionView.swift
 //  community
 //
 //  Created by Jonathan Landon on 8/2/18.
@@ -8,7 +8,7 @@
 import UIKit
 import Alexandria
 
-final class SeriesListCell: CollectionViewCell {
+final class SeriesSectionView: View {
     
     private var series: [Watermark.Series] = []
     
@@ -17,12 +17,15 @@ final class SeriesListCell: CollectionViewCell {
     override func setup() {
         super.setup()
         
-        collectionView.add(toSuperview: contentView).customize {
+        backgroundColor = .lightBackground
+        
+        collectionView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
+            $0.constrainHeight(to: .seriesCellHeight)
             $0.registerCell(SeriesCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .clear
+            $0.backgroundColor = .lightBackground
             $0.showsHorizontalScrollIndicator = false
             $0.decelerationRate = UIScrollViewDecelerationRateFast
             $0.clipsToBounds = false
@@ -34,15 +37,9 @@ final class SeriesListCell: CollectionViewCell {
         self.collectionView.reloadData()
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        series = []
-        collectionView.reloadData()
-    }
-    
 }
 
-extension SeriesListCell: UICollectionViewDataSource {
+extension SeriesSectionView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return series.count
@@ -56,7 +53,7 @@ extension SeriesListCell: UICollectionViewDataSource {
     
 }
 
-extension SeriesListCell: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension SeriesSectionView: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return .seriesSize

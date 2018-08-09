@@ -10,16 +10,10 @@ import Alexandria
 
 final class HomeViewController: ViewController {
     
-    private var series: [Watermark.Series] = []
-    private var messages: [Watermark.Message] = []
-    
-    private let scrollView = UIScrollView()
-    private let containerView = StackView(axis: .vertical)
-    
-    private let tableSectionView = TableSectionView()
+    private let scrollView        = UIScrollView()
+    private let containerView     = StackView(axis: .vertical)
+    private let tableSectionView  = TableSectionView()
     private let pantrySectionView = PantrySectionView()
-    
-    private let headerView = ContainerShadowView()
     
     override var prefersStatusBarHidden: Bool {
         return false
@@ -79,6 +73,12 @@ final class HomeViewController: ViewController {
             $0.pinLeading(to: containerView).pinTrailing(to: containerView)
             $0.pinTop(to: containerView, .bottom).constrainHeight(to: view.height)
             $0.backgroundColor = .lightBackground
+        }
+        
+        UIView(superview: view).customize {
+            $0.pinLeading(to: view).pinTrailing(to: view)
+            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top)
+            $0.backgroundColor = .grayBlue
         }
         
         Notifier.onTableChanged.subscribePast(with: self) { [weak self] in

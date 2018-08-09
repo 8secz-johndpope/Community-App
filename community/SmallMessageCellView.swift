@@ -1,5 +1,5 @@
 //
-//  SmallMessageCell.swift
+//  SmallMessageCellView.swift
 //  community
 //
 //  Created by Jonathan Landon on 7/25/18.
@@ -8,7 +8,7 @@
 import UIKit
 import Alexandria
 
-final class SmallMessageCell: CollectionViewCell {
+final class SmallMessageCellView: View {
     
     private let imageView    = LoadingImageView()
     private let titleLabel   = UILabel()
@@ -17,9 +17,11 @@ final class SmallMessageCell: CollectionViewCell {
     override func setup() {
         super.setup()
         
-        let shadowView = ContainerShadowView(superview: contentView).customize {
-            $0.pinTop(to: contentView).pinBottom(to: contentView)
-            $0.pinLeading(to: contentView).constrainWidth(to: $0, .height, times: 16/9)
+        backgroundColor = .lightBackground
+        
+        let shadowView = ContainerShadowView(superview: self).customize {
+            $0.pinTop(to: self).pinBottom(to: self).pinLeading(to: self, plus: .padding)
+            $0.constrainHeight(to: 70).constrainWidth(to: $0, .height, times: 16/9)
             $0.containerCornerRadius = 4
             $0.shadowOpacity = 0.1
         }
@@ -30,9 +32,9 @@ final class SmallMessageCell: CollectionViewCell {
             $0.clipsToBounds = true
         }
         
-        let holderView = UIView(superview: contentView).customize {
-            $0.pinLeading(to: shadowView, .trailing, plus: .padding).pinTrailing(to: contentView)
-            $0.pinCenterY(to: contentView)
+        let holderView = UIView(superview: self).customize {
+            $0.pinLeading(to: shadowView, .trailing, plus: .padding).pinTrailing(to: self, plus: -.padding)
+            $0.pinCenterY(to: self)
             $0.backgroundColor = .lightBackground
         }
         
@@ -60,15 +62,6 @@ final class SmallMessageCell: CollectionViewCell {
         speakerLabel.text = message.speakers.map { $0.name }.joined(separator: ", ")
         
         imageView.load(url: message.wideImage?.url)
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        titleLabel.text = nil
-        speakerLabel.text = nil
-        
-        imageView.cancel()
     }
     
 }
