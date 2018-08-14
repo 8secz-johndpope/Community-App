@@ -7,6 +7,7 @@
 
 import UIKit
 import Alexandria
+import Nuke
 
 final class SeriesViewController: ViewController, StatusBarViewController {
     
@@ -25,7 +26,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
                 closeButton.configure(normal: .dark, highlighted: .black)
             }
             else {
-                closeButton.configure(normal: .lightBackground, highlighted: .lightest)
+                closeButton.configure(normal: closeButtonColors.normal, highlighted: closeButtonColors.highlighted)
             }
         }
     }
@@ -37,12 +38,13 @@ final class SeriesViewController: ViewController, StatusBarViewController {
     let statusBarBackground = ShadowView()
     
     private let collectionView = UICollectionView(layout: .vertical(itemSpacing: .padding, lineSpacing: .padding, sectionInset: UIEdgeInsets(top: .padding, bottom: .padding)))
-    private let imageView      = LoadingImageView()
     private let backgroundView = UIView()
+    private let imageView      = LoadingImageView()
     private let closeButton    = CloseButton()
     private let titleLabel     = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 20)
     
-    private var backgroundTopConstraint: NSLayoutConstraint?
+    private var statusBarStyle: UIStatusBarStyle = .lightContent
+    private var closeButtonColors: (normal: UIColor, highlighted: UIColor) = (.lightBackground, .lightest)
     
     required init(series: Watermark.Series) {
         self.series = series
@@ -58,31 +60,57 @@ final class SeriesViewController: ViewController, StatusBarViewController {
         
         view.backgroundColor = .lightBackground
         
-        imageView.add(toSuperview: view).customize {
-            $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view)
-            $0.contentMode = .scaleAspectFill
-            $0.clipsToBounds = true
-            $0.load(url: series.wideImage?.url)
-        }
+        let topOffset = (view.width - .padding * 2) * 9/16 + 50 + .padding
         
         backgroundView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: imageView, .bottom).pinBottom(to: view)
-            $0.backgroundColor = .lightBackground
+            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: topOffset)
+            $0.backgroundColor = .loading
             
-            backgroundTopConstraint = $0.constrainSafely(.top, to: view, .top, plus: view.width * 9/16)
+            if let url = series.image?.url {
+                ImagePipeline.shared.loadImage(with: url, completion: { response, error in
+                    if let image = response?.image {
+                        image.getColors { [weak self] colors in
+                            guard let `self` = self else { return }
+                            
+                            let isLightColor = colors.background.isLightColor
+                            
+                            self.statusBarStyle = isLightColor ? .default : .lightContent
+                            self.closeButtonColors = isLightColor ? (.dark, .black) : (.lightBackground, .lightest)
+                            
+                            UIView.animate(withDuration: 0.25) {
+                                self.closeButton.configure(normal: self.closeButtonColors.normal, highlighted: self.closeButtonColors.highlighted)
+                                self.backgroundView.backgroundColor = colors.background
+                                self.setNeedsStatusBarAppearanceUpdate()
+                            }
+                        }
+                    }
+                })
+            }
         }
         
-        collectionView.add(toSuperview: view).customize {
+        let shadowView = ContainerShadowView(superview: backgroundView).customize {
+            $0.pinLeading(to: backgroundView, plus: .padding).pinTrailing(to: backgroundView, plus: -.padding)
+            $0.pinBottom(to: backgroundView, plus: -.padding).constrainHeight(to: $0, .width, times: 9/16)
+            $0.containerCornerRadius = 8
+            $0.backgroundColor = .loading
+        }
+        
+        imageView.add(toSuperview: shadowView.container).customize {
+            $0.constrainEdgesToSuperview()
+            $0.contentMode = .scaleAspectFill
+            $0.load(url: series.image?.url)
+        }
+        
+        collectionView.add(toSuperview: view, behind: backgroundView).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(SeriesMessageCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .clear
+            $0.backgroundColor = .lightBackground
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
-            $0.contentInset.top = view.width * 9/16
+            $0.contentInset.top = topOffset
             $0.panGestureRecognizer.addTarget(self, action: #selector(userDidPan))
         }
         
@@ -119,7 +147,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return showStatusBarBackground ? .default : .lightContent
+        return showStatusBarBackground ? .default : statusBarStyle
     }
     
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
@@ -155,7 +183,7 @@ extension SeriesViewController: UICollectionViewDelegate, UICollectionViewDelega
             self.showStatusBarBackground = showStatusBarBackground
         }
         
-        backgroundTopConstraint?.constant = (view.width * 9/16 - scrollView.adjustedOffset.y).limited(0, view.height)
+        backgroundView.transform = .translate(0, -(scrollView.adjustedOffset.y.limited(0, .greatestFiniteMagnitude)))
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

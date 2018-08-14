@@ -140,6 +140,9 @@ extension Block {
                 var attributes = string.allAttributes
                 attributes[.foregroundColor] = UIColor.dark
                 attributes[.font] = UIFont.regular(size: (attributes[.font] as? UIFont)?.pointSize ?? 16)
+                attributes[.link] = nil
+                attributes[.underlineColor] = nil
+                attributes[.underlineStyle] = nil
                 
                 switch type {
                 case .ordered:   string.insert(string: "\(index + 1).\t", with: attributes)

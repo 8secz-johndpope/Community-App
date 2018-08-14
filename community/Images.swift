@@ -24,8 +24,23 @@ enum Icon: Int {
     case chevronRight = 0xf054
     case chevronLeft  = 0xf053
     case search       = 0xf002
+    case angleRight   = 0xf105
     
     var string: String {
         return String(format: "%C", rawValue)
     }
+}
+
+extension Icon {
+    
+    init?(string: String?) {
+        guard let string = string else { return nil }
+        
+        var value: UInt32 = 0
+        let scanner = Scanner(string: string)
+        scanner.scanHexInt32(&value)
+        
+        self.init(rawValue: Int(value))
+    }
+    
 }

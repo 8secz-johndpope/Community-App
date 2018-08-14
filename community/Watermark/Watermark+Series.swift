@@ -38,6 +38,10 @@ extension Watermark {
             return images[.wide]
         }
         
+        var image: ImageAsset? {
+            return wideImage ?? images.first?.value
+        }
+        
         init?(json: [String : Any]) {
             guard
                 let id = json.int(forKey: "id"),

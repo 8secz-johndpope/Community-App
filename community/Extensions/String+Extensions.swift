@@ -22,7 +22,7 @@ extension String {
             options: [.usesFontLeading, .usesLineFragmentOrigin],
             attributes: attributes,
             context: nil
-            ).size
+        ).size
     }
     
 }

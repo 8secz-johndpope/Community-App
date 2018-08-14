@@ -86,7 +86,7 @@ extension TabBarViewController {
             case .table:    return UINavigationController(rootViewController: HomeViewController())
             case .messages: return MessageListViewController()
             case .search:   return SearchViewController()
-            case .settings: return UIViewController()
+            case .settings: return SettingsViewController()
             }
         }
         

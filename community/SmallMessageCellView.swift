@@ -61,7 +61,7 @@ final class SmallMessageCellView: View {
         titleLabel.text = message.title
         speakerLabel.text = message.speakers.map { $0.name }.joined(separator: ", ")
         
-        imageView.load(url: message.wideImage?.url)
+        imageView.load(url: message.image?.url)
     }
     
 }

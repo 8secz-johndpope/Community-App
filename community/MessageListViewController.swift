@@ -6,11 +6,26 @@
 //
 
 import UIKit
+import Nuke
+
+extension UIColor {
+    var isLightColor: Bool {
+        var (r, g, b, a): (CGFloat, CGFloat, CGFloat, CGFloat) = (0, 0, 0, 0)
+        
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        
+        let colorBrightness = ((r * 299) + (g * 587) + (b * 114)) / 1000
+        
+        return !(colorBrightness < 0.5)
+    }
+}
 
 final class MessageListViewController: ViewController {
     
     private var series: [Watermark.Series] = []
     private var messages: [Watermark.Message] = []
+    
+    private let backgroundView = UIView()
     
     private let scrollView       = UIScrollView()
     private let containerView    = StackView(axis: .vertical)
@@ -18,6 +33,8 @@ final class MessageListViewController: ViewController {
     
     private let latestMessageView = MessageCellView()
     private let seriesSectionView = SeriesSectionView()
+    
+    private var statusBarStyle: UIStatusBarStyle = .lightContent
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -28,7 +45,7 @@ final class MessageListViewController: ViewController {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return statusBarStyle
     }
     
     override func setup() {
@@ -36,19 +53,32 @@ final class MessageListViewController: ViewController {
         
         view.backgroundColor = .lightBackground
         
-        GradientView(gradient: .messages, direction: .descending).add(toSuperview: view).constrainEdgesToSuperview()
+        backgroundView.add(toSuperview: view).customize {
+            $0.constrainEdgesToSuperview()
+            $0.backgroundColor = .loading
+        }
         
         scrollView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
             $0.backgroundColor = .clear
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
+            $0.contentInset.bottom = .padding
         }
+        
+        let latestMessageCellHeight = (view.width - .padding * 2) * 9/16 + 64
         
         containerView.add(toSuperview: scrollView).customize {
             $0.constrainEdgesToSuperview()
             $0.constrainWidth(to: scrollView)
             $0.backgroundColor = .clear
+            $0.configure(elements: [
+                .view(.clear, 60),
+                .custom(header(text: "Messages".attributed.font(.extraBold(size: 35)).color(.lightBackground), backgroundColor: .clear).view),
+                .view(.clear, .padding),
+                .view(.clear, latestMessageCellHeight),
+                .view(.clear, .padding),
+            ])
         }
         
         UIView().add(toSuperview: containerView, at: 0).customize {
@@ -58,7 +88,7 @@ final class MessageListViewController: ViewController {
         }
         
         loadingIndicator.add(toSuperview: view).customize {
-            $0.pinCenterX(to: view).pinCenterY(to: view)
+            $0.pinCenterX(to: view).pinSafely(.top, to: view, plus: 60 + 35 + .padding + latestMessageCellHeight/2 - 15)
             $0.constrainWidth(to: 30).constrainHeight(to: 30)
             $0.color = .grayBlue
             $0.startAnimating()
@@ -97,21 +127,6 @@ final class MessageListViewController: ViewController {
             }
         }
         
-        func header(text: NSAttributedString, backgroundColor: UIColor) -> UIView {
-            let view = UIView().customize {
-                $0.backgroundColor = backgroundColor
-            }
-            
-            UILabel(superview: view).customize {
-                $0.pinTop(to: view).pinBottom(to: view)
-                $0.pinLeading(to: view, plus: .padding).constrainSize(toFit: .vertical, .horizontal)
-                $0.attributedText = text
-                $0.backgroundColor = backgroundColor
-            }
-            
-            return view
-        }
-        
         processor.enqueue { [weak self] dequeue in
             DispatchQueue.main.async {
                 guard let `self` = self else { return }
@@ -120,13 +135,36 @@ final class MessageListViewController: ViewController {
                 
                 var seriesIndex: Int?
                 
+                let messageHeader = self.header(text: "Messages".attributed.font(.extraBold(size: 35)).color(.lightBackground), backgroundColor: .clear)
+                
                 var elements: [StackView.Element] = [
                     .view(.clear, 60),
-                    .custom(header(text: "Messages".attributed.font(.extraBold(size: 35)).color(.lightBackground), backgroundColor: .clear)),
+                    .custom(messageHeader.view),
                     .view(.clear, .padding),
                 ]
                 
-                if let message = messages.first {
+                if let message = messages.at(0) {
+                    
+                    if let url = message.image?.url {
+                        ImagePipeline.shared.loadImage(with: url, completion: { [weak self] response, error in
+                            if let image = response?.image {
+                                image.getColors { colors in
+                                    
+                                    self?.statusBarStyle = colors.background.isLightColor ? .default : .lightContent
+                                    
+                                    UIView.animate(withDuration: 0.25) {
+                                        self?.backgroundView.backgroundColor = colors.background
+                                        self?.setNeedsStatusBarAppearanceUpdate()
+                                    }
+                                    
+                                    UIView.transition(with: messageHeader.label, duration: 0.25, options: .transitionCrossDissolve, animations: {
+                                        messageHeader.label.textColor = colors.background.isLightColor ? .dark : .lightBackground
+                                    }, completion: nil)
+                                }
+                            }
+                        })
+                    }
+                    
                     self.latestMessageView.configure(message: message)
                     self.latestMessageView.addGesture(type: .tap) { [weak self] _ in self?.tapped(message: message) }
                     elements.append(contentsOf: [
@@ -140,18 +178,18 @@ final class MessageListViewController: ViewController {
                     
                     elements.append(contentsOf: [
                         .view(.lightBackground, .padding),
-                        .custom(header(text: "Series".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground)),
+                        .custom(self.header(text: "Series".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground).view),
                         .view(.lightBackground, .padding),
                         .custom(self.seriesSectionView),
                     ])
                     
                     seriesIndex = elements.count - 1
                 }
-                
+
                 if messages.count > 1 {
                     elements.append(contentsOf: [
                         .view(.lightBackground, .padding),
-                        .custom(header(text: "Recent".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground)),
+                        .custom(self.header(text: "Recent".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground).view),
                     ])
                 }
                 
@@ -174,6 +212,21 @@ final class MessageListViewController: ViewController {
             
             dequeue()
         }
+    }
+    
+    private func header(text: NSAttributedString, backgroundColor: UIColor) -> (view: UIView, label: UILabel) {
+        let view = UIView().customize {
+            $0.backgroundColor = backgroundColor
+        }
+        
+        let label = UILabel(superview: view).customize {
+            $0.pinTop(to: view).pinBottom(to: view)
+            $0.pinLeading(to: view, plus: .padding).constrainSize(toFit: .vertical, .horizontal)
+            $0.attributedText = text
+            $0.backgroundColor = backgroundColor
+        }
+        
+        return (view, label)
     }
     
     func tapped(message: Watermark.Message) {

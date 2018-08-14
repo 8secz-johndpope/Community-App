@@ -88,7 +88,7 @@ extension MessageContainerView {
     private func setup() {
         
         backgroundColor = .clear
-        shadowOffset = CGSize(width: 0, height: -10)
+        shadowOffset = CGSize(width: 0, height: 50)
         
         UIView(superview: self).customize {
             $0.pinLeading(to: self).pinTrailing(to: self)
@@ -196,16 +196,11 @@ extension MessageContainerView {
                 $0.text = "Scripture References"
             }
             
-            UILabel(superview: self).customize {
+            ScriptureReferenceCollectionView().add(toSuperview: self).customize {
                 $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
                 $0.pinTop(to: scriptureReferenceTitleLabel, .bottom, plus: 10).pinBottom(to: self, plus: -.padding * 2)
-                $0.constrainSize(toFit: .vertical)
-                $0.font = .bold(size: 14)
-                $0.numberOfLines = 0
-                $0.textColor = .orange
-                $0.text = message.scriptureReferences.map { $0.reference }.joined(separator: ", ")
+                $0.configure(references: message.scriptureReferences.map { $0.reference })
             }
-            
         }
         else {
             descriptionView.pinBottom(to: self, plus: -.padding * 2)
@@ -286,6 +281,120 @@ extension MessageContainerView: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIViewController.current?.showInSafari(url: URL)
         return false
+    }
+    
+}
+
+final class ScriptureReferenceCollectionView: SelfSizingCollectionView {
+    
+    private var references: [String] = []
+    
+    required init() {
+        super.init(
+            frame: .zero,
+            collectionViewLayout: LeftAlignedCollectionViewLayout().customize {
+                $0.minimumLineSpacing = 0
+                $0.minimumInteritemSpacing = 0
+            }
+        )
+        setup()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(references: [String]) {
+        self.references = references
+        self.reloadData()
+    }
+    
+    private func setup() {
+        customize {
+            $0.backgroundColor = .lightBackground
+            $0.registerCell(ScriptureReferenceCell.self)
+            $0.dataSource = self
+            $0.delegate = self
+            $0.showsVerticalScrollIndicator = false
+            $0.showsHorizontalScrollIndicator = false
+            $0.alwaysBounceVertical = false
+            $0.alwaysBounceHorizontal = false
+        }
+    }
+    
+}
+
+extension ScriptureReferenceCollectionView: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return references.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell: ScriptureReferenceCell = collectionView.dequeueCell(for: indexPath)
+        cell.configure(reference: references[indexPath.row], includeComma: indexPath.row != references.count - 1)
+        return cell
+    }
+    
+}
+
+extension ScriptureReferenceCollectionView: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return ScriptureReferenceCell.size(
+            forReference: references[indexPath.row],
+            includeComma: indexPath.row != references.count - 1,
+            in: collectionView
+        )
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard
+            let cell = collectionView.cellForItem(at: indexPath) as? ScriptureReferenceCell,
+            let reference = cell.reference?.addingPercentEncoding(withAllowedCharacters: .alphanumerics),
+            !reference.isEmpty
+        else { return }
+        
+        let url = URL(string: "https://www.biblegateway.com/passage/?search=\(reference)&version=ESV")
+        UIViewController.current?.showInSafari(url: url)
+    }
+    
+}
+
+final class ScriptureReferenceCell: CollectionViewCell {
+    
+    private(set) var reference: String?
+    
+    private let label = UILabel()
+    
+    override func setup() {
+        super.setup()
+        
+        label.add(toSuperview: contentView).customize {
+            $0.constrainEdgesToSuperview()
+            $0.textColor = .orange
+            $0.font = .bold(size: 14)
+            $0.backgroundColor = .lightBackground
+        }
+    }
+    
+    func configure(reference: String, includeComma: Bool) {
+        self.reference = reference
+        label.text = includeComma ? "\(reference), " : reference
+        contentView.backgroundColor = .random
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        reference = nil
+        label.text = nil
+    }
+    
+    static func size(forReference reference: String, includeComma: Bool, in collectionView: UICollectionView) -> CGSize {
+        let string = includeComma ? "\(reference), " : reference
+        let size = string.size(font: .bold(size: 14))
+        
+        return CGSize(width: size.width.rounded(.up), height: size.height.rounded(.up))
     }
     
 }

@@ -8,12 +8,48 @@
 import UIKit
 import Alexandria
 
+final class TableHeaderView: View {
+    
+    private let label = UILabel()
+    
+    override func setup() {
+        super.setup()
+        
+        backgroundColor = .clear
+        
+        label.add(toSuperview: self).customize {
+            $0.pinTop(to: self).pinBottom(to: self)
+            $0.pinLeading(to: self, plus: .padding).constrainSize(toFit: .vertical, .horizontal)
+            $0.backgroundColor = .clear
+            $0.attributedText = "The Table".attributed.font(.extraBold(size: 35)).color(.lightBackground)
+        }
+        
+        UIButton().add(toSuperview: self).customize {
+            $0.pinTop(to: self).pinBottom(to: self)
+            $0.pinLeading(to: label, .trailing).constrainWidth(to: $0, .height)
+            $0.setTitle(Icon.infoCircle.string, for: .normal)
+            $0.setTitleColor(.lightBackground, for: .normal)
+            $0.setTitleColor(.light, for: .highlighted)
+            $0.adjustsImageWhenHighlighted = false
+            $0.titleLabel?.font = .fontAwesome(.regular, size: 20)
+            $0.contentVerticalAlignment = .bottom
+            $0.contentEdgeInsets = UIEdgeInsets(bottom: 10)
+            $0.addTarget(for: .touchUpInside) {
+                guard let info = Contentful.LocalStorage.pantry?.info, !info.isEmpty else { return }
+                UIAlertController.alert(message: info).addAction(title: "OK").present()
+            }
+        }
+    }
+    
+}
+
 final class HomeViewController: ViewController {
     
     private let scrollView        = UIScrollView()
     private let containerView     = StackView(axis: .vertical)
     private let tableSectionView  = TableSectionView()
     private let pantrySectionView = PantrySectionView()
+    private let loadingIndicator  = LoadingView()
     
     override var prefersStatusBarHidden: Bool {
         return false
@@ -57,11 +93,11 @@ final class HomeViewController: ViewController {
         }
         
         containerView.configure(elements: [
-            .view(.grayBlue, 60),
-            .custom(header(text: "The Table".attributed.font(.extraBold(size: 35)).color(.lightBackground), backgroundColor: .grayBlue)),
-            .view(.grayBlue, .padding),
+            .view(.clear, 60),
+            .custom(TableHeaderView()),
+            .view(.clear, .padding),
             .custom(tableSectionView),
-            .view(.grayBlue, .padding),
+            .view(.clear, .padding),
             .view(.lightBackground, .padding),
             .custom(header(text: "More Resources".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground)),
             .view(.lightBackground, .padding),
@@ -81,9 +117,17 @@ final class HomeViewController: ViewController {
             $0.backgroundColor = .grayBlue
         }
         
+        loadingIndicator.add(toSuperview: view).customize {
+            $0.pinCenterX(to: view).pinSafely(.top, to: view, plus: 60 + 35 + .padding + .tablePostHeight/2 - 15)
+            $0.constrainWidth(to: 30).constrainHeight(to: 30)
+            $0.color = .white
+            $0.startAnimating()
+        }
+        
         Notifier.onTableChanged.subscribePast(with: self) { [weak self] in
             self?.tableSectionView.configure(posts: Contentful.LocalStorage.tablePosts)
             self?.pantrySectionView.configure(shelves: Contentful.LocalStorage.pantry?.shelves ?? [])
+            self?.loadingIndicator.stopAnimating()
         }.onQueue(.main)
     }
     

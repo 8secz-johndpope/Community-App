@@ -9,6 +9,18 @@ import Foundation
 
 extension Watermark {
     
+    struct SpeakerResponse: Initializable {
+        let speakers: [Speaker]
+        let pagination: Pagination
+        
+        init?(json: [String : Any]) {
+            guard let pagination: Pagination = json.initialize(forKey: "pagination") else { return nil }
+            
+            self.speakers   = json.array(forKey: "speakers")
+            self.pagination = pagination
+        }
+    }
+    
     struct Speaker: Initializable {
         let id: Int
         let isFeatured: Bool
@@ -28,6 +40,19 @@ extension Watermark {
         
         var image: URL? {
             return Speaker.images[name]
+        }
+        
+        var watermark: URL? {
+            let urlName: String
+            
+            if name == "Jonathan Pokluda" {
+                urlName = "jonathan-jp-pokluda"
+            }
+            else {
+                urlName = name.lowercased().components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.joined(separator: "-")
+            }
+            
+            return URL(string: "http://www.watermark.org/person/\(urlName)")
         }
     }
     
@@ -55,7 +80,13 @@ extension Watermark.Speaker {
         "Jeff Parker"       : "http://cms-cloud.watermark.org/_tf300/Jeff-Parker.jpg",
         "David Leventhal"   : "http://cms-cloud.watermark.org/_tf300/Elder-Headshot-DL-LR.jpg",
         "Jermaine Harrison" : "http://cms-cloud.watermark.org/_tf300/Jermaine-Harrison.jpg",
-        "David Penuel"      : "http://cms-cloud.watermark.org/_tf300/IMG_2628.JPG"
+        "David Penuel"      : "http://cms-cloud.watermark.org/_tf300/IMG_2628.JPG",
+        "John McGee"        : "http://cms-cloud.watermark.org/_tf300/John-McGee_1.jpg",
+        "Braun Brown"       : "http://cms-cloud.watermark.org/_tf300/Braun-Brown_1.jpg",
+        "Daniel Crawford"   : "http://cms-cloud.watermark.org/_tf300/Daniel-Crawford.jpg",
+        "Luke Friesen"      : "http://cms-cloud.watermark.org/_tf300/Luke-Friesen-2.jpg",
+        "Brian Buchek"      : "http://cms-cloud.watermark.org/_tf300/Elder-Headshot-BB-1080-1080-LR.jpg",
+        "Dean Macfarlan"    : "http://cms-cloud.watermark.org/_tf300/Dean-Macfarlan.jpg"
     ]
     
 }

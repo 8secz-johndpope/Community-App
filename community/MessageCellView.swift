@@ -76,7 +76,7 @@ final class MessageCellView: View {
         titleLabel.text = message.title
         speakerLabel.text = message.speakers.map { $0.name }.joined(separator: ", ")
         
-        if let image = message.wideImage {
+        if let image = message.image {
             imageView.isHidden = false
             imageView.load(url: image.url)
         }

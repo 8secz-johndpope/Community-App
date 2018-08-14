@@ -17,6 +17,10 @@ extension CGFloat {
     static let mediaProgressHeight: CGFloat = 4
     static let closeButtonWidth: CGFloat    = 58
     static let tablePostHeight: CGFloat     = 300
+    static let searchMessageHeight: CGFloat = 80
+    static let searchPostHeight: CGFloat    = 100
+    static let searchShelfHeight: CGFloat   = 60
+    static let searchSpeakerHeight: CGFloat = 60
     
     static var messageVideoHeight: CGFloat {
         return UIScreen.main.width * 0.75

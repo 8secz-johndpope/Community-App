@@ -66,6 +66,11 @@ extension Contentful.API {
     
     enum ExternalPost {
         
+        static func search(query: String, completion: @escaping (Result<[Contentful.ExternalPost], Contentful.API.Error>) -> Void) {
+            let posts = Contentful.LocalStorage.externalPosts.filter { $0.title.lowercased().contains(query.lowercased()) }
+            completion(.success(posts))
+        }
+        
         static func fetchAll(completion: @escaping (Result<[Contentful.ExternalPost], Contentful.API.Error>) -> Void) {
             Contentful.API.fetchAll(type: .externalPost, completion: completion)
         }
@@ -74,6 +79,11 @@ extension Contentful.API {
     
     enum TextPost {
         
+        static func search(query: String, completion: @escaping (Result<[Contentful.TextPost], Contentful.API.Error>) -> Void) {
+            let posts = Contentful.LocalStorage.textPosts.filter { $0.title.lowercased().contains(query.lowercased()) }
+            completion(.success(posts))
+        }
+        
         static func fetchAll(completion: @escaping (Result<[Contentful.TextPost], Contentful.API.Error>) -> Void) {
             Contentful.API.fetchAll(type: .textPost, completion: completion)
         }
@@ -81,6 +91,11 @@ extension Contentful.API {
     }
     
     enum Shelf {
+        
+        static func search(query: String, completion: @escaping (Result<[Contentful.Shelf], Contentful.API.Error>) -> Void) {
+            let shelves = Contentful.LocalStorage.shelves.filter { $0.name.lowercased().contains(query.lowercased()) }
+            completion(.success(shelves))
+        }
         
         static func fetchAll(completion: @escaping (Result<[Contentful.Shelf], Contentful.API.Error>) -> Void) {
             Contentful.API.fetchAll(type: .shelf, completion: completion)

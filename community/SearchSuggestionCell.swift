@@ -1,18 +1,16 @@
 //
-//  ShelfCell.swift
+//  SearchSuggestionCell.swift
 //  community
 //
-//  Created by Jonathan Landon on 8/2/18.
+//  Created by Jonathan Landon on 8/10/18.
 //
 
 import UIKit
-import Alexandria
 
-final class ShelfCell: CollectionViewCell {
+final class SearchSuggestionCell: CollectionViewCell {
     
     private let iconView    = UILabel()
     private let titleLabel  = UILabel()
-    private let chevronView = UILabel()
     
     override var isHighlighted: Bool {
         didSet {
@@ -27,37 +25,32 @@ final class ShelfCell: CollectionViewCell {
         contentView.backgroundColor = .clear
         
         iconView.add(toSuperview: contentView).customize {
-            $0.pinCenterX(to: contentView, .leading, plus: .padding * 1.5).pinCenterY(to: contentView)
+            $0.pinCenterX(to: contentView, .leading, plus: .padding * 2).pinCenterY(to: contentView)
             $0.constrainSize(toFit: .vertical, .horizontal)
-            $0.font = .fontAwesome(.solid, size: 20)
+            $0.font = .fontAwesome(.regular, size: 16)
             $0.textColor = .dark
+            $0.set(icon: .search)
         }
         
         titleLabel.add(toSuperview: contentView).customize {
-            $0.pinLeading(to: contentView, plus: .padding * 3)
+            $0.pinLeading(to: contentView, plus: .padding * 3.5).pinTrailing(to: contentView, plus: -.padding)
             $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 18)
             $0.textColor = .dark
         }
-        
-        chevronView.add(toSuperview: contentView).customize {
-            $0.pinTrailing(to: contentView, plus: -.padding).pinLeading(to: titleLabel, .trailing, plus: .padding)
-            $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical, .horizontal)
-            $0.textColor = .dark
-            $0.font = .fontAwesome(.regular, size: 18)
-            $0.set(icon: .angleRight)
-        }
     }
     
-    func configure(shelf: Contentful.Shelf) {
-        iconView.set(icon: shelf.icon)
-        titleLabel.text = shelf.name
+    func configure(suggestion: String) {
+        titleLabel.text = suggestion
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        iconView.text = nil
         titleLabel.text = nil
+    }
+    
+    static func size(forSuggestion suggestion: String, in collectionView: UICollectionView) -> CGSize {
+        return CGSize(width: collectionView.width, height: 44)
     }
     
 }

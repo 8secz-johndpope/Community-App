@@ -17,7 +17,7 @@ final class ShelfViewController: ViewController {
         func size(in collectionView: UICollectionView) -> CGSize {
             switch self {
             case .shelf:          return CGSize(width: collectionView.width, height: 60)
-            case .post(let post): return TablePostCell.size(forPost: post, in: collectionView)
+            case .post(let post): return PantryPostCell.size(forPost: post, in: collectionView)
             }
         }
     }
@@ -76,7 +76,7 @@ final class ShelfViewController: ViewController {
         collectionView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(ShelfCell.self)
-            $0.registerCell(TablePostCell.self)
+            $0.registerCell(PantryPostCell.self)
             $0.dataSource = self
             $0.delegate = self
             $0.backgroundColor = .lightBackground
@@ -105,7 +105,14 @@ final class ShelfViewController: ViewController {
             $0.titleLabel?.font = .fontAwesome(.regular, size: 20)
             $0.setTitle(Icon.chevronLeft.string, for: .normal)
             $0.setTitleColor(.grayBlue, for: .normal)
-            $0.addTarget(for: .touchUpInside) { [weak self] in self?.navigationController?.popViewController(animated: true) }
+            $0.addTarget(for: .touchUpInside) { [weak self] in
+                if let navigationController = self?.navigationController {
+                    navigationController.popViewController(animated: true)
+                }
+                else {
+                    self?.dismiss(animated: true)
+                }
+            }
         }
         
         titleLabel.add(toSuperview: headerView).customize {
@@ -137,7 +144,7 @@ extension ShelfViewController: UICollectionViewDataSource {
             cell.configure(shelf: shelf)
             return cell
         case .post(let post):
-            let cell: TablePostCell = collectionView.dequeueCell(for: indexPath)
+            let cell: PantryPostCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(post: post)
             return cell
         }

@@ -23,20 +23,23 @@ final class TablePostCell: CollectionViewCell {
         
         shadowView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .gray
             $0.containerCornerRadius = 8
-            $0.shadowOpacity = 0.1
+            $0.shadowOpacity = 0.2
+            $0.container.borderColor = .lightBackground
+            $0.container.borderWidth = 1
         }
         
         imageView.add(toSuperview: shadowView.container).customize {
             $0.constrainEdgesToSuperview()
             $0.showDimmer = true
+            $0.contentMode = .scaleAspectFill
         }
         
         dateLabel.add(toSuperview: contentView).customize {
             $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
             $0.pinBottom(to: contentView, plus: -.padding).constrainSize(toFit: .vertical)
-            $0.font = .regular(size: 14)
+            $0.font = .regular(size: 16)
             $0.textAlignment = .left
             $0.textColor = .lightBackground
         }
@@ -44,9 +47,9 @@ final class TablePostCell: CollectionViewCell {
         titleLabel.add(toSuperview: contentView).customize {
             $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
             $0.pinBottom(to: dateLabel, .top, plus: -.padding/2).constrainSize(toFit: .vertical)
-            $0.font = .semiBold(size: 16)
+            $0.font = .bold(size: 20)
             $0.textAlignment = .left
-            $0.numberOfLines = 2
+            $0.numberOfLines = 4
             $0.textColor = .lightBackground
         }
         
@@ -55,10 +58,20 @@ final class TablePostCell: CollectionViewCell {
     func configure(post: Contentful.Post) {
         titleLabel.text = post.title
         dateLabel.text = DateFormatter.readable.string(from: post.publishDate)
+        
+        if let image = post.image {
+            imageView.load(url: image)
+            imageView.isHidden = false
+        }
+        else {
+            imageView.isHidden = true
+        }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        imageView.cancel()
+        imageView.isHidden = false
         titleLabel.text = nil
         dateLabel.text = nil
     }

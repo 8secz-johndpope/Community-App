@@ -24,16 +24,20 @@ extension Contentful {
         
         let id: String
         let title: String
-        let url: String
+        let urlString: String
         let fileName: String
         let contentType: ContentType
         let createdAt: Date
         let updatedAt: Date
         
+        var url: URL? {
+            return URL(string: urlString)
+        }
+        
         init?(json: [String : Any]) {
             id          = json.dictionary(forKey: "sys").string(forKey: "id") ?? ""
             title       = json.dictionary(forKey: "fields").string(forKey: "title") ?? ""
-            url         = json.dictionary(forKeys: "fields", "file").string(forKey: "url").flatMap { "https:" + $0 } ?? ""
+            urlString   = json.dictionary(forKeys: "fields", "file").string(forKey: "url").flatMap { "https:" + $0 } ?? ""
             fileName    = json.dictionary(forKeys: "fields", "file").string(forKey: "fileName") ?? ""
             contentType = json.dictionary(forKeys: "fields", "file").enum(forKey: "contentType") ?? .unknown
             createdAt   = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()

@@ -12,10 +12,12 @@ final class TableSectionView: View {
     
     private var posts: [Contentful.Post] = []
     
-    private let collectionView = UICollectionView(layout: .horizontal(lineSpacing: .padding, sectionInset: UIEdgeInsets(left: .padding * 1.5, right: .padding)))
+    private let collectionView = UICollectionView(layout: .horizontal(lineSpacing: .padding, sectionInset: UIEdgeInsets(left: .padding, right: .padding)))
     
     override func setup() {
         super.setup()
+        
+        clipsToBounds = false
         
         collectionView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
@@ -27,6 +29,7 @@ final class TableSectionView: View {
             $0.alwaysBounceHorizontal = true
             $0.decelerationRate = UIScrollViewDecelerationRateFast
             $0.backgroundColor = .clear
+            $0.clipsToBounds = false
         }
     }
     

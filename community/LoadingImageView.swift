@@ -60,7 +60,7 @@ final class LoadingImageView: UIImageView {
         }
     }
     
-    func load(url: URL?, placeholder: UIImage? = nil, completion: @escaping () -> Void = {}) {
+    func load(url: URL?, placeholder: UIImage? = nil, completion: @escaping (Bool) -> Void = { _ in }) {
         cancel()
         animate()
         
@@ -68,7 +68,7 @@ final class LoadingImageView: UIImageView {
         
         imageTask = setImage(with: url) { [weak self] in
             self?.shutdown()
-            completion()
+            completion($0)
         }
     }
     

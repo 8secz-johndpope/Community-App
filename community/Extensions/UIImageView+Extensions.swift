@@ -11,16 +11,19 @@ import Nuke
 extension UIImageView {
     
     @discardableResult
-    public func setImage(with url: URL?, completion: @escaping () -> Void = {}) -> ImageTask? {
+    public func setImage(with url: URL?, completion: @escaping (Bool) -> Void = { _ in }) -> ImageTask? {
         
         guard let url = url else {
-            completion()
+            completion(false)
             return nil
         }
         
         let task = ImagePipeline.shared.loadImage(with: url) { response, error in
+            if let error = error {
+                print("Error loading image: \(url) (\(error.localizedDescription))")
+            }
             self.image = response?.image
-            completion()
+            completion(response?.image != nil)
         }
         
         return task

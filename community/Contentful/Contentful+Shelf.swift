@@ -16,17 +16,7 @@ extension Contentful {
         let shelfIDs: [String]
         let createdAt: Date
         let updatedAt: Date
-        
-        var icon: Icon {
-            switch name.lowercased() {
-            case "community":       return .community
-            case "decision making": return .decision
-            case "parenting":       return .child
-            case "finances":        return .dollar
-            case "moneywise":       return .money
-            default:                return .infoCircle
-            }
-        }
+        let icon: Icon
         
         var posts: [Contentful.Post] {
             return (
@@ -57,6 +47,7 @@ extension Contentful {
             self.name      = name
             self.postIDs   = json.dictionary(forKey: "fields").array(forKey: "posts").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
             self.shelfIDs  = json.dictionary(forKey: "fields").array(forKey: "shelves").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
+            self.icon      = json.dictionary(forKey: "fields").string(forKey: "icon").flatMap(Icon.init(string:)) ?? .infoCircle
             self.createdAt = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
             self.updatedAt = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
             

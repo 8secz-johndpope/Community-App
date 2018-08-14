@@ -103,6 +103,51 @@ extension Watermark.API {
             }
         }
         
+        @discardableResult
+        static func fetch(forSpeaker speaker: Watermark.Speaker, limit: Int = 10, _ completion: @escaping (Result<[Watermark.Message], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
+            let request = Watermark.API.createRequest(endpoint: .messages(.all), parameters: [
+                "limit" : "\(limit)",
+                "filter[speaker_id]" : "\(speaker.id)"
+            ])
+            return Watermark.API.fetch(request: request) { result in
+                switch result {
+                case .success(let data):
+                    let json = JSONSerialization.dictionary(from: data)
+                    
+                    if let response = Watermark.MessageResponse(json: json) {
+                        completion(.success(response.messages))
+                    }
+                    else {
+                        completion(.failure(.unknown))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+        @discardableResult
+        static func search(query: String, completion: @escaping (Result<[Watermark.Message], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
+            
+            let request = Watermark.API.createRequest(endpoint: .messages(.all), parameters: ["filter[title_like]" : "\(query.lowercased())"])
+            
+            return Watermark.API.fetch(request: request) { result in
+                switch result {
+                case .success(let data):
+                    let json = JSONSerialization.dictionary(from: data)
+                    
+                    if let response = Watermark.MessageResponse(json: json) {
+                        completion(.success(response.messages))
+                    }
+                    else {
+                        completion(.failure(.unknown))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+        
     }
     
     enum Series {
@@ -175,6 +220,54 @@ extension Watermark.API {
                     
                     if let series = Watermark.Series(json: json.dictionary(forKey: "series")) {
                         completion(.success(series))
+                    }
+                    else {
+                        completion(.failure(.unknown))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+        @discardableResult
+        static func search(query: String, completion: @escaping (Result<[Watermark.Series], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
+            
+            let request = Watermark.API.createRequest(endpoint: .series(.all), parameters: ["filter[title_like]" : "\(query.lowercased())"])
+            
+            return Watermark.API.fetch(request: request) { result in
+                switch result {
+                case .success(let data):
+                    let json = JSONSerialization.dictionary(from: data)
+                    
+                    if let response = Watermark.SeriesResponse(json: json) {
+                        completion(.success(response.series))
+                    }
+                    else {
+                        completion(.failure(.unknown))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+    }
+    
+    enum Speakers {
+        
+        @discardableResult
+        static func search(query: String, completion: @escaping (Result<[Watermark.Speaker], Watermark.API.Error>) -> Void) -> URLSessionDataTask {
+            
+            let request = Watermark.API.createRequest(endpoint: .speakers, parameters: ["filter[name_like]" : "\(query.lowercased())"])
+            
+            return Watermark.API.fetch(request: request) { result in
+                switch result {
+                case .success(let data):
+                    let json = JSONSerialization.dictionary(from: data)
+                    
+                    if let response = Watermark.SpeakerResponse(json: json) {
+                        completion(.success(response.speakers))
                     }
                     else {
                         completion(.failure(.unknown))

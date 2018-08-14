@@ -14,9 +14,14 @@ extension Contentful {
         let title: String
         let publishDate: Date
         let url: URL
+        let postImageAssetID: String
         let isInTable: Bool
         let createdAt: Date
         let updatedAt: Date
+        
+        var image: Contentful.Asset? {
+            return Contentful.LocalStorage.assets.first(where: { $0.id == postImageAssetID })
+        }
         
         init?(json: [String : Any]) {
             guard
@@ -27,13 +32,14 @@ extension Contentful {
                 let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue")
             else { return nil }
             
-            self.id          = id
-            self.title       = title
-            self.publishDate = publishDate
-            self.url         = url
-            self.isInTable   = isInTable
-            self.createdAt   = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
-            self.updatedAt   = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
+            self.id               = id
+            self.title            = title
+            self.publishDate      = publishDate
+            self.url              = url
+            self.postImageAssetID = json.dictionary(forKeys: "fields", "postImage", "sys").string(forKey: "id") ?? ""
+            self.isInTable        = isInTable
+            self.createdAt        = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
+            self.updatedAt        = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
         }
     }
 

@@ -332,7 +332,7 @@ extension MessageHeaderView {
         
         configureBackgroundAudio(isEnabled: true)
         
-        imageView.load(url: message.wideImage?.url)
+        imageView.load(url: message.image?.url)
         
         isLoading = true
         

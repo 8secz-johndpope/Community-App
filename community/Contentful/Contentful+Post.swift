@@ -18,6 +18,13 @@ extension Contentful {
 
 extension Contentful.Post {
     
+    var image: URL? {
+        switch self {
+        case .text(let post):     return post.image?.url
+        case .external(let post): return post.image?.url
+        }
+    }
+    
     var publishDate: Date {
         switch self {
         case .text(let post):     return post.publishDate

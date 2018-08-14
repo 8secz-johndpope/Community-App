@@ -16,6 +16,8 @@ extension UIColor {
     static let dimmer          = #colorLiteral(red: 0.06666666667, green: 0.06666666667, blue: 0.06666666667, alpha: 0.4951435811)  // #111111 (50% alpha)
     static let grayBlue        = #colorLiteral(red: 0.1529411765, green: 0.1843137255, blue: 0.2196078431, alpha: 1)  // #272F38
     static let lightBackground = #colorLiteral(red: 0.9764705882, green: 0.9764705882, blue: 0.9843137255, alpha: 1)  // #F9F9FB
+    static let gray            = #colorLiteral(red: 0.6666666667, green: 0.6666666667, blue: 0.6666666667, alpha: 1)  // #AAAAAA
+    static let loading         = #colorLiteral(red: 0.7294117647, green: 0.8, blue: 0.8901960784, alpha: 1)  // #BACCE3
     
 }
 
