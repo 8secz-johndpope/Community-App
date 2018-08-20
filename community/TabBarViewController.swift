@@ -46,6 +46,13 @@ final class TabBarViewController: UITabBarController {
 //            return
 //        }
         
+        if controller === selectedViewController {
+            if let navigationController = controller as? UINavigationController {
+                navigationController.popToRootViewController(animated: true)
+            }
+            return
+        }
+        
         tabBarView.select(tab: tab)
         selectedViewController = controller
     }

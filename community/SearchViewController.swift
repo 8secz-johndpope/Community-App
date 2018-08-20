@@ -42,6 +42,7 @@ final class SearchViewController: ViewController {
     
     private var cells: [Cell] = Cell.suggestions
     
+    private let headerShadowView = ShadowView()
     private let headerView       = UIView()
     private let headerLabel      = UILabel()
     private let searchField      = UITextField()
@@ -75,6 +76,13 @@ final class SearchViewController: ViewController {
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 180)
             $0.backgroundColor = .lightBackground
+        }
+        
+        headerShadowView.add(toSuperview: view, behind: headerView).customize {
+            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
+            $0.pinTop(to: headerView).pinBottom(to: headerView)
+            $0.shadowOpacity = 0.1
+            $0.alpha = 0
         }
         
         searchField.add(toSuperview: headerView).customize {
@@ -320,12 +328,15 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDelega
         
         if offset >= 0 {
             headerView.transform = .translate(0, -offset.limited(0, 180 - 64))
+            headerShadowView.transform = .translate(0, -offset.limited(0, 180 - 64))
         }
         else {
             headerView.transform = .translate(0, pow(-offset, 0.7))
+            headerShadowView.transform = .translate(0, pow(-offset, 0.7))
         }
         
         headerLabel.alpha = 1 - scrollView.adjustedOffset.y.map(from: 0...100, to: 0...1).limited(0, 1)
+        headerShadowView.alpha = scrollView.adjustedOffset.y.map(from: 100...(180 - 64), to: 0...1).limited(0, 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

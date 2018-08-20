@@ -15,6 +15,8 @@ final class SeriesMessageCell: CollectionViewCell {
     private let speakerImageView = LoadingImageView()
     private let speakerLabel     = UILabel()
     
+    private var speakerLabelConstraint: NSLayoutConstraint?
+    
     override func setup() {
         super.setup()
         
@@ -43,11 +45,14 @@ final class SeriesMessageCell: CollectionViewCell {
         }
         
         speakerLabel.add(toSuperview: containerView.container).customize {
-            $0.pinLeading(to: speakerImageView, .trailing, plus: .padding).pinTrailing(to: containerView.container, plus: -.padding)
+            $0.pinLeading(to: speakerImageView, .trailing, plus: .padding, atPriority: .required - 2).pinTrailing(to: containerView.container, plus: -.padding)
             $0.pinCenterY(to: speakerImageView).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 12)
             $0.textColor = .dark
             $0.numberOfLines = 1
+            
+            speakerLabelConstraint = $0.constrain(.leading, to: containerView.container, .leading, plus: .padding)
+            speakerLabelConstraint?.isActive = false
         }
     }
     
@@ -55,7 +60,15 @@ final class SeriesMessageCell: CollectionViewCell {
         titleLabel.text = message.title
         speakerLabel.text = message.speakers.map { $0.name }.joined(separator: ", ")
         
-        speakerImageView.load(url: message.speakers.first?.image)
+        if let image = message.speakers.first?.image {
+            speakerImageView.isHidden = false
+            speakerImageView.load(url: image)
+            speakerLabelConstraint?.isActive = false
+        }
+        else {
+            speakerImageView.isHidden = true
+            speakerLabelConstraint?.isActive = true
+        }
     }
     
     override func prepareForReuse() {
@@ -72,10 +85,11 @@ final class SeriesMessageCell: CollectionViewCell {
         let labelWidth = cellWidth - .padding * 2
         
         let titleHeight = message.title.size(boundingWidth: labelWidth, font: .bold(size: 16)).height
+        let bottomHeight: CGFloat = (message.speakers.first?.image == nil) ? 20 : 30
         
         return CGSize(
             width: cellWidth,
-            height: .padding + titleHeight + 10 + 30 + .padding
+            height: .padding + titleHeight + 10 + bottomHeight + .padding
         )
     }
     

@@ -50,6 +50,7 @@ final class HomeViewController: ViewController {
     private let tableSectionView  = TableSectionView()
     private let pantrySectionView = PantrySectionView()
     private let loadingIndicator  = LoadingView()
+    private let refreshControl    = UIRefreshControl()
     
     override var prefersStatusBarHidden: Bool {
         return false
@@ -69,6 +70,11 @@ final class HomeViewController: ViewController {
             $0.backgroundColor = .grayBlue
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
+        }
+        
+        refreshControl.add(toSuperview: scrollView).customize {
+            $0.addTarget(self, action: #selector(reload), for: .valueChanged)
+            $0.tintColor = .lightBackground
         }
         
         containerView.add(toSuperview: scrollView).customize {
@@ -128,7 +134,68 @@ final class HomeViewController: ViewController {
             self?.tableSectionView.configure(posts: Contentful.LocalStorage.tablePosts)
             self?.pantrySectionView.configure(shelves: Contentful.LocalStorage.pantry?.shelves ?? [])
             self?.loadingIndicator.stopAnimating()
+            self?.refreshControl.endRefreshing()
         }.onQueue(.main)
+        
+        fetchContent()
+    }
+    
+    @objc dynamic private func reload() {
+        fetchContent()
+    }
+    
+    private func fetchContent() {
+        
+        var entries: [Contentful.Entry] = []
+        var assets: [Contentful.Asset] = []
+        
+        let processor = SimpleSerialProcessor()
+        
+        processor.enqueue { dequeue in
+            Contentful.API.Content.fetchAll { result in
+                print("All content: \(result.value?.count ?? -1)")
+                entries = result.value ?? []
+                dequeue()
+            }
+        }
+        
+        processor.enqueue { dequeue in
+            Contentful.API.Asset.fetchAll { result in
+                print("All assets: \(result.value?.count ?? -1)")
+                assets = result.value ?? []
+                dequeue()
+            }
+        }
+        
+        processor.enqueue { dequeue in
+            
+            var authors: [Contentful.Author] = []
+            var externalPosts: [Contentful.ExternalPost] = []
+            var textPosts: [Contentful.TextPost] = []
+            var shelves: [Contentful.Shelf] = []
+            var pantry: Contentful.Pantry?
+            
+            for entry in entries {
+                switch entry {
+                case .author(let author):             authors.append(author)
+                case .externalPost(let externalPost): externalPosts.append(externalPost)
+                case .pantry(let p):                  pantry = p
+                case .textPost(let textPost):         textPosts.append(textPost)
+                case .shelf(let shelf):               shelves.append(shelf)
+                }
+            }
+            
+            Contentful.LocalStorage.authors       = authors
+            Contentful.LocalStorage.assets        = assets
+            Contentful.LocalStorage.externalPosts = externalPosts
+            Contentful.LocalStorage.textPosts     = textPosts
+            Contentful.LocalStorage.shelves       = shelves
+            Contentful.LocalStorage.pantry        = pantry
+            
+            Notifier.onTableChanged.fire(())
+            
+            dequeue()
+        }
     }
     
 }

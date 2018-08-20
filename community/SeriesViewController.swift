@@ -37,14 +37,21 @@ final class SeriesViewController: ViewController, StatusBarViewController {
     
     let statusBarBackground = ShadowView()
     
-    private let collectionView = UICollectionView(layout: .vertical(itemSpacing: .padding, lineSpacing: .padding, sectionInset: UIEdgeInsets(top: .padding, bottom: .padding)))
-    private let backgroundView = UIView()
-    private let imageView      = LoadingImageView()
-    private let closeButton    = CloseButton()
-    private let titleLabel     = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 20)
+    private let collectionView  = UICollectionView(layout: .vertical(itemSpacing: .padding, lineSpacing: .padding, sectionInset: UIEdgeInsets(top: .padding, bottom: .padding)))
+    private let backgroundView  = UIView()
+    private let imageShadowView = ContainerShadowView()
+    private let imageView       = LoadingImageView()
+    private let closeButton     = CloseButton()
+    private let titleLabel      = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 20)
     
     private var statusBarStyle: UIStatusBarStyle = .lightContent
     private var closeButtonColors: (normal: UIColor, highlighted: UIColor) = (.lightBackground, .lightest)
+    
+    private var topOffset: CGFloat {
+        return (view.width - .padding * 2) * 9/16 + 50 + .padding
+    }
+    
+    private var backgroundViewConstraint: NSLayoutConstraint?
     
     required init(series: Watermark.Series) {
         self.series = series
@@ -60,12 +67,14 @@ final class SeriesViewController: ViewController, StatusBarViewController {
         
         view.backgroundColor = .lightBackground
         
-        let topOffset = (view.width - .padding * 2) * 9/16 + 50 + .padding
-        
         backgroundView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: topOffset)
+            $0.pinTop(to: view)
             $0.backgroundColor = .loading
+            $0.clipsToBounds = true
+            $0.isUserInteractionEnabled = false
+            
+            backgroundViewConstraint = $0.constrainSafely(.bottom, to: view, .top, plus: topOffset)
             
             if let url = series.image?.url {
                 ImagePipeline.shared.loadImage(with: url, completion: { response, error in
@@ -89,14 +98,14 @@ final class SeriesViewController: ViewController, StatusBarViewController {
             }
         }
         
-        let shadowView = ContainerShadowView(superview: backgroundView).customize {
+        imageShadowView.add(toSuperview: backgroundView).customize {
             $0.pinLeading(to: backgroundView, plus: .padding).pinTrailing(to: backgroundView, plus: -.padding)
             $0.pinBottom(to: backgroundView, plus: -.padding).constrainHeight(to: $0, .width, times: 9/16)
             $0.containerCornerRadius = 8
             $0.backgroundColor = .loading
         }
         
-        imageView.add(toSuperview: shadowView.container).customize {
+        imageView.add(toSuperview: imageShadowView.container).customize {
             $0.constrainEdgesToSuperview()
             $0.contentMode = .scaleAspectFill
             $0.load(url: series.image?.url)
@@ -177,13 +186,14 @@ extension SeriesViewController: UICollectionViewDataSource {
 extension SeriesViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let showStatusBarBackground = (scrollView.adjustedOffset.y - (view.width * 9/16) + additionalContainerOffset > -view.safeAreaInsets.top)
+        let showStatusBarBackground = (scrollView.adjustedOffset.y - topOffset + additionalContainerOffset > -view.safeAreaInsets.top)
         
         if self.showStatusBarBackground != showStatusBarBackground {
             self.showStatusBarBackground = showStatusBarBackground
         }
         
-        backgroundView.transform = .translate(0, -(scrollView.adjustedOffset.y.limited(0, .greatestFiniteMagnitude)))
+        imageShadowView.transform = .translate(0, scrollView.adjustedOffset.y * 0.2)
+        backgroundViewConstraint?.constant = (topOffset - scrollView.adjustedOffset.y).limited(0, .greatestFiniteMagnitude)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

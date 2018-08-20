@@ -20,16 +20,28 @@ extension UIColor {
     }
 }
 
-final class MessageListViewController: ViewController {
+final class MessageListViewController: ViewController, StatusBarViewController {
     
     private var series: [Watermark.Series] = []
     private var messages: [Watermark.Message] = []
     
-    private let backgroundView = UIView()
+    var showStatusBarBackground = false {
+        didSet {
+            updateStatusBarBackground()
+        }
+    }
     
-    private let scrollView       = UIScrollView()
+    var additionalContainerOffset: CGFloat {
+        return 60
+    }
+    
+    let scrollView          = UIScrollView()
+    let statusBarBackground = ShadowView()
+    
+    private let backgroundView   = UIView()
     private let containerView    = StackView(axis: .vertical)
     private let loadingIndicator = LoadingView()
+    private let refreshControl   = UIRefreshControl()
     
     private let latestMessageView = MessageCellView()
     private let seriesSectionView = SeriesSectionView()
@@ -45,7 +57,12 @@ final class MessageListViewController: ViewController {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return statusBarStyle
+        return showStatusBarBackground ? .default : statusBarStyle
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        scrollView.delegate = self
     }
     
     override func setup() {
@@ -64,6 +81,11 @@ final class MessageListViewController: ViewController {
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
             $0.contentInset.bottom = .padding
+        }
+        
+        refreshControl.add(toSuperview: scrollView).customize {
+            $0.addTarget(self, action: #selector(reload), for: .valueChanged)
+            $0.tintColor = .lightBackground
         }
         
         let latestMessageCellHeight = (view.width - .padding * 2) * 9/16 + 64
@@ -87,6 +109,22 @@ final class MessageListViewController: ViewController {
             $0.backgroundColor = .lightBackground
         }
         
+        statusBarBackground.add(toSuperview: view).customize {
+            $0.pinLeading(to: view).pinTrailing(to: view)
+            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 50)
+            $0.backgroundColor = .white
+            $0.shadowOpacity = 0.1
+            $0.alpha = 0
+        }
+        
+        UILabel(superview: statusBarBackground).customize {
+            $0.pinBottom(to: statusBarBackground).pinCenterX(to: statusBarBackground)
+            $0.constrainHeight(to: 50).constrainSize(toFit: .horizontal)
+            $0.font = .bold(size: 16)
+            $0.textColor = .dark
+            $0.text = "Messages"
+        }
+        
         loadingIndicator.add(toSuperview: view).customize {
             $0.pinCenterX(to: view).pinSafely(.top, to: view, plus: 60 + 35 + .padding + latestMessageCellHeight/2 - 15)
             $0.constrainWidth(to: 30).constrainHeight(to: 30)
@@ -94,6 +132,11 @@ final class MessageListViewController: ViewController {
             $0.startAnimating()
         }
         
+        fetchContent()
+    }
+    
+    @objc dynamic private func reload() {
+        backgroundView.backgroundColor = .loading
         fetchContent()
     }
     
@@ -132,6 +175,7 @@ final class MessageListViewController: ViewController {
                 guard let `self` = self else { return }
                 
                 self.loadingIndicator.stopAnimating()
+                self.refreshControl.endRefreshing()
                 
                 var seriesIndex: Int?
                 
@@ -159,6 +203,7 @@ final class MessageListViewController: ViewController {
                                     
                                     UIView.transition(with: messageHeader.label, duration: 0.25, options: .transitionCrossDissolve, animations: {
                                         messageHeader.label.textColor = colors.background.isLightColor ? .dark : .lightBackground
+                                        self?.refreshControl.tintColor = colors.background.isLightColor ? .dark : .lightBackground
                                     }, completion: nil)
                                 }
                             }
@@ -231,6 +276,14 @@ final class MessageListViewController: ViewController {
     
     func tapped(message: Watermark.Message) {
         MessageViewController(message: message).show()
+    }
+    
+}
+
+extension MessageListViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        check(containerView: containerView, in: self)
     }
     
 }
