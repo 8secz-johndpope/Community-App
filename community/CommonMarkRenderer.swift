@@ -52,7 +52,7 @@ extension UIFont {
 }
 
 extension NSAttributedString {
-    func adding(attribute: NSAttributedStringKey, value: Any) -> NSAttributedString {
+    func adding(attribute: NSAttributedString.Key, value: Any) -> NSAttributedString {
         let result = mutableCopy() as! NSMutableAttributedString
         result.addAttribute(attribute, value: value, range: NSRange(location: 0, length: result.length))
         return result
@@ -62,7 +62,7 @@ extension NSAttributedString {
         return mutableCopy() as! NSMutableAttributedString
     }
     
-    var allAttributes: [NSAttributedStringKey : Any] {
+    var allAttributes: [NSAttributedString.Key : Any] {
         return attributes(at: 0, effectiveRange: nil)
     }
     
@@ -81,7 +81,7 @@ extension NSMutableAttributedString {
         return self
     }
     
-    func insert(string: String, with attributes: [NSAttributedStringKey : Any]) {
+    func insert(string: String, with attributes: [NSAttributedString.Key : Any]) {
         insert(NSAttributedString(string: string, attributes: attributes), at: 0)
     }
 }
@@ -118,7 +118,7 @@ extension Inline: Render {
             return children.renderedString(font: font.bold)
                 .url(URL(string: url!)!)
                 .color(.orange)
-                .underline(style: .patternSolid, color: .orange)
+                .underline(style: .single, color: .orange)
         case let .image(_, _, three):
             let attachment = AsyncTextAttachment(imageURL: URL(string: "https:\(three!)"), delegate: nil)
             attachment.displaySize = CGSize(width: 150, height: 150)

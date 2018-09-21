@@ -220,7 +220,7 @@ final class MessageViewController: ViewController, StatusBarViewController {
         setNeedsUpdateOfHomeIndicatorAutoHidden()
     }
     
-    override func prefersHomeIndicatorAutoHidden() -> Bool {
+    override var prefersHomeIndicatorAutoHidden: Bool {
         return isLandscape
     }
     

@@ -210,7 +210,7 @@ extension GradientView {
         layer.add(CABasicAnimation(keyPath: "colors").customize {
             $0.duration = 1
             $0.toValue = animateGradient.cgColors
-            $0.fillMode = kCAFillModeForwards
+            $0.fillMode = .forwards
             $0.repeatCount = .infinity
             $0.autoreverses = true
         }, forKey: "gradientChange")
@@ -221,13 +221,13 @@ extension GradientView {
         updateGradient()
     }
     
-    override open func willMove(toWindow newWindow: UIWindow?) {
+    override public func willMove(toWindow newWindow: UIWindow?) {
         if newWindow == nil {
             shutdown()
         }
     }
     
-    override open func didMoveToWindow() {
+    override public func didMoveToWindow() {
         if self.window == nil {
             shutdown()
         }

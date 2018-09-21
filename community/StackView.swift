@@ -35,10 +35,10 @@ final class StackView: UIView {
     let stackView = UIStackView()
     
     required init(
-        axis: UILayoutConstraintAxis = .horizontal,
+        axis: NSLayoutConstraint.Axis = .horizontal,
         spacing: CGFloat = 0,
-        distribution: UIStackViewDistribution = .fill,
-        alignment: UIStackViewAlignment = .fill,
+        distribution: UIStackView.Distribution = .fill,
+        alignment: UIStackView.Alignment = .fill,
         elements: [Element] = [])
     {
         super.init(frame: .zero)

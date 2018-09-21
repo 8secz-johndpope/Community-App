@@ -17,8 +17,8 @@ extension UILayoutGuide {
     
 }
 
-extension UIViewAnimationCurve {
-    var animationOptionsCurve: UIViewAnimationOptions {
+extension UIView.AnimationCurve {
+    var animationOptionsCurve: UIView.AnimationOptions {
         switch self {
         case .easeInOut: return .curveEaseInOut
         case .easeIn:    return .curveEaseIn
@@ -148,7 +148,7 @@ extension UIView {
         case tap
         case longPress
         case pan
-        case swipe(UISwipeGestureRecognizerDirection)
+        case swipe(UISwipeGestureRecognizer.Direction)
         case doubleTap
     }
     

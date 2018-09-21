@@ -27,7 +27,7 @@ final class TableSectionView: View {
             $0.delegate = self
             $0.showsHorizontalScrollIndicator = false
             $0.alwaysBounceHorizontal = true
-            $0.decelerationRate = UIScrollViewDecelerationRateFast
+            $0.decelerationRate = .fast
             $0.backgroundColor = .clear
             $0.clipsToBounds = false
         }

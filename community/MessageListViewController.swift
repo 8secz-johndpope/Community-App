@@ -251,7 +251,7 @@ final class MessageListViewController: ViewController, StatusBarViewController {
                 let addedElements = self.containerView.configure(elements: elements)
                 
                 if let index = seriesIndex, let element = addedElements.at(index) {
-                    self.containerView.stackView.bringSubview(toFront: element)
+                    self.containerView.stackView.bringSubviewToFront(element)
                 }
             }
             

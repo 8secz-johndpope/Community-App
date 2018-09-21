@@ -20,7 +20,7 @@ final class PaddedLabel: UILabel {
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     override func drawText(in rect: CGRect) {
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, padding))
+        super.drawText(in: rect.inset(by: padding))
     }
     
     override var intrinsicContentSize: CGSize {

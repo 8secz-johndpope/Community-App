@@ -25,7 +25,7 @@ final class SearchMessagesCell: CollectionViewCell {
             $0.delegate = self
             $0.backgroundColor = .lightBackground
             $0.showsHorizontalScrollIndicator = false
-            $0.decelerationRate = UIScrollViewDecelerationRateFast
+            $0.decelerationRate = .fast
             $0.alwaysBounceHorizontal = true
             $0.clipsToBounds = false
         }

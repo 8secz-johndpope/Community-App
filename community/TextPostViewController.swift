@@ -114,7 +114,7 @@ final class TextPostViewController: ViewController, StatusBarViewController {
             $0.isEditable = false
             $0.isSelectable = true
             $0.delegate = self
-            $0.linkTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue : UIColor.orange]
+            $0.linkTextAttributes = [.foregroundColor : UIColor.orange]
             $0.attributedText = textPost.content.renderMarkdown
         }
         

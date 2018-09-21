@@ -100,18 +100,18 @@ extension LoadingImageView {
         loadingGradientView.isHidden = true
     }
     
-    override open func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         animate()
     }
     
-    override open func willMove(toWindow newWindow: UIWindow?) {
+    override public func willMove(toWindow newWindow: UIWindow?) {
         if newWindow == nil {
             shutdown()
         }
     }
     
-    override open func didMoveToWindow() {
+    override public func didMoveToWindow() {
         if self.window == nil {
             shutdown()
         }

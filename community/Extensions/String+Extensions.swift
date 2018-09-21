@@ -11,7 +11,7 @@ extension String {
     
     func size(boundingWidth: CGFloat = .greatestFiniteMagnitude, boundingHeight: CGFloat = .greatestFiniteMagnitude, font: UIFont, lineSpacing: CGFloat? = nil) -> CGSize {
         
-        var attributes: [NSAttributedStringKey : Any] = [.font : font]
+        var attributes: [NSAttributedString.Key : Any] = [.font : font]
         
         if let lineSpacing = lineSpacing {
             attributes[.paragraphStyle] = NSMutableParagraphStyle().customize { $0.lineSpacing = lineSpacing }

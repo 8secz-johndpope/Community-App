@@ -74,8 +74,8 @@ fileprivate extension Double {
         let o_g = other.g
         let o_b = other.b
         
-        return (fabs(_r-o_r) > 63.75 || fabs(_g-o_g) > 63.75 || fabs(_b-o_b) > 63.75)
-            && !(fabs(_r-_g) < 7.65 && fabs(_r-_b) < 7.65 && fabs(o_r-o_g) < 7.65 && fabs(o_r-o_b) < 7.65)
+        return (abs(_r-o_r) > 63.75 || abs(_g-o_g) > 63.75 || abs(_b-o_b) > 63.75)
+            && !(abs(_r-_g) < 7.65 && abs(_r-_b) < 7.65 && abs(o_r-o_g) < 7.65 && abs(o_r-o_b) < 7.65)
     }
     
     fileprivate func with(minSaturation: Double) -> Double {
@@ -114,7 +114,7 @@ fileprivate extension Double {
         // Back to RGB
         
         C = V*minSaturation
-        let X = C*(1-fabs(fmod(H,2)-1))
+        let X = C*(1-abs(fmod(H,2)-1))
         var R, G, B: Double
         
         switch H {

@@ -10,7 +10,7 @@ import UIKit
 final class CarouselFlowLayout: UICollectionViewFlowLayout {
     
     private var lastCollectionViewSize: CGSize = .zero
-    private var lastScrollDirection: UICollectionViewScrollDirection!
+    private var lastScrollDirection: UICollectionView.ScrollDirection!
     
     required init(itemSize: CGSize, spacing: CGFloat, inset: CGFloat) {
         super.init()
@@ -37,7 +37,7 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
         return attributes
     }
     
-    override open func invalidateLayout(with context: UICollectionViewLayoutInvalidationContext) {
+    override public func invalidateLayout(with context: UICollectionViewLayoutInvalidationContext) {
         super.invalidateLayout(with: context)
         guard let collectionView = collectionView else { return }
         
@@ -93,11 +93,11 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
             
             switch scrollDirection {
             case .horizontal:
-                if fabs(attributes.center.x - proposedCenterOffset) < fabs(candidateAttributes!.center.x - proposedCenterOffset) {
+                if abs(attributes.center.x - proposedCenterOffset) < abs(candidateAttributes!.center.x - proposedCenterOffset) {
                     candidateAttributes = attributes
                 }
             case .vertical:
-                if fabs(attributes.center.y - proposedCenterOffset) < fabs(candidateAttributes!.center.y - proposedCenterOffset) {
+                if abs(attributes.center.y - proposedCenterOffset) < abs(candidateAttributes!.center.y - proposedCenterOffset) {
                     candidateAttributes = attributes
                 }
             }
@@ -106,7 +106,7 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
     }
     
     // swiftlint:disable line_length
-    override open func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
+    override public func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
         guard let collectionView = collectionView else { return proposedContentOffset }
         
         let proposedRect: CGRect = determineProposedRect(collectionView: collectionView, proposedContentOffset: proposedContentOffset)
@@ -165,11 +165,11 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
         case .horizontal:
             pageOffset = CGFloat(index) * pageWidth - collectionView.contentInset.left
             proposedContentOffset = CGPoint(x: pageOffset, y: 0)
-            shouldAnimate = fabs(collectionView.contentOffset.x - pageOffset) > 1 ? animated : false
+            shouldAnimate = abs(collectionView.contentOffset.x - pageOffset) > 1 ? animated : false
         case .vertical:
             pageOffset = CGFloat(index) * pageWidth - collectionView.contentInset.top
             proposedContentOffset = CGPoint(x: 0, y: pageOffset)
-            shouldAnimate = fabs(collectionView.contentOffset.y - pageOffset) > 1 ? animated : false
+            shouldAnimate = abs(collectionView.contentOffset.y - pageOffset) > 1 ? animated : false
         }
         collectionView.setContentOffset(proposedContentOffset, animated: shouldAnimate)
     }

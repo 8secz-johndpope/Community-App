@@ -39,7 +39,7 @@ extension LoadingView {
         
         let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation")
         rotationAnimation.byValue = Float.pi * 2
-        rotationAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        rotationAnimation.timingFunction = .linear
         
         let strokeEndAnimation = CABasicAnimation(keyPath: "strokeEnd")
         strokeEndAnimation.duration = strokeEndDuration
@@ -59,7 +59,7 @@ extension LoadingView {
         groupAnimation.duration = strokeStartDuration + beginTime
         groupAnimation.repeatCount = .infinity
         groupAnimation.isRemovedOnCompletion = false
-        groupAnimation.fillMode = kCAFillModeForwards
+        groupAnimation.fillMode = .forwards
         
         self.layer.sublayers = nil
         
@@ -76,7 +76,7 @@ extension LoadingView {
                 clockwise: true
             ).cgPath
             $0.frame = CGRect(origin: .zero, size: size)
-            $0.lineCap = kCALineCapRound
+            $0.lineCap = .round
             $0.add(groupAnimation, forKey: "animation")
         }
     }

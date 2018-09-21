@@ -48,7 +48,8 @@ final class SeriesViewController: ViewController, StatusBarViewController {
     private var closeButtonColors: (normal: UIColor, highlighted: UIColor) = (.lightBackground, .lightest)
     
     private var topOffset: CGFloat {
-        return (view.width - .padding * 2) * 9/16 + 50 + .padding
+        let imageHeight = (view.width - .padding * 2) * 9/16
+        return imageHeight + 50 + .padding
     }
     
     private var backgroundViewConstraint: NSLayoutConstraint?

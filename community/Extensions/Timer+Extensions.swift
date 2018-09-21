@@ -23,7 +23,7 @@ extension Timer {
         return timer
     }
     
-    func start(runLoop: RunLoop = .main, modes: [RunLoopMode] = [.commonModes]) {
+    func start(runLoop: RunLoop = .main, modes: [RunLoop.Mode] = [.common]) {
         for mode in modes {
             runLoop.add(self, forMode: mode)
         }

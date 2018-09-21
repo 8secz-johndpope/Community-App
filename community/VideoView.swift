@@ -227,11 +227,11 @@ final class VideoView: UIView {
     /// Playback automatically loops continuously when true.
     var playbackLoops: Bool {
         get {
-            return (player?.actionAtItemEnd == AVPlayerActionAtItemEnd.none) as Bool
+            return (player?.actionAtItemEnd == AVPlayer.ActionAtItemEnd.none) as Bool
         }
         set {
             if newValue == true {
-                player?.actionAtItemEnd = AVPlayerActionAtItemEnd.none
+                player?.actionAtItemEnd = AVPlayer.ActionAtItemEnd.none
             }
             else {
                 player?.actionAtItemEnd = .pause
@@ -262,13 +262,13 @@ final class VideoView: UIView {
     
     /// Media playback's current time.
     var currentTime: TimeInterval {
-        guard let item = item else { return kCMTimeIndefinite.seconds }
+        guard let item = item else { return CMTime.indefinite.seconds }
         return item.currentTime().seconds
     }
     
     /// Media plaback's duration.
     var duration: TimeInterval {
-        guard let item = item else { return kCMTimeIndefinite.seconds }
+        guard let item = item else { return CMTime.indefinite.seconds }
         return item.duration.seconds
     }
     
@@ -420,7 +420,7 @@ extension VideoView {
         
         // update new playerItem settings
         if playbackLoops {
-            player?.actionAtItemEnd = AVPlayerActionAtItemEnd.none
+            player?.actionAtItemEnd = AVPlayer.ActionAtItemEnd.none
         }
         else {
             player?.actionAtItemEnd = .pause
@@ -436,18 +436,18 @@ extension VideoView {
     /// Begins playback of the media from the beginning.
     func playFromBeginning() {
         playbackDelegate?.videoPlaybackWillStartFromBeginning(self)
-        player?.seek(to: kCMTimeZero)
+        player?.seek(to: .zero)
         playFromCurrentTime()
     }
     
     /// Begins playback of the media from the current time.
-    open func playFromCurrentTime() {
+    public func playFromCurrentTime() {
         playbackState = .playing
         player?.play()
     }
     
     /// Pauses playback of the media.
-    open func pause() {
+    public func pause() {
         if playbackState != .playing {
             return
         }
@@ -457,7 +457,7 @@ extension VideoView {
     }
     
     /// Stops playback of the media.
-    open func stop() {
+    public func stop() {
         if playbackState == .stopped {
             return
         }
@@ -473,9 +473,9 @@ extension VideoView {
     func seek(to time: TimeInterval, completion: ((Bool) -> Void)? = nil) {
         if let playerItem = item {
             let timescale = playerItem.asset.duration.timescale
-            let time = CMTimeMakeWithSeconds(time, timescale)
-            guard ![kCMTimeInvalid, kCMTimeIndefinite, kCMTimePositiveInfinity, kCMTimeNegativeInfinity].contains(time) else { return }
-            playerItem.seek(to: time, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero, completionHandler: completion)
+            let time = CMTime(seconds: time, preferredTimescale: timescale)
+            guard ![.invalid, .indefinite, .positiveInfinity, .negativeInfinity].contains(time) else { return }
+            playerItem.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero, completionHandler: completion)
         }
         else {
             seekTimeRequested = time
@@ -493,14 +493,14 @@ extension VideoView {
     @objc private func playerItemDidPlayToEndTime(_ notification: Notification) {
         if playbackLoops {
             playbackDelegate?.videoPlaybackWillLoop(self)
-            player?.seek(to: kCMTimeZero)
+            player?.seek(to: .zero)
         }
         else {
             if playbackFreezesAtEnd == true {
                 stop()
             }
             else {
-                player?.seek(to: kCMTimeZero) { [weak self] _ in self?.stop() }
+                player?.seek(to: .zero) { [weak self] _ in self?.stop() }
             }
         }
     }
@@ -532,10 +532,10 @@ extension VideoView {
 extension VideoView {
     
     private func addApplicationObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationWillResignActive(_:)), name: .UIApplicationWillResignActive, object: UIApplication.shared)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationDidEnterBackground(_:)), name: .UIApplicationDidEnterBackground, object: UIApplication.shared)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationWillEnterForeground(_:)), name: .UIApplicationWillEnterForeground, object: UIApplication.shared)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationDidBecomeActive(_:)), name: .UIApplicationDidBecomeActive, object: UIApplication.shared)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: UIApplication.shared)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: UIApplication.shared)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: UIApplication.shared)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: UIApplication.shared)
     }
     
     private func removeApplicationObservers() {
@@ -589,7 +589,7 @@ extension VideoView {
     // MARK: AVPlayerObservers
     
     private func addPlayerObservers() {
-        timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 10), queue: .main) { [weak self] timeInterval in
+        timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 10), queue: .main) { [weak self] timeInterval in
             guard let `self` = self else { return }
             self.playbackDelegate?.videoCurrentTimeDidChange(self)
         }
@@ -668,7 +668,7 @@ extension VideoView {
             """)
     }
     
-    private func playerStatus(change: NSKeyValueObservedChange<AVPlayerStatus>) {
+    private func playerStatus(change: NSKeyValueObservedChange<AVPlayer.Status>) {
         guard let player = player else { return }
         
         print("""
@@ -685,7 +685,7 @@ extension VideoView {
     
     // MARK: Item observation
     
-    private func itemStatus(change: NSKeyValueObservedChange<AVPlayerItemStatus>) {
+    private func itemStatus(change: NSKeyValueObservedChange<AVPlayerItem.Status>) {
         guard let item = self.item else { return }
         
         print("""
@@ -778,7 +778,7 @@ extension VideoView {
     
 }
 
-extension AVPlayerItemStatus: CustomStringConvertible {
+extension AVPlayerItem.Status: CustomStringConvertible {
     
     public var description: String {
         switch self {
@@ -790,7 +790,7 @@ extension AVPlayerItemStatus: CustomStringConvertible {
     
 }
 
-extension AVPlayerStatus: CustomStringConvertible {
+extension AVPlayer.Status: CustomStringConvertible {
     
     public var description: String {
         switch self {
@@ -800,10 +800,6 @@ extension AVPlayerStatus: CustomStringConvertible {
         }
     }
     
-}
-
-private func +(lhs: CMTime, rhs: CMTime) -> CMTime {
-    return CMTimeAdd(lhs, rhs)
 }
 
 extension CMTime {
