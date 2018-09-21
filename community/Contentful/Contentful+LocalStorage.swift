@@ -16,15 +16,24 @@ extension Contentful {
         static var textPosts: [Contentful.TextPost]         = []
         static var shelves: [Contentful.Shelf]              = []
         
+        static var posts: [Contentful.Post] {
+            return externalPosts.map(Contentful.Post.external) + textPosts.map(Contentful.Post.text)
+        }
+        
+        static var table: Contentful.Table? {
+            didSet {
+                Notifier.onTableChanged.fire(())
+            }
+        }
+        
         static var pantry: Contentful.Pantry? {
             didSet {
                 Notifier.onPantryChanged.fire(())
             }
         }
         
-        static var tablePosts: [Contentful.Post] {
-            let posts = externalPosts.map(Contentful.Post.external) + textPosts.map(Contentful.Post.text)
-            return posts.sorted(by: { $0.publishDate > $1.publishDate }).filter { $0.isInTable }
+        static var communityQuestions: Contentful.TextPost? {
+            return textPosts.first(where: { $0.title.lowercased() == "community questions" })
         }
     }
     

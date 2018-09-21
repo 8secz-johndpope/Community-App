@@ -25,6 +25,10 @@ enum Icon: Int {
     case chevronLeft  = 0xf053
     case search       = 0xf002
     case angleRight   = 0xf105
+    case safari       = 0xf14e
+    case article      = 0xf1ea
+    case headphone    = 0xf58f
+    case file         = 0xf15c
     
     var string: String {
         return String(format: "%C", rawValue)

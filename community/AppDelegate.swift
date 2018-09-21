@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = TabBarViewController()
         window?.makeKeyAndVisible()
         
+        Contentful.API.loadAllContent()
+        
         return true
     }
 

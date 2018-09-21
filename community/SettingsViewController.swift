@@ -31,7 +31,7 @@ final class SettingsViewController: ViewController {
             $0.backgroundColor = .lightBackground
         }
         
-        let headerLabel = UILabel(superview: containerView).customize {
+        UILabel(superview: containerView).customize {
             $0.pinLeading(to: containerView, plus: .padding).pinTrailing(to: containerView, plus: -.padding)
             $0.pinTop(to: containerView, plus: 60).pinBottom(to: containerView).constrainSize(toFit: .vertical)
             $0.font = .extraBold(size: 35)

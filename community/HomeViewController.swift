@@ -35,13 +35,51 @@ final class TableHeaderView: View {
             $0.contentVerticalAlignment = .bottom
             $0.contentEdgeInsets = UIEdgeInsets(bottom: 10)
             $0.addTarget(for: .touchUpInside) {
-                guard let info = Contentful.LocalStorage.pantry?.info, !info.isEmpty else { return }
+                guard let info = Contentful.LocalStorage.table?.info, !info.isEmpty else { return }
                 UIAlertController.alert(message: info).addAction(title: "OK").present()
             }
         }
     }
     
 }
+
+final class CommunityQuestionsView: View {
+    
+    private let label = UILabel()
+    
+    override func setup() {
+        super.setup()
+        
+        backgroundColor = .lightBackground
+        
+        label.add(toSuperview: self).customize {
+            $0.pinTop(to: self).pinBottom(to: self)
+            $0.pinLeading(to: self, plus: .padding).constrainSize(toFit: .vertical, .horizontal)
+            $0.backgroundColor = .lightBackground
+            $0.attributedText = "Community Questions".attributed.font(.extraBold(size: 20)).color(.dark)
+        }
+        
+        UIButton().add(toSuperview: self).customize {
+            $0.pinTop(to: self).pinBottom(to: self)
+            $0.pinLeading(to: label, .trailing).pinTrailing(to: self, plus: -.padding)
+            $0.constrainWidth(to: 40, .greaterThanOrEqual)
+            $0.setTitle(Icon.infoCircle.string, for: .normal)
+            $0.setTitleColor(.dark, for: .normal)
+            $0.setTitleColor(.black, for: .highlighted)
+            $0.adjustsImageWhenHighlighted = false
+            $0.titleLabel?.font = .fontAwesome(.regular, size: 18)
+            $0.contentVerticalAlignment = .bottom
+            $0.contentHorizontalAlignment = .left
+            $0.contentEdgeInsets = UIEdgeInsets(bottom: 4, left: 10)
+            $0.addTarget(for: .touchUpInside) {
+                guard let questionsPost = Contentful.LocalStorage.communityQuestions else { return }
+                TextPostViewController(textPost: questionsPost).show()
+            }
+        }
+    }
+    
+}
+
 
 final class HomeViewController: ViewController {
     
@@ -98,16 +136,49 @@ final class HomeViewController: ViewController {
             return view
         }
         
+        func number(_ value: Int, text: String, backgroundColor: UIColor) -> UIView {
+            let view = UIView().customize {
+                $0.backgroundColor = backgroundColor
+            }
+            
+            let number = UILabel(superview: view).customize {
+                $0.pinTop(to: view).pinBottom(to: view, atPriority: .required - 1)
+                $0.pinLeading(to: view, plus: .padding).constrainWidth(to: 30).constrainHeight(to: 30)
+                $0.backgroundColor = .orange
+                $0.cornerRadius = 15
+                $0.text = "\(value)"
+                $0.textColor = .white
+                $0.font = .bold(size: 16)
+                $0.textAlignment = .center
+            }
+            
+            UILabel(superview:  view).customize {
+                $0.pinTop(to: view, plus: 4).pinBottom(to: view, relation: .lessThanOrEqual)
+                $0.pinLeading(to: number, .trailing, plus: .padding).pinTrailing(to: view, plus: -.padding)
+                $0.constrainSize(toFit: .vertical)
+                $0.text = text
+                $0.font = .regular(size: 16)
+                $0.textColor = .dark
+                $0.numberOfLines = 0
+            }
+            
+            return view
+        }
+        
         containerView.configure(elements: [
-            .view(.clear, 60),
+            .view(.clear, 44),
             .custom(TableHeaderView()),
             .view(.clear, .padding),
             .custom(tableSectionView),
             .view(.clear, .padding),
             .view(.lightBackground, .padding),
-            .custom(header(text: "More Resources".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground)),
+            .custom(CommunityQuestionsView()),
             .view(.lightBackground, .padding),
-            .custom(pantrySectionView),
+            .custom(number(1, text: "What has God taught you this week?", backgroundColor: .lightBackground)),
+            .view(.lightBackground, .padding),
+            .custom(number(2, text: "What thoughts or actions have hindered your walk with Christ this week?", backgroundColor: .lightBackground)),
+            .view(.lightBackground, .padding),
+            .custom(number(3, text: "How have you helped others see or know Jesus this week?", backgroundColor: .lightBackground)),
             .view(.lightBackground, .padding),
         ])
         
@@ -131,71 +202,15 @@ final class HomeViewController: ViewController {
         }
         
         Notifier.onTableChanged.subscribePast(with: self) { [weak self] in
-            self?.tableSectionView.configure(posts: Contentful.LocalStorage.tablePosts)
+            self?.tableSectionView.configure(table: Contentful.LocalStorage.table)
             self?.pantrySectionView.configure(shelves: Contentful.LocalStorage.pantry?.shelves ?? [])
             self?.loadingIndicator.stopAnimating()
             self?.refreshControl.endRefreshing()
         }.onQueue(.main)
-        
-        fetchContent()
     }
     
     @objc dynamic private func reload() {
-        fetchContent()
-    }
-    
-    private func fetchContent() {
-        
-        var entries: [Contentful.Entry] = []
-        var assets: [Contentful.Asset] = []
-        
-        let processor = SimpleSerialProcessor()
-        
-        processor.enqueue { dequeue in
-            Contentful.API.Content.fetchAll { result in
-                print("All content: \(result.value?.count ?? -1)")
-                entries = result.value ?? []
-                dequeue()
-            }
-        }
-        
-        processor.enqueue { dequeue in
-            Contentful.API.Asset.fetchAll { result in
-                print("All assets: \(result.value?.count ?? -1)")
-                assets = result.value ?? []
-                dequeue()
-            }
-        }
-        
-        processor.enqueue { dequeue in
-            
-            var authors: [Contentful.Author] = []
-            var externalPosts: [Contentful.ExternalPost] = []
-            var textPosts: [Contentful.TextPost] = []
-            var shelves: [Contentful.Shelf] = []
-            var pantry: Contentful.Pantry?
-            
-            for entry in entries {
-                switch entry {
-                case .author(let author):             authors.append(author)
-                case .externalPost(let externalPost): externalPosts.append(externalPost)
-                case .pantry(let p):                  pantry = p
-                case .textPost(let textPost):         textPosts.append(textPost)
-                case .shelf(let shelf):               shelves.append(shelf)
-                }
-            }
-            
-            Contentful.LocalStorage.authors       = authors
-            Contentful.LocalStorage.assets        = assets
-            Contentful.LocalStorage.externalPosts = externalPosts
-            Contentful.LocalStorage.textPosts     = textPosts
-            Contentful.LocalStorage.shelves       = shelves
-            Contentful.LocalStorage.pantry        = pantry
-            
-            Notifier.onTableChanged.fire(())
-            
-            dequeue()
-        }
+        Contentful.API.loadAllContent()
     }
     
 }

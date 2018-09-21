@@ -10,7 +10,7 @@ import Alexandria
 
 final class TabBarViewController: UITabBarController {
     
-    private let tabBarView = TabBar(tabs: .table, .messages, .search, .settings)
+    private let tabBarView = TabBar(tabs: .table, .pantry, .search)
     
     var tabs: [Tab] {
         return tabBarView.tabs
@@ -84,13 +84,15 @@ extension TabBarViewController {
     
     enum Tab {
         case table
+        case pantry
         case messages
         case search
         case settings
         
         var viewController: UIViewController {
             switch self {
-            case .table:    return UINavigationController(rootViewController: HomeViewController())
+            case .table:    return HomeViewController()//UINavigationController(rootViewController: TableViewController())
+            case .pantry:   return UINavigationController(rootViewController: PantryViewController())
             case .messages: return MessageListViewController()
             case .search:   return SearchViewController()
             case .settings: return SettingsViewController()
@@ -100,6 +102,7 @@ extension TabBarViewController {
         var icon: Icon {
             switch self {
             case .table:    return .home
+            case .pantry:   return .list
             case .messages: return .video
             case .search:   return .search
             case .settings: return .cog

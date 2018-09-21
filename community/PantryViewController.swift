@@ -10,12 +10,94 @@ import Alexandria
 
 final class PantryViewController: ViewController {
     
-    private var shelves: [Contentful.Shelf] = []
+    enum Cell {
+        case space(CGFloat)
+        case header(String, () -> Void)
+        case shelf(Contentful.Shelf)
+        
+        func size(in collectionView: UICollectionView) -> CGSize {
+            switch self {
+            case .space(let height):   return CGSize(width: collectionView.width, height: height)
+            case .header(let text, _): return HeaderCell.size(ofText: text, in: collectionView)
+            case .shelf(let shelf):    return ShelfCell.size(ofShelf: shelf, in: collectionView)
+            }
+        }
+    }
+    
+    private var cells: [Cell] = []
     
     private let collectionView = UICollectionView(layout: .vertical(lineSpacing: 0))
     private let shadowView     = ShadowView()
     private let headerView     = UIView()
-    private let tableLabel     = UILabel()
+    private let headerLabel    = UILabel()
+    private let refreshControl = UIRefreshControl()
+    
+    private var isShowingHeaderLabel = false
+    
+    override func viewDidAppearForFirstTime() {
+        super.viewDidAppearForFirstTime()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.headerView.isHidden = false
+        }
+    }
+    
+    override func setup() {
+        super.setup()
+        
+        navigationController?.isNavigationBarHidden = true
+        
+        generateCells()
+        
+        view.backgroundColor = .lightBackground
+        
+        collectionView.add(toSuperview: view).customize {
+            $0.constrainEdgesToSuperview()
+            $0.registerCell(UICollectionViewCell.self)
+            $0.registerCell(HeaderCell.self)
+            $0.registerCell(ShelfCell.self)
+            $0.dataSource = self
+            $0.delegate = self
+            $0.backgroundColor = .clear
+            $0.showsVerticalScrollIndicator = false
+            $0.alwaysBounceVertical = true
+            $0.contentInset.top = 44
+        }
+        
+        refreshControl.add(toSuperview: collectionView).customize {
+            $0.addTarget(self, action: #selector(reload), for: .valueChanged)
+            $0.tintColor = .dark
+        }
+        
+        headerView.add(toSuperview: view).customize {
+            $0.pinLeading(to: view).pinTrailing(to: view)
+            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 50)
+            $0.backgroundColor = .lightBackground
+            $0.alpha = 0
+            $0.isHidden = true
+        }
+        
+        shadowView.add(toSuperview: view, behind: headerView).customize {
+            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
+            $0.pinTop(to: headerView).pinBottom(to: headerView)
+            $0.backgroundColor = .lightBackground
+            $0.shadowOpacity = 0.2
+            $0.alpha = 0
+        }
+        
+        headerLabel.add(toSuperview: headerView).customize {
+            $0.pinBottom(to: headerView).constrainHeight(to: 50)
+            $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
+            $0.font = .bold(size: 16)
+            $0.textColor = .grayBlue
+            $0.text = "The Pantry"
+        }
+        
+        Notifier.onPantryChanged.subscribePast(with: self) { [weak self] in
+            self?.generateCells()
+            self?.collectionView.reloadData()
+            self?.refreshControl.endRefreshing()
+        }.onQueue(.main)
+    }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -29,94 +111,77 @@ final class PantryViewController: ViewController {
         return false
     }
     
-    override func setup() {
-        super.setup()
-        
-        navigationController?.isNavigationBarHidden = true
-        
-        shelves = Contentful.LocalStorage.pantry?.shelves.filter { !$0.postIDs.isEmpty } ?? []
-        
-        view.backgroundColor = .lightBackground
-        
-        collectionView.add(toSuperview: view).customize {
-            $0.constrainEdgesToSuperview()
-            $0.registerCell(ShelfCell.self)
-            $0.dataSource = self
-            $0.delegate = self
-            $0.backgroundColor = .lightBackground
-            $0.showsVerticalScrollIndicator = false
-            $0.alwaysBounceVertical = true
-            $0.contentInset.top = 60
-        }
-        
-        headerView.add(toSuperview: view).customize {
-            $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 60)
-            $0.backgroundColor = .clear
-        }
-        
-        shadowView.add(toSuperview: view, behind: headerView).customize {
-            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
-            $0.pinTop(to: headerView).pinBottom(to: headerView)
-            $0.backgroundColor = .white
-            $0.shadowOpacity = 0.2
-            $0.alpha = 0
-        }
-        
-        UIButton().add(toSuperview: headerView).customize {
-            $0.pinBottom(to: headerView).pinTrailing(to: headerView)
-            $0.constrainWidth(to: 60).constrainHeight(to: 60)
-            $0.titleLabel?.font = .fontAwesome(.regular, size: 20)
-            $0.setTitle(Icon.infoCircle.string, for: .normal)
-            $0.setTitleColor(.grayBlue, for: .normal)
-            $0.addTarget(for: .touchUpInside) {
-                guard let info = Contentful.LocalStorage.pantry?.info else { return }
-                UIAlertController.alert(message: info).addAction(title: "OK").present()
-            }
-        }
-        
-        tableLabel.add(toSuperview: headerView).customize {
-            $0.pinBottom(to: headerView).constrainHeight(to: 60)
-            $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
-            $0.font = .bold(size: 25)
-            $0.textColor = .grayBlue
-            $0.text = "The Pantry"
-        }
-        
-        Notifier.onPantryChanged.subscribePast(with: self) { [weak self] in
-            self?.shelves = Contentful.LocalStorage.pantry?.shelves.filter { !$0.postIDs.isEmpty } ?? []
-            self?.collectionView.reloadData()
-        }.onQueue(.main)
+    private func generateCells() {
+        cells.removeAll()
+        cells.append(.header("The Pantry", { [weak self] in self?.infoTapped() }))
+        cells.append(.space(.padding))
+        cells.append(contentsOf: Contentful.LocalStorage.pantry?.shelves.filter { !$0.postIDs.isEmpty }.map(Cell.shelf) ?? [])
+    }
+    
+    private func infoTapped() {
+        guard let info = Contentful.LocalStorage.pantry?.info else { return }
+        UIAlertController.alert(message: info).addAction(title: "OK").present()
+    }
+    
+    @objc dynamic private func reload() {
+        Contentful.API.loadAllContent()
     }
     
 }
 
 extension PantryViewController: UICollectionViewDataSource {
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        shadowView.alpha = scrollView.adjustedOffset.y.map(from: 0...20, to: 0...1).limited(0, 1)
-    }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return shelves.count
+        return cells.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: ShelfCell = collectionView.dequeueCell(for: indexPath)
-        cell.configure(shelf: shelves[indexPath.row])
-        return cell
+        switch cells[indexPath.row] {
+        case .space:
+            return collectionView.dequeueCell(for: indexPath)
+        case let .header(text, callback):
+            let cell: HeaderCell = collectionView.dequeueCell(for: indexPath)
+            cell.configure(text: text, callback: callback)
+            return cell
+        case .shelf(let shelf):
+            let cell: ShelfCell = collectionView.dequeueCell(for: indexPath)
+            cell.configure(shelf: shelf)
+            return cell
+        }
     }
     
 }
 
 extension PantryViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        shadowView.alpha = scrollView.adjustedOffset.y.map(from: 40...60, to: 0...1).limited(0, 1)
+        
+        if scrollView.adjustedOffset.y > 40 {
+            if !isShowingHeaderLabel {
+                isShowingHeaderLabel = true
+                UIView.animate(withDuration: 0.25, delay: 0, options: .beginFromCurrentState, animations: {
+                    self.headerView.alpha = 1
+                }, completion: nil)
+            }
+        }
+        else {
+            if isShowingHeaderLabel {
+                isShowingHeaderLabel = false
+                UIView.animate(withDuration: 0.25, delay: 0, options: .beginFromCurrentState, animations: {
+                    self.headerView.alpha = 0
+                }, completion: nil)
+            }
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.width, height: 60)
+        return cells[indexPath.row].size(in: collectionView)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(ShelfViewController(shelf: shelves[indexPath.row]), animated: true)
+        guard case .shelf(let shelf)? = cells.at(indexPath.row) else { return }
+        navigationController?.pushViewController(ShelfViewController(shelf: shelf), animated: true)
     }
     
 }

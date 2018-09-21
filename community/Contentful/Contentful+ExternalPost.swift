@@ -18,6 +18,7 @@ extension Contentful {
         let isInTable: Bool
         let createdAt: Date
         let updatedAt: Date
+        let type: PostType
         
         var image: Contentful.Asset? {
             return Contentful.LocalStorage.assets.first(where: { $0.id == postImageAssetID })
@@ -40,6 +41,7 @@ extension Contentful {
             self.isInTable        = isInTable
             self.createdAt        = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
             self.updatedAt        = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
+            self.type             = json.dictionary(forKey: "fields").enum(forKey: "type") ?? .post
         }
     }
 

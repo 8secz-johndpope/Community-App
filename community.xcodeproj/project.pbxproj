@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8100DFF62131BF1400BA046B /* Contentful+Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8100DFF52131BF1400BA046B /* Contentful+Table.swift */; };
+		8100DFF821324F1B00BA046B /* PaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8100DFF721324F1B00BA046B /* PaddedLabel.swift */; };
 		8101D33620FAC95B0085BF0D /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8101D33520FAC95B0085BF0D /* UIViewController+Extensions.swift */; };
 		8101D33820FACD530085BF0D /* TextPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8101D33720FACD530085BF0D /* TextPostViewController.swift */; };
 		8101D33C20FACE180085BF0D /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8101D33B20FACE180085BF0D /* CloseButton.swift */; };
@@ -198,6 +200,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8100DFF52131BF1400BA046B /* Contentful+Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contentful+Table.swift"; sourceTree = "<group>"; };
+		8100DFF721324F1B00BA046B /* PaddedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedLabel.swift; sourceTree = "<group>"; };
 		8101D33520FAC95B0085BF0D /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		8101D33720FACD530085BF0D /* TextPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPostViewController.swift; sourceTree = "<group>"; };
 		8101D33920FACDC00085BF0D /* Haring.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Haring.framework; path = Carthage/Build/iOS/Haring.framework; sourceTree = "<group>"; };
@@ -536,6 +540,7 @@
 				8106D82D211E4F8F00CD8E7C /* SearchSeriesCell.swift */,
 				8106D82F211E4F9C00CD8E7C /* SearchMessagesCell.swift */,
 				81A5DA66211E92DB00338287 /* SearchSpeakersCell.swift */,
+				8100DFF721324F1B00BA046B /* PaddedLabel.swift */,
 				81ED74DF20FA7A8100BE1F4C /* Watermark */,
 				81938C1E20FA40BE0080DEFF /* Contentful */,
 				81938BFC20F9B3760080DEFF /* Extensions */,
@@ -620,6 +625,7 @@
 				81938C0420F9B89B0080DEFF /* Contentful+Shelf.swift */,
 				81938C0220F9B8960080DEFF /* Contentful+TextPost.swift */,
 				81938C1A20F9C1280080DEFF /* Contentful+Entry.swift */,
+				8100DFF52131BF1400BA046B /* Contentful+Table.swift */,
 			);
 			path = Contentful;
 			sourceTree = "<group>";
@@ -871,6 +877,7 @@
 				817BB7B92113C0E6005DE341 /* SeriesSectionView.swift in Sources */,
 				817BB7B72113BE58005DE341 /* ShelfCell.swift in Sources */,
 				81CFC91620FB008A006BF518 /* SelfSizingTextView.swift in Sources */,
+				8100DFF821324F1B00BA046B /* PaddedLabel.swift in Sources */,
 				81206A0820FD77ED00696D32 /* Numerable.swift in Sources */,
 				81CFC91820FB01DF006BF518 /* UIScrollView+Extensions.swift in Sources */,
 				81EA567B21191EF0005F25DB /* PantrySectionView.swift in Sources */,
@@ -915,6 +922,7 @@
 				81938BCE20F9ABC70080DEFF /* CollectionViewCell.swift in Sources */,
 				81206A0C20FD7D5300696D32 /* Operators.swift in Sources */,
 				81ED74FF20FA8FF200BE1F4C /* Contentful+Post.swift in Sources */,
+				8100DFF62131BF1400BA046B /* Contentful+Table.swift in Sources */,
 				8101D33820FACD530085BF0D /* TextPostViewController.swift in Sources */,
 				81938C0320F9B8960080DEFF /* Contentful+TextPost.swift in Sources */,
 				81ED74E520FA7B8E00BE1F4C /* Watermark+Message.swift in Sources */,

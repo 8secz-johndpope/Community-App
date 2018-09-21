@@ -13,6 +13,7 @@ extension Contentful {
         case author(Contentful.Author)
         case externalPost(Contentful.ExternalPost)
         case pantry(Contentful.Pantry)
+        case table(Contentful.Table)
         case shelf(Contentful.Shelf)
         case textPost(Contentful.TextPost)
     }
@@ -46,6 +47,13 @@ extension Contentful.Entry: Initializable {
             else {
                 return nil
             }
+        case .table:
+            if let table = Contentful.Table(json: json) {
+                self = .table(table)
+            }
+            else {
+                return nil
+            }
         case .shelf:
             if let shelf = Contentful.Shelf(json: json) {
                 self = .shelf(shelf)
@@ -72,6 +80,7 @@ extension Contentful.Entry {
         case .author(let author):             return author.createdAt
         case .externalPost(let externalPost): return externalPost.createdAt
         case .pantry(let pantry):             return pantry.createdAt
+        case .table(let table):               return table.createdAt
         case .textPost(let textPost):         return textPost.createdAt
         case .shelf(let shelf):               return shelf.createdAt
         }
@@ -82,6 +91,7 @@ extension Contentful.Entry {
         case .author(let author):             return author.updatedAt
         case .externalPost(let externalPost): return externalPost.updatedAt
         case .pantry(let pantry):             return pantry.updatedAt
+        case .table(let table):               return table.updatedAt
         case .textPost(let textPost):         return textPost.updatedAt
         case .shelf(let shelf):               return shelf.updatedAt
         }
@@ -92,6 +102,7 @@ extension Contentful.Entry {
         case .author(let author):             return author.name
         case .externalPost(let externalPost): return externalPost.title
         case .pantry(let pantry):             return pantry.title
+        case .table(let table):               return table.title
         case .textPost(let textPost):         return textPost.title
         case .shelf(let shelf):               return shelf.name
         }

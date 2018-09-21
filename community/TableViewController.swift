@@ -10,26 +10,30 @@ import UIKit
 final class TableViewController: ViewController {
     
     enum Cell {
-        case header(String)
+        case header(String, () -> Void)
         case post(Contentful.Post)
         
         func size(in collectionView: UICollectionView) -> CGSize {
             switch self {
-            case .header:         return CGSize(width: collectionView.width - .padding * 2, height: 25)
-            case .post(let post): return TablePostCell.size(forPost: post, in: collectionView)
+            case .header(let text, _): return HeaderCell.size(ofText: text, in: collectionView)
+            case .post(let post):      return TablePostCell.size(forPost: post, in: collectionView)
             }
         }
     }
     
     private var cells: [Cell] = []
     
-    private let collectionView = UICollectionView(layout: .vertical(itemSpacing: .padding, lineSpacing: .padding * 1.5, sectionInset: UIEdgeInsets(inset: .padding)))
+    private let collectionView = UICollectionView(layout: .vertical(lineSpacing: .padding * 1.5, sectionInset: UIEdgeInsets(bottom: .padding)))
     private let shadowView     = ShadowView()
     private let headerView     = UIView()
-    private let tableLabel     = UILabel()
+    private let headerLabel    = UILabel()
+    
+    private var isShowingHeaderLabel = false
     
     override func setup() {
         super.setup()
+        
+        navigationController?.isNavigationBarHidden = true
         
         generateCells()
         
@@ -44,39 +48,28 @@ final class TableViewController: ViewController {
             $0.backgroundColor = .clear
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
-            $0.contentInset.top = 60
+            $0.contentInset.top = 44
         }
         
         headerView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 60)
-            $0.backgroundColor = .clear
+            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 50)
+            $0.backgroundColor = .lightBackground
+            $0.alpha = 0
         }
         
         shadowView.add(toSuperview: view, behind: headerView).customize {
             $0.pinLeading(to: headerView).pinTrailing(to: headerView)
             $0.pinTop(to: headerView).pinBottom(to: headerView)
-            $0.backgroundColor = .white
+            $0.backgroundColor = .lightBackground
             $0.shadowOpacity = 0.2
             $0.alpha = 0
         }
         
-        UIButton().add(toSuperview: headerView).customize {
-            $0.pinBottom(to: headerView).pinTrailing(to: headerView)
-            $0.constrainWidth(to: 60).constrainHeight(to: 60)
-            $0.titleLabel?.font = .fontAwesome(.regular, size: 20)
-            $0.setTitle(Icon.infoCircle.string, for: .normal)
-            $0.setTitleColor(.grayBlue, for: .normal)
-            $0.addTarget(for: .touchUpInside) {
-                guard let info = Contentful.LocalStorage.pantry?.info else { return }
-                UIAlertController.alert(message: info).addAction(title: "OK").present()
-            }
-        }
-        
-        tableLabel.add(toSuperview: headerView).customize {
-            $0.pinBottom(to: headerView).constrainHeight(to: 60)
+        headerLabel.add(toSuperview: headerView).customize {
+            $0.pinBottom(to: headerView).constrainHeight(to: 50)
             $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
-            $0.font = .bold(size: 25)
+            $0.font = .bold(size: 16)
             $0.textColor = .grayBlue
             $0.text = "The Table"
         }
@@ -101,7 +94,13 @@ final class TableViewController: ViewController {
     
     private func generateCells() {
         cells.removeAll()
-        cells.append(contentsOf: Contentful.LocalStorage.tablePosts.map(Cell.post))
+        cells.append(.header("The Table", { [weak self] in self?.infoTapped() }))
+        cells.append(contentsOf: Contentful.LocalStorage.table?.posts.map(Cell.post) ?? [])
+    }
+    
+    private func infoTapped() {
+        guard let info = Contentful.LocalStorage.table?.info else { return }
+        UIAlertController.alert(message: info).addAction(title: "OK").present()
     }
     
 }
@@ -114,9 +113,9 @@ extension TableViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch cells[indexPath.row] {
-        case .header(let text):
+        case let .header(text, callback):
             let cell: HeaderCell = collectionView.dequeueCell(for: indexPath)
-            cell.configure(text: text)
+            cell.configure(text: text, callback: callback)
             return cell
         case .post(let post):
             let cell: TablePostCell = collectionView.dequeueCell(for: indexPath)
@@ -130,7 +129,24 @@ extension TableViewController: UICollectionViewDataSource {
 extension TableViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        shadowView.alpha = scrollView.adjustedOffset.y.map(from: 0...20, to: 0...1).limited(0, 1)
+        shadowView.alpha = scrollView.adjustedOffset.y.map(from: 40...60, to: 0...1).limited(0, 1)
+        
+        if scrollView.adjustedOffset.y > 40 {
+            if !isShowingHeaderLabel {
+                isShowingHeaderLabel = true
+                UIView.animate(withDuration: 0.25, delay: 0, options: .beginFromCurrentState, animations: {
+                    self.headerView.alpha = 1
+                }, completion: nil)
+            }
+        }
+        else {
+            if isShowingHeaderLabel {
+                isShowingHeaderLabel = false
+                UIView.animate(withDuration: 0.25, delay: 0, options: .beginFromCurrentState, animations: {
+                    self.headerView.alpha = 0
+                }, completion: nil)
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -150,7 +166,10 @@ extension TableViewController: UICollectionViewDelegate, UICollectionViewDelegat
 
 final class HeaderCell: CollectionViewCell {
     
+    private var callback: () -> Void = {}
+    
     private let label = UILabel()
+    private let button = UIButton()
     
     override func setup() {
         super.setup()
@@ -158,19 +177,44 @@ final class HeaderCell: CollectionViewCell {
         contentView.clipsToBounds = false
         
         label.add(toSuperview: contentView).customize {
-            $0.constrainEdgesToSuperview()
+            $0.pinTop(to: contentView).pinBottom(to: contentView)
+            $0.pinLeading(to: contentView).constrainSize(toFit: .horizontal)
             $0.textColor = .dark
-            $0.font = .extraBold(size: 20)
+            $0.font = .extraBold(size: 35)
+        }
+        
+        button.add(toSuperview: contentView).customize {
+            $0.pinTop(to: contentView).pinBottom(to: contentView)
+            $0.pinLeading(to: label, .trailing).constrainWidth(to: $0, .height)
+            $0.setTitle(Icon.infoCircle.string, for: .normal)
+            $0.setTitleColor(.dark, for: .normal)
+            $0.setTitleColor(.black, for: .highlighted)
+            $0.adjustsImageWhenHighlighted = false
+            $0.titleLabel?.font = .fontAwesome(.regular, size: 20)
+            $0.contentVerticalAlignment = .bottom
+            $0.contentEdgeInsets = UIEdgeInsets(bottom: 10)
+            $0.addTarget(for: .touchUpInside) { [weak self] in self?.callback() }
         }
     }
     
-    func configure(text: String) {
-        label.text = text
+    func configure(text: String, callback: @escaping () -> Void) {
+        self.label.text = text
+        self.callback = callback
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         label.text = nil
+        callback = {}
+    }
+    
+    static func size(ofText text: String, in collectionView: UICollectionView) -> CGSize {
+        let height = text.size(boundingWidth: .greatestFiniteMagnitude, font: .extraBold(size: 35)).height
+        
+        return CGSize(
+            width: collectionView.width - .padding * 2,
+            height: height
+        )
     }
     
 }

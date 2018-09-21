@@ -24,7 +24,6 @@ final class SearchViewController: ViewController {
             .suggestion("Conflict"),
             .suggestion("Moneywise"),
             .suggestion("The Outsiders"),
-            .suggestion("Todd Wagner"),
         ]
         
         func size(in collectionView: UICollectionView) -> CGSize {
@@ -41,6 +40,8 @@ final class SearchViewController: ViewController {
     }
     
     private var cells: [Cell] = Cell.suggestions
+    
+    private var headerHeight: CGFloat = 155
     
     private let headerShadowView = ShadowView()
     private let headerView       = UIView()
@@ -65,7 +66,7 @@ final class SearchViewController: ViewController {
             $0.registerCell(SearchSpeakersCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.contentInset.top = 200
+            $0.contentInset.top = headerHeight + 20
             $0.contentInset.bottom = .padding
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
@@ -74,7 +75,7 @@ final class SearchViewController: ViewController {
         
         headerView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 180)
+            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: headerHeight)
             $0.backgroundColor = .lightBackground
         }
         
@@ -125,8 +126,6 @@ final class SearchViewController: ViewController {
         
         view.endEditing(true)
         
-        let queryString = (query.lowercased() == "jp") ? "Jonathan Pokluda" : query
-        
         loadingIndicator.startAnimating()
         
         cells = []
@@ -136,13 +135,10 @@ final class SearchViewController: ViewController {
         
         var shelves: [Contentful.Shelf]   = []
         var posts: [Contentful.Post]      = []
-        var series: [Watermark.Series]    = []
-        var messages: [Watermark.Message] = []
-        var speakers: [Watermark.Speaker] = []
         
         // Shelves
         processor.enqueue { dequeue in
-            Contentful.API.Shelf.search(query: queryString) { result in
+            Contentful.API.Shelf.search(query: query) { result in
                 print("Shelves: \(result.value?.count ?? -1)")
                 shelves.append(contentsOf: result.value ?? [])
                 dequeue()
@@ -151,7 +147,7 @@ final class SearchViewController: ViewController {
         
         // Text Posts
         processor.enqueue { dequeue in
-            Contentful.API.TextPost.search(query: queryString) { result in
+            Contentful.API.TextPost.search(query: query) { result in
                 print("Text Posts: \(result.value?.count ?? -1)")
                 posts.append(contentsOf: result.value?.map(Contentful.Post.text) ?? [])
                 dequeue()
@@ -160,51 +156,11 @@ final class SearchViewController: ViewController {
         
         // External Posts
         processor.enqueue { dequeue in
-            Contentful.API.ExternalPost.search(query: queryString) { result in
+            Contentful.API.ExternalPost.search(query: query) { result in
                 print("External Posts: \(result.value?.count ?? -1)")
                 posts.append(contentsOf: result.value?.map(Contentful.Post.external) ?? [])
                 posts.sort(by: { $0.publishDate > $1.publishDate })
                 dequeue()
-            }
-        }
-        
-        // Messages
-        processor.enqueue { dequeue in
-            Watermark.API.Messages.search(query: queryString) { result in
-                print("Messages: \(result.value?.count ?? -1)")
-                messages.append(contentsOf: result.value ?? [])
-                messages.sort(by: { $0.date > $1.date })
-                dequeue()
-            }
-        }
-        
-        // Series
-        processor.enqueue { dequeue in
-            Watermark.API.Series.search(query: queryString) { result in
-                print("Series: \(result.value?.count ?? -1)")
-                series.append(contentsOf: result.value ?? [])
-                dequeue()
-            }
-        }
-        
-        // Speakers
-        processor.enqueue { dequeue in
-            Watermark.API.Speakers.search(query: queryString) { result in
-                print("Speakers: \(result.value?.count ?? -1)")
-                speakers.append(contentsOf: result.value ?? [])
-                
-                if let speaker = speakers.first {
-                    Watermark.API.Messages.fetch(forSpeaker: speaker) { result in
-                        messages.append(contentsOf: result.value ?? [])
-                        messages.formUnique()
-                        messages.sort(by: { $0.date > $1.date })
-                        
-                        dequeue()
-                    }
-                }
-                else {
-                    dequeue()
-                }
             }
         }
         
@@ -225,24 +181,6 @@ final class SearchViewController: ViewController {
                     cells.append(contentsOf: [
                         .header("Posts"),
                         .posts(posts)
-                    ])
-                }
-                if !series.isEmpty {
-                    cells.append(contentsOf: [
-                        .header("Series"),
-                        .series(series)
-                    ])
-                }
-                if !messages.isEmpty {
-                    cells.append(contentsOf: [
-                        .header("Messages"),
-                        .messages(messages)
-                    ])
-                }
-                if !speakers.isEmpty {
-                    cells.append(contentsOf: [
-                        .header("Speakers"),
-                        .speakers(speakers)
                     ])
                 }
                 
@@ -327,8 +265,8 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDelega
         let offset = scrollView.adjustedOffset.y
         
         if offset >= 0 {
-            headerView.transform = .translate(0, -offset.limited(0, 180 - 64))
-            headerShadowView.transform = .translate(0, -offset.limited(0, 180 - 64))
+            headerView.transform = .translate(0, -offset.limited(0, headerHeight - 64))
+            headerShadowView.transform = .translate(0, -offset.limited(0, headerHeight - 64))
         }
         else {
             headerView.transform = .translate(0, pow(-offset, 0.7))
@@ -336,7 +274,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDelega
         }
         
         headerLabel.alpha = 1 - scrollView.adjustedOffset.y.map(from: 0...100, to: 0...1).limited(0, 1)
-        headerShadowView.alpha = scrollView.adjustedOffset.y.map(from: 100...(180 - 64), to: 0...1).limited(0, 1)
+        headerShadowView.alpha = scrollView.adjustedOffset.y.map(from: 75...(headerHeight - 64), to: 0...1).limited(0, 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

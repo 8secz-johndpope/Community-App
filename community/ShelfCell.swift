@@ -60,4 +60,11 @@ final class ShelfCell: CollectionViewCell {
         titleLabel.text = nil
     }
     
+    static func size(ofShelf shelf: Contentful.Shelf, in collectionView: UICollectionView) -> CGSize {
+        return CGSize(
+            width: collectionView.width,
+            height: 50
+        )
+    }
+    
 }

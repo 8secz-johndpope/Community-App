@@ -33,9 +33,9 @@ final class TableSectionView: View {
         }
     }
     
-    func configure(posts: [Contentful.Post]) {
-        self.posts = posts
-        self.collectionView.reloadData()
+    func configure(table: Contentful.Table?) {
+        posts = table?.posts ?? []
+        collectionView.reloadData()
     }
     
 }
