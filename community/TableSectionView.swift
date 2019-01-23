@@ -66,6 +66,7 @@ extension TableSectionView: UICollectionViewDelegate, UICollectionViewDelegateFl
         case .external(let post): DeepLink.handle(url: post.url)
         case .text(let post):     ContentViewController(textPost: post).show()
         }
+        Analytics.viewed(tablePost: post)
     }
     
 }

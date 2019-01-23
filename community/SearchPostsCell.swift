@@ -85,6 +85,8 @@ extension SearchPostsCell: UICollectionViewDelegate, UICollectionViewDelegateFlo
         case .external(let post): DeepLink.handle(url: post.url)
         case .text(let post):     ContentViewController(textPost: post).show()
         }
+        
+        Analytics.viewed(searchPost: post)
     }
     
 }

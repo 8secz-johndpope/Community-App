@@ -200,6 +200,8 @@ final class SearchViewController: ViewController {
                     ])
                 }
                 
+                Analytics.searched(query: query, shelfCount: shelves.count, postCount: posts.count)
+                
                 self.cells = cells
                 self.collectionView.reloadData()
                 self.loadingIndicator.stopAnimating()

@@ -81,7 +81,7 @@ final class CommunityQuestionsView: View {
             elements.append(contentsOf: [
                 .view(.lightBackground, .padding),
                 .custom(QuestionView(number: index + 1, question: question)),
-                ])
+            ])
         }
         
         elements.append(.view(.lightBackground, .padding))

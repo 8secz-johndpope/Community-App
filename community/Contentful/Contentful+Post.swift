@@ -24,12 +24,12 @@ extension Contentful {
         
         var title: String {
             switch self {
-            case .sermonGuide: return "SERMON GUIDE"
-            case .sermon:      return "MESSAGE"
-            case .rtrq:        return "REAL TRUTH. REAL QUICK."
-            case .website:     return "WEBSITE"
-            case .post:        return "POST"
-            case .file:        return "FILE"
+            case .sermonGuide: return "Sermon Guide"
+            case .sermon:      return "Sermon"
+            case .rtrq:        return "Real Truth. Real Quick."
+            case .website:     return "Website"
+            case .post:        return "Post"
+            case .file:        return "File"
             }
         }
         

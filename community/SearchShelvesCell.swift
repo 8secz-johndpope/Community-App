@@ -72,6 +72,7 @@ extension SearchShelvesCell: UICollectionViewDelegate, UICollectionViewDelegateF
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let shelf = self.shelves.at(indexPath.row) else { return }
         UIViewController.current?.navigationController?.pushViewController(ShelfViewController(shelf: shelf), animated: true)
+        Analytics.viewed(searchShelf: shelf)
     }
     
 }

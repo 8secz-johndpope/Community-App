@@ -152,12 +152,15 @@ extension ShelfViewController: UICollectionViewDelegate, UICollectionViewDelegat
         guard let cell = cells.at(indexPath.row) else { return }
         
         switch cell {
-        case .shelf(let shelf): navigationController?.pushViewController(ShelfViewController(shelf: shelf), animated: true)
+        case .shelf(let shelf):
+            navigationController?.pushViewController(ShelfViewController(shelf: shelf), animated: true)
+            Analytics.viewed(pantryShelf: shelf)
         case .post(let post):
             switch post {
             case .external(let post): DeepLink.handle(url: post.url)
             case .text(let post):     ContentViewController(textPost: post).show(in: self)
             }
+            Analytics.viewed(pantryPost: post)
         }
     }
     

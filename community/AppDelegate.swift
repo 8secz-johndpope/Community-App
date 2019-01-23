@@ -23,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         Contentful.API.loadAllContent()
         
+        Analytics.appOpened()
+        
         return true
     }
     

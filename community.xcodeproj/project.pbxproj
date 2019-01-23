@@ -175,6 +175,7 @@
 		81B61F6B211CFF5F001B517F /* UIImageColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6A211CFF5F001B517F /* UIImageColors.swift */; };
 		81B61F6D211D198A001B517F /* PantryPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6C211D198A001B517F /* PantryPostCell.swift */; };
 		81B61F6F211D2715001B517F /* LeftAlignedCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */; };
+		81C78A1F21F7FBC8009ACE74 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C78A1E21F7FBC8009ACE74 /* Analytics.swift */; };
 		81CFC91420FAFF26006BF518 /* CommonMarkRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */; };
 		81CFC91620FB008A006BF518 /* SelfSizingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91520FB008A006BF518 /* SelfSizingTextView.swift */; };
 		81CFC91820FB01DF006BF518 /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91720FB01DF006BF518 /* UIScrollView+Extensions.swift */; };
@@ -403,6 +404,7 @@
 		81B61F6A211CFF5F001B517F /* UIImageColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageColors.swift; sourceTree = "<group>"; };
 		81B61F6C211D198A001B517F /* PantryPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PantryPostCell.swift; sourceTree = "<group>"; };
 		81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedCollectionViewLayout.swift; sourceTree = "<group>"; };
+		81C78A1E21F7FBC8009ACE74 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonMarkRenderer.swift; sourceTree = "<group>"; };
 		81CFC91520FB008A006BF518 /* SelfSizingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfSizingTextView.swift; sourceTree = "<group>"; };
 		81CFC91720FB01DF006BF518 /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
@@ -625,6 +627,7 @@
 				8160E8C021F6772600FB329B /* CommunityQuestionsView.swift */,
 				8160E8C221F6773200FB329B /* QuestionView.swift */,
 				8160E8DA21F6AEE300FB329B /* Storage.swift */,
+				81C78A1E21F7FBC8009ACE74 /* Analytics.swift */,
 				81ED74DF20FA7A8100BE1F4C /* Watermark */,
 				81938C1E20FA40BE0080DEFF /* Contentful */,
 				81938BFC20F9B3760080DEFF /* Extensions */,
@@ -1026,6 +1029,7 @@
 				81CFC91620FB008A006BF518 /* SelfSizingTextView.swift in Sources */,
 				8100DFF821324F1B00BA046B /* PaddedLabel.swift in Sources */,
 				81206A0820FD77ED00696D32 /* Numerable.swift in Sources */,
+				81C78A1F21F7FBC8009ACE74 /* Analytics.swift in Sources */,
 				81CFC91820FB01DF006BF518 /* UIScrollView+Extensions.swift in Sources */,
 				81EA567B21191EF0005F25DB /* PantrySectionView.swift in Sources */,
 				816781FD21F2E58200E96C29 /* YouTube.swift in Sources */,

@@ -47,6 +47,7 @@ final class TableHeaderView: View {
                 guard let self = self else { return }
                 let buttonFrame = self.convert(self.videoButton.frame, to: AppDelegate.shared.window)
                 VideoViewController().show(buttonMinY: buttonFrame.minY)
+                Analytics.viewedIntroView()
             }
         }
     }

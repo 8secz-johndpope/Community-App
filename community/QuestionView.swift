@@ -17,7 +17,10 @@ final class QuestionView: View {
     private var infoConstraint: NSLayoutConstraint?
     private var isExpanded: Bool = false
     
+    private let question: Contentful.Question
+    
     required init(number: Int, question: Contentful.Question) {
+        self.question = question
         super.init(frame: .zero)
         configure(number: number, question: question.question, info: question.info)
     }
@@ -94,7 +97,11 @@ final class QuestionView: View {
     private func toggle() {
         isExpanded.toggle()
         
-        self.infoConstraint?.isActive = self.isExpanded
+        self.infoConstraint?.isActive = isExpanded
+        
+        if isExpanded {
+            Analytics.viewed(question: question)
+        }
         
         UIView.animate(withDuration: 0.2, delay: 0, options: .allowUserInteraction, animations: {
             if self.isExpanded {
