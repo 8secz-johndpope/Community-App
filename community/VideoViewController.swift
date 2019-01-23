@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 final class TriangleView : UIView {
     
@@ -42,10 +43,13 @@ final class VideoViewController: ViewController {
     
     deinit {
         videoView.stop()
+        configureBackgroundAudio(isEnabled: false)
     }
     
     override func setup() {
         super.setup()
+        
+        configureBackgroundAudio(isEnabled: true)
         
         blurView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
@@ -96,6 +100,38 @@ final class VideoViewController: ViewController {
             $0.backgroundColor = .clear
             $0.color = .white
             $0.transform = .rotate(.pi)
+        }
+    }
+    
+    func configureBackgroundAudio(isEnabled: Bool) {
+        if isEnabled {
+            do {
+                try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+                try AVAudioSession.sharedInstance().setActive(true)
+            }
+            catch {
+                print("""
+                    ===========================================================================
+                    
+                    Error starting audio session: \(error.localizedDescription)
+                    
+                    ===========================================================================
+                    """)
+            }
+        }
+        else {
+            do {
+                try AVAudioSession.sharedInstance().setActive(false)
+            }
+            catch {
+                print("""
+                    ===========================================================================
+                    
+                    Error deactivating audio session: \(error.localizedDescription)
+                    
+                    ===========================================================================
+                    """)
+            }
         }
     }
     
