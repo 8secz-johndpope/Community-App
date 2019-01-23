@@ -67,7 +67,6 @@
 		8116F20220F9A7D5005A2171 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8116F20120F9A7D5005A2171 /* AppDelegate.swift */; };
 		8116F20420F9A7D5005A2171 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8116F20320F9A7D5005A2171 /* ViewController.swift */; };
 		8116F20920F9A7D8005A2171 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8116F20820F9A7D8005A2171 /* Assets.xcassets */; };
-		8116F20C20F9A7D8005A2171 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8116F20A20F9A7D8005A2171 /* LaunchScreen.storyboard */; };
 		8116F21820F9A918005A2171 /* PantryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8116F21720F9A918005A2171 /* PantryViewController.swift */; };
 		811BEB18211A7BAA00C037C2 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 811BEB17211A7BA900C037C2 /* SearchViewController.swift */; };
 		812069FC20FD6EC700696D32 /* ContentHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812069FB20FD6EC700696D32 /* ContentHeaderView.swift */; };
@@ -293,7 +292,6 @@
 		8116F20120F9A7D5005A2171 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8116F20320F9A7D5005A2171 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8116F20820F9A7D8005A2171 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		8116F20B20F9A7D8005A2171 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8116F20D20F9A7D8005A2171 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8116F21720F9A918005A2171 /* PantryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PantryViewController.swift; sourceTree = "<group>"; };
 		811BEB17211A7BA900C037C2 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -633,7 +631,6 @@
 				81938BFC20F9B3760080DEFF /* Extensions */,
 				81938BD520F9AEF50080DEFF /* Fonts */,
 				8116F20820F9A7D8005A2171 /* Assets.xcassets */,
-				8116F20A20F9A7D8005A2171 /* LaunchScreen.storyboard */,
 				8116F20D20F9A7D8005A2171 /* Info.plist */,
 				81357F0121F7F6AB0089BE3E /* GoogleService-Info.plist */,
 			);
@@ -899,7 +896,6 @@
 				81245D67217B950C007B2277 /* Karla-Italic.ttf in Resources */,
 				81245D65217B950C007B2277 /* Karla-BoldItalic.ttf in Resources */,
 				81938BF020F9B0850080DEFF /* Font Awesome 5 Pro-Light-300.otf in Resources */,
-				8116F20C20F9A7D8005A2171 /* LaunchScreen.storyboard in Resources */,
 				81245D68217B950C007B2277 /* Karla-Regular.ttf in Resources */,
 				81245D5C217B9501007B2277 /* CrimsonText-BoldItalic.ttf in Resources */,
 				81245D60217B9501007B2277 /* CrimsonText-Italic.ttf in Resources */,
@@ -1120,17 +1116,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		8116F20A20F9A7D8005A2171 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				8116F20B20F9A7D8005A2171 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		8101D49720FAEC010085BF0D /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1314,6 +1299,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5Z8S3JU749;
@@ -1343,6 +1329,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5Z8S3JU749;
