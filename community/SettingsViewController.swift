@@ -34,7 +34,7 @@ final class SettingsViewController: ViewController {
         UILabel(superview: containerView).customize {
             $0.pinLeading(to: containerView, plus: .padding).pinTrailing(to: containerView, plus: -.padding)
             $0.pinTop(to: containerView, plus: 60).pinBottom(to: containerView).constrainSize(toFit: .vertical)
-            $0.font = .extraBold(size: 35)
+            $0.font = .header
             $0.textColor = .dark
             $0.text = "Settings"
         }

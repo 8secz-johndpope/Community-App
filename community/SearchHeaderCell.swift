@@ -19,7 +19,7 @@ final class SearchHeaderCell: CollectionViewCell {
         label.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview(leading: .padding, trailing: .padding)
             $0.textColor = .dark
-            $0.font = .extraBold(size: 20)
+            $0.font = .crimsonText(.semiBold, size: 20)
             $0.numberOfLines = 0
         }
     }
@@ -35,7 +35,7 @@ final class SearchHeaderCell: CollectionViewCell {
     
     static func size(forText text: String, in collectionView: UICollectionView) -> CGSize {
         let labelWidth = collectionView.width - .padding * 2
-        let height = text.size(boundingWidth: labelWidth, font: .extraBold(size: 20)).height.rounded(.up)
+        let height = text.size(boundingWidth: labelWidth, font: .crimsonText(.semiBold, size: 20)).height.rounded(.up)
         
         return CGSize(width: collectionView.width, height: height)
     }

@@ -12,21 +12,21 @@ final class PantryViewController: ViewController {
     
     enum Cell {
         case space(CGFloat)
-        case header(String, () -> Void)
+        case header(String, String)
         case shelf(Contentful.Shelf)
         
         func size(in collectionView: UICollectionView) -> CGSize {
             switch self {
-            case .space(let height):   return CGSize(width: collectionView.width, height: height)
-            case .header(let text, _): return HeaderCell.size(ofText: text, in: collectionView)
-            case .shelf(let shelf):    return ShelfCell.size(ofShelf: shelf, in: collectionView)
+            case let .space(height):           return CGSize(width: collectionView.width, height: height)
+            case let .header(title, subtitle): return HeaderCell.size(ofTitle: title, subtitle: subtitle, in: collectionView)
+            case let .shelf(shelf):            return ShelfCell.size(ofShelf: shelf, in: collectionView)
             }
         }
     }
     
     private var cells: [Cell] = []
     
-    private let collectionView = UICollectionView(layout: .vertical(lineSpacing: 0))
+    private let collectionView = UICollectionView(layout: .vertical(lineSpacing: 0, sectionInset: UIEdgeInsets(bottom: .padding)))
     private let shadowView     = ShadowView()
     private let headerView     = UIView()
     private let headerLabel    = UILabel()
@@ -88,7 +88,7 @@ final class PantryViewController: ViewController {
             $0.pinBottom(to: headerView).constrainHeight(to: 50)
             $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
             $0.font = .bold(size: 16)
-            $0.textColor = .grayBlue
+            $0.textColor = .dark
             $0.text = "The Pantry"
         }
         
@@ -113,9 +113,9 @@ final class PantryViewController: ViewController {
     
     private func generateCells() {
         cells.removeAll()
-        cells.append(.header("The Pantry", { [weak self] in self?.infoTapped() }))
+        cells.append(.header("The Pantry", Contentful.LocalStorage.pantry?.info ?? ""))
         cells.append(.space(.padding))
-        cells.append(contentsOf: Contentful.LocalStorage.pantry?.shelves.filter { !$0.postIDs.isEmpty }.map(Cell.shelf) ?? [])
+        cells.append(contentsOf: Contentful.LocalStorage.pantry?.shelves.map(Cell.shelf) ?? [])
     }
     
     private func infoTapped() {
@@ -139,9 +139,9 @@ extension PantryViewController: UICollectionViewDataSource {
         switch cells[indexPath.row] {
         case .space:
             return collectionView.dequeueCell(for: indexPath)
-        case let .header(text, callback):
+        case let .header(title, subtitle):
             let cell: HeaderCell = collectionView.dequeueCell(for: indexPath)
-            cell.configure(text: text, callback: callback)
+            cell.configure(title: title, subtitle: subtitle)
             return cell
         case .shelf(let shelf):
             let cell: ShelfCell = collectionView.dequeueCell(for: indexPath)

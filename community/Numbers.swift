@@ -26,6 +26,22 @@ extension CGFloat {
         return UIScreen.main.width * 0.75
     }
     
+    static var safeLeft: CGFloat {
+        return AppDelegate.shared.window?.safeAreaInsets.left ?? 0
+    }
+    
+    static var safeRight: CGFloat {
+        return AppDelegate.shared.window?.safeAreaInsets.right ?? 0
+    }
+    
+    static var safeTop: CGFloat {
+        return AppDelegate.shared.window?.safeAreaInsets.top ?? 0
+    }
+    
+    static var safeBottom: CGFloat {
+        return AppDelegate.shared.window?.safeAreaInsets.bottom ?? 0
+    }
+    
 }
 
 extension CGSize {

@@ -18,15 +18,21 @@ enum DeepLink {
             if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "message" {
                 Watermark.API.Messages.fetch(id: id) { result in
                     DispatchQueue.main.async {
-                        guard let message = result.value else { return }
-                        MessageViewController(message: message).show()
+                        guard let message = result.value else {
+                            UIViewController.current?.showInSafari(url: url)
+                            return
+                        }
+                        ContentViewController(message: message).show()
                     }
                 }
             }
             else if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "series" {
                 Watermark.API.Series.fetch(id: id) { result in
                     DispatchQueue.main.async {
-                        guard let series = result.value else { return }
+                        guard let series = result.value else {
+                            UIViewController.current?.showInSafari(url: url)
+                            return
+                        }
                         SeriesViewController(series: series).show()
                     }
                 }

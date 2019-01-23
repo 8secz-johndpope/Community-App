@@ -1,5 +1,5 @@
 //
-//  MessageHeaderView.swift
+//  ContentHeaderView.swift
 //  community
 //
 //  Created by Jonathan Landon on 7/16/18.
@@ -10,16 +10,16 @@ import Alexandria
 import AVFoundation
 import MediaPlayer
 
-protocol MessageHeaderViewDelegate: AnyObject {
-    func didUpdate(progress: CGFloat, in view: MessageHeaderView)
-    func didUpdate(buffer: CGFloat, in view: MessageHeaderView)
-    func didShowOverlay(in view: MessageHeaderView)
-    func didHideOverlay(in view: MessageHeaderView)
-    func didPlay(in view: MessageHeaderView)
-    func didPause(in view: MessageHeaderView)
+protocol ContentHeaderViewDelegate: AnyObject {
+    func didUpdate(progress: CGFloat, in view: ContentHeaderView)
+    func didUpdate(buffer: CGFloat, in view: ContentHeaderView)
+    func didShowOverlay(in view: ContentHeaderView)
+    func didHideOverlay(in view: ContentHeaderView)
+    func didPlay(in view: ContentHeaderView)
+    func didPause(in view: ContentHeaderView)
 }
 
-final class MessageHeaderView: View {
+final class ContentHeaderView: View {
     
     enum AspectMode {
         case fit
@@ -30,12 +30,13 @@ final class MessageHeaderView: View {
     
     @objc dynamic private(set) var isShowingControls = true
     
-    private var message: Watermark.Message?
+    private var content: ContentViewController.Content?
     private var isDragging = false
     
     private let videoView        = VideoView()
     private let dimmerView       = UIView()
     private let loadingIndicator = LoadingView()
+    private let titleLabel       = UILabel()
     
     private let imageView = LoadingImageView()
     
@@ -47,9 +48,11 @@ final class MessageHeaderView: View {
     private var isLoading = false {
         didSet {
             if isLoading {
+                titleLabel.isHidden = true
                 loadingIndicator.startAnimating()
             }
             else {
+                titleLabel.isHidden = false
                 loadingIndicator.stopAnimating()
             }
         }
@@ -61,7 +64,7 @@ final class MessageHeaderView: View {
     private var leadingVideoConstraint: NSLayoutConstraint?
     private var trailingVideoConstraint: NSLayoutConstraint?
     
-    weak var delegate: MessageHeaderViewDelegate?
+    weak var delegate: ContentHeaderViewDelegate?
     
     var duration: TimeInterval {
         return videoView.duration.limited(0, .greatestFiniteMagnitude)
@@ -78,6 +81,7 @@ final class MessageHeaderView: View {
             videoView.pause()
         }
         else {
+            imageView.isHidden = true
             videoView.playFromCurrentTime()
             hideControls()
         }
@@ -87,7 +91,7 @@ final class MessageHeaderView: View {
         videoView.removeFromSuperview()
         videoView.add(toSuperview: self, at: 0).customize {
             videoFillConstraints = [
-                $0.constrain(.top, to: self, .top, atPriority: .required - 1),
+                $0.constrainSafely(.top, to: self, .top, atPriority: .required - 1),
                 $0.constrain(.bottom, to: self, .bottom, atPriority: .required - 1),
                 $0.constrain(.centerX, to: self, .centerX, atPriority: .required - 1)
             ]
@@ -111,6 +115,12 @@ final class MessageHeaderView: View {
         backgroundColor = .clear
         constrainWidth(to: 100, .greaterThanOrEqual)
         
+        imageView.add(toSuperview: self).customize {
+            $0.constrainEdgesToSuperview()
+            $0.contentMode = .scaleAspectFill
+            $0.clipsToBounds = true
+        }
+        
         videoView.customize {
             addVideoView()
             
@@ -127,6 +137,15 @@ final class MessageHeaderView: View {
             $0.isUserInteractionEnabled = false
         }
         
+        titleLabel.add(toSuperview: self).customize {
+            $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
+            $0.pinCenterY(to: self).constrainSize(toFit: .vertical)
+            $0.font = .title
+            $0.textColor = .lightBackground
+            $0.numberOfLines = 0
+            $0.textAlignment = .center
+        }
+        
         loadingIndicator.add(toSuperview: self).customize {
             $0.pinCenterX(to: self).pinCenterY(to: self)
             $0.constrainWidth(to: 30).constrainHeight(to: 30)
@@ -137,7 +156,7 @@ final class MessageHeaderView: View {
     
 }
 
-extension MessageHeaderView {
+extension ContentHeaderView {
     
     private func setupRemoteCommands() {
         let commandCenter = MPRemoteCommandCenter.shared()
@@ -186,33 +205,24 @@ extension MessageHeaderView {
     }
     
     private func updateNowPlayingInfo() {
-        guard
-            let title = message?.title,
-            let organization = message?.series.title,
-            let authors = message?.speakers.map({ $0.name }).joined(separator: ", "),
-            let url = message?.videoAsset?.url,
-            //            let image = authorView.image,
-            videoView.duration > 0
-        else { return }
+        guard let content = content else { return }
         
-        var info: [String : Any] = [
-            MPMediaItemPropertyTitle : title,
-            MPMediaItemPropertyAlbumTitle : organization,
-            MPMediaItemPropertyArtist : authors,
-            MPNowPlayingInfoPropertyElapsedPlaybackTime : NSNumber(value: videoView.currentTime),
-            MPMediaItemPropertyPlaybackDuration : NSNumber(value: videoView.duration),
-            MPMediaItemPropertyAssetURL : url
-        ]
-        
-        if let image = imageView.image {
-            print("Image: \(image)")
-            info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size) { _ in return image }
+        switch content {
+        case .message(let message):
+            MPNowPlayingInfoCenter.update(
+                message: message,
+                image: imageView.image,
+                currentTime: videoView.currentTime,
+                duration: videoView.duration
+            )
+        case .textPost(let post):
+            MPNowPlayingInfoCenter.update(
+                textPost: post,
+                image: imageView.image,
+                currentTime: videoView.currentTime,
+                duration: videoView.duration
+            )
         }
-        else {
-            print("No image")
-        }
-        
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
     }
     
     func update(alpha: CGFloat) {
@@ -265,6 +275,7 @@ extension MessageHeaderView {
             
             UIView.animate(withDuration: 0.25) {
                 self.dimmerView.alpha = 0
+                self.titleLabel.alpha = 0
             }
         }
         else {
@@ -272,6 +283,7 @@ extension MessageHeaderView {
             
             UIView.animate(withDuration: 0.25) {
                 self.dimmerView.alpha = 1
+                self.titleLabel.alpha = 1
             }
         }
         
@@ -288,7 +300,7 @@ extension MessageHeaderView {
     func hideControls() {
         overlayTimer?.invalidate()
         overlayTimer = Timer.once(after: 2) { [weak self] in
-            guard let `self` = self, self.isShowingControls else { return }
+            guard let self = self, self.isShowingControls else { return }
             self.toggleControls()
         }
     }
@@ -327,22 +339,58 @@ extension MessageHeaderView {
         }
     }
     
+    func configure(content: ContentViewController.Content) {
+        switch content {
+        case .message(let message): configure(message: message)
+        case .textPost(let post):   configure(textPost: post)
+        }
+    }
+    
     func configure(message: Watermark.Message) {
-        self.message = message
+        self.content = .message(message)
         
         configureBackgroundAudio(isEnabled: true)
         
         imageView.load(url: message.image?.url)
+        imageView.isHidden = true
         
         isLoading = true
         
-//        videoView.setup(url: "https://aaiaxqp-lh.akamaihd.net/i/porch_live_1@52223/master.m3u8")
+        videoView.autoPlay = true
         videoView.setup(url: message.videoAsset?.url)
     }
     
     func update(message: Watermark.Message, startTime: TimeInterval? = nil) {
-        self.message = message
+        self.content = .message(message)
         commit(toTime: startTime ?? 0)
+    }
+    
+    func configure(textPost: Contentful.TextPost) {
+        self.content = .textPost(textPost)
+        
+        configureBackgroundAudio(isEnabled: true)
+        
+        if let image = textPost.image?.url {
+            imageView.load(url: image)
+            dimmerView.isHidden = false
+        }
+        else {
+            imageView.image = textPost.type.image
+            dimmerView.isHidden = true
+        }
+        
+        titleLabel.text = textPost.title
+        
+        if let video = textPost.video {
+            isLoading = true
+            
+            videoView.autoPlay = false
+            videoView.setup(video: video)
+        }
+        else {
+            imageView.isHidden = false
+            videoView.isHidden = true
+        }
     }
     
     func seek(toProgress progress: CGFloat) {
@@ -395,38 +443,17 @@ extension MessageHeaderView {
     
 }
 
-//extension MessageHeaderView {
-//
-//    func prepareForTransition() {
-//        videoView.alpha = 0
-//        dimmerView.alpha = 0
-//        loadingIndicator.alpha = 0
-//    }
-//
-//    func transition(duration: TimeInterval, delay: TimeInterval) {
-//        UIView.animate(withDuration: duration, delay: delay, options: [], animations: {
-//            self.loadingIndicator.alpha = 1
-//        }, completion: nil)
-//    }
-//
-//    func finishTransition() {
-//        backgroundColor = .black
-//        videoView.alpha = 1
-//        dimmerView.alpha = 1
-//    }
-//
-//}
-
-extension MessageHeaderView: VideoDelegate {
+extension ContentHeaderView: VideoDelegate {
     
     func videoReady(_ player: VideoView) {
-        guard window != nil, player.playbackState != .paused else { return }
+        guard window != nil, player.playbackState != .paused, player.autoPlay else { return }
         player.playFromCurrentTime()
     }
     
     func videoPlaybackStateDidChange(_ player: VideoView) {
         switch player.playbackState {
         case .playing:
+            isLoading = false
             delegate?.didPlay(in: self)
         case .paused:
             if !isShowingControls {
@@ -454,7 +481,7 @@ extension MessageHeaderView: VideoDelegate {
         
         isLoading = false
         
-        guard player.playbackState != .paused else { return }
+        guard player.playbackState != .paused, player.autoPlay else { return }
         
         hideControls()
         
@@ -465,7 +492,7 @@ extension MessageHeaderView: VideoDelegate {
     
 }
 
-extension MessageHeaderView: VideoPlaybackDelegate {
+extension ContentHeaderView: VideoPlaybackDelegate {
     
     func videoCurrentTimeDidChange(_ player: VideoView) {
         guard player.duration > 0 else { return }

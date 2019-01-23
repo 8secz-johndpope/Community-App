@@ -96,7 +96,7 @@ final class MessageListViewController: ViewController, StatusBarViewController {
             $0.backgroundColor = .clear
             $0.configure(elements: [
                 .view(.clear, 60),
-                .custom(header(text: "Messages".attributed.font(.extraBold(size: 35)).color(.lightBackground), backgroundColor: .clear).view),
+                .custom(header(text: "Messages".attributed.font(.header).color(.lightBackground), backgroundColor: .clear).view),
                 .view(.clear, .padding),
                 .view(.clear, latestMessageCellHeight),
                 .view(.clear, .padding),
@@ -172,14 +172,14 @@ final class MessageListViewController: ViewController, StatusBarViewController {
         
         processor.enqueue { [weak self] dequeue in
             DispatchQueue.main.async {
-                guard let `self` = self else { return }
+                guard let self = self else { return }
                 
                 self.loadingIndicator.stopAnimating()
                 self.refreshControl.endRefreshing()
                 
                 var seriesIndex: Int?
                 
-                let messageHeader = self.header(text: "Messages".attributed.font(.extraBold(size: 35)).color(.lightBackground), backgroundColor: .clear)
+                let messageHeader = self.header(text: "Messages".attributed.font(.header).color(.lightBackground), backgroundColor: .clear)
                 
                 var elements: [StackView.Element] = [
                     .view(.clear, 60),
@@ -223,7 +223,7 @@ final class MessageListViewController: ViewController, StatusBarViewController {
                     
                     elements.append(contentsOf: [
                         .view(.lightBackground, .padding),
-                        .custom(self.header(text: "Series".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground).view),
+                        .custom(self.header(text: "Series".attributed.font(.crimsonText(.bold, size: 20)).color(.dark), backgroundColor: .lightBackground).view),
                         .view(.lightBackground, .padding),
                         .custom(self.seriesSectionView),
                     ])
@@ -234,7 +234,7 @@ final class MessageListViewController: ViewController, StatusBarViewController {
                 if messages.count > 1 {
                     elements.append(contentsOf: [
                         .view(.lightBackground, .padding),
-                        .custom(self.header(text: "Recent".attributed.font(.extraBold(size: 20)).color(.dark), backgroundColor: .lightBackground).view),
+                        .custom(self.header(text: "Recent".attributed.font(.crimsonText(.bold, size: 20)).color(.dark), backgroundColor: .lightBackground).view),
                     ])
                 }
                 
@@ -275,7 +275,7 @@ final class MessageListViewController: ViewController, StatusBarViewController {
     }
     
     func tapped(message: Watermark.Message) {
-        MessageViewController(message: message).show()
+        ContentViewController(message: message).show()
     }
     
 }

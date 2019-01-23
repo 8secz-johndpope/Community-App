@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum Video {
+    case message(Int)
+    case raw(URL)
+    case youtube(String)
+}
+
 extension Contentful {
     
     struct TextPost: Initializable {
@@ -16,10 +22,12 @@ extension Contentful {
         let publishDate: Date
         let authorID: String
         let postImageAssetID: String
+        let mediaURL: URL?
         let isInTable: Bool
         let createdAt: Date
         let updatedAt: Date
         let type: PostType
+        let video: Video?
         
         var author: Contentful.Author? {
             return Contentful.LocalStorage.authors.first(where: { $0.id == authorID })
@@ -35,7 +43,8 @@ extension Contentful {
                 let title = json.dictionary(forKey: "fields").string(forKey: "title"),
                 let content = json.dictionary(forKey: "fields").string(forKey: "content"),
                 let publishDate = json.dictionary(forKey: "fields").date(forKey: "publishDate", formatter: .yearMonthDay),
-                let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue")
+                let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue"),
+                publishDate < Date()
             else { return nil }
             
             self.id               = id
@@ -44,10 +53,37 @@ extension Contentful {
             self.publishDate      = publishDate
             self.authorID         = json.dictionary(forKeys: "fields", "author", "sys").string(forKey: "id") ?? ""
             self.postImageAssetID = json.dictionary(forKeys: "fields", "postImage", "sys").string(forKey: "id") ?? ""
+            self.mediaURL         = json.dictionary(forKey: "fields").url(forKey: "mediaUrl")
             self.isInTable        = isInTable
             self.createdAt        = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
             self.updatedAt        = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
             self.type             = json.dictionary(forKey: "fields").enum(forKey: "type") ?? .post
+            
+            if let mediaURL = self.mediaURL {
+                switch mediaURL.host {
+                case "www.watermark.org":
+                    let pathComponents = mediaURL.path.components(separatedBy: "/").filter { !$0.isEmpty }
+                    
+                    if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "message" {
+                        self.video = .message(id)
+                    }
+                    else {
+                        self.video = nil
+                    }
+                case "www.youtube.com":
+                    if let id = mediaURL.components?.queryItems?.first(where: { $0.name == "v" })?.value {
+                        self.video = .youtube(id)
+                    }
+                    else {
+                        self.video = nil
+                    }
+                default:
+                    self.video = .raw(mediaURL)
+                }
+            }
+            else {
+                self.video = nil
+            }
         }
     }
 

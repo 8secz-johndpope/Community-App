@@ -91,10 +91,10 @@ extension TabBarViewController {
         
         var viewController: UIViewController {
             switch self {
-            case .table:    return HomeViewController()//UINavigationController(rootViewController: TableViewController())
+            case .table:    return HomeViewController()
             case .pantry:   return UINavigationController(rootViewController: PantryViewController())
             case .messages: return MessageListViewController()
-            case .search:   return SearchViewController()
+            case .search:   return UINavigationController(rootViewController: SearchViewController())
             case .settings: return SettingsViewController()
             }
         }
@@ -213,7 +213,7 @@ extension TabBarViewController {
             override var isSelected: Bool {
                 didSet {
                     iconView.font = isSelected ? .fontAwesome(.solid, size: 20) : .fontAwesome(.regular, size: 20)
-                    iconView.textColor = isSelected ? .orange : .light
+                    iconView.textColor = isSelected ? .darkBlue : .light
                 }
             }
             

@@ -10,13 +10,12 @@ import Alexandria
 
 final class ShelfCell: CollectionViewCell {
     
-    private let iconView    = UILabel()
     private let titleLabel  = UILabel()
     private let chevronView = UILabel()
     
     override var isHighlighted: Bool {
         didSet {
-            contentView.backgroundColor = isHighlighted ? .lightest : .lightBackground
+            contentView.backgroundColor = isHighlighted ? .lightest : .clear
         }
     }
     
@@ -26,15 +25,8 @@ final class ShelfCell: CollectionViewCell {
         contentView.clipsToBounds = true
         contentView.backgroundColor = .clear
         
-        iconView.add(toSuperview: contentView).customize {
-            $0.pinCenterX(to: contentView, .leading, plus: .padding * 1.5).pinCenterY(to: contentView)
-            $0.constrainSize(toFit: .vertical, .horizontal)
-            $0.font = .fontAwesome(.solid, size: 20)
-            $0.textColor = .dark
-        }
-        
         titleLabel.add(toSuperview: contentView).customize {
-            $0.pinLeading(to: contentView, plus: .padding * 3)
+            $0.pinLeading(to: contentView, plus: .padding)
             $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 18)
             $0.textColor = .dark
@@ -50,13 +42,11 @@ final class ShelfCell: CollectionViewCell {
     }
     
     func configure(shelf: Contentful.Shelf) {
-        iconView.set(icon: shelf.icon)
         titleLabel.text = shelf.name
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        iconView.text = nil
         titleLabel.text = nil
     }
     

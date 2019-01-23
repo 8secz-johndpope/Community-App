@@ -35,12 +35,23 @@ extension Contentful {
         
         var backgroundColor: UIColor {
             switch self {
-            case .sermonGuide: return .dark
-            case .sermon:      return .orange
-            case .rtrq:        return #colorLiteral(red: 0.1137254902, green: 0.6823529412, blue: 0.9254901961, alpha: 1)
-            case .website:     return #colorLiteral(red: 0.3098039216, green: 0.537254902, blue: 0.8509803922, alpha: 1)
-            case .post:        return .grayBlue
-            case .file:        return .gray
+            case .sermonGuide: return .goldPattern
+            case .sermon:      return .goldPattern
+            case .rtrq:        return .lightBluePattern
+            case .website:     return .darkBluePattern
+            case .post:        return .greyPattern
+            case .file:        return .greyPattern
+            }
+        }
+        
+        var image: UIImage {
+            switch self {
+            case .sermonGuide: return #imageLiteral(resourceName: "tile4")
+            case .sermon:      return #imageLiteral(resourceName: "tile4")
+            case .rtrq:        return #imageLiteral(resourceName: "tile2")
+            case .website:     return #imageLiteral(resourceName: "tile1")
+            case .post:        return #imageLiteral(resourceName: "tile3")
+            case .file:        return #imageLiteral(resourceName: "tile3")
             }
         }
     }

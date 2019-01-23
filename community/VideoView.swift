@@ -339,6 +339,25 @@ extension VideoView {
         }
     }
     
+    func setup(video: Video) {
+        switch video {
+        case .message(let id):
+            Watermark.API.Messages.fetch(id: id) { [weak self] result in
+                DispatchQueue.main.async {
+                    self?.setup(url: result.value?.videoAsset?.url)
+                }
+            }
+        case .raw(let url):
+            setup(url: url)
+        case .youtube(let id):
+            YouTube.fetchVideo(id: id) { [weak self] url in
+                DispatchQueue.main.async {
+                    self?.setup(url: url)
+                }
+            }
+        }
+    }
+    
     func setup(url: URL?) {
         
         // ensure everything is reset beforehand
@@ -590,7 +609,7 @@ extension VideoView {
     
     private func addPlayerObservers() {
         timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 10), queue: .main) { [weak self] timeInterval in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             self.playbackDelegate?.videoCurrentTimeDidChange(self)
         }
         

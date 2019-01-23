@@ -8,85 +8,13 @@
 import UIKit
 import Alexandria
 
-final class TableHeaderView: View {
-    
-    private let label = UILabel()
-    
-    override func setup() {
-        super.setup()
-        
-        backgroundColor = .clear
-        
-        label.add(toSuperview: self).customize {
-            $0.pinTop(to: self).pinBottom(to: self)
-            $0.pinLeading(to: self, plus: .padding).constrainSize(toFit: .vertical, .horizontal)
-            $0.backgroundColor = .clear
-            $0.attributedText = "The Table".attributed.font(.extraBold(size: 35)).color(.lightBackground)
-        }
-        
-        UIButton().add(toSuperview: self).customize {
-            $0.pinTop(to: self).pinBottom(to: self)
-            $0.pinLeading(to: label, .trailing).constrainWidth(to: $0, .height)
-            $0.setTitle(Icon.infoCircle.string, for: .normal)
-            $0.setTitleColor(.lightBackground, for: .normal)
-            $0.setTitleColor(.light, for: .highlighted)
-            $0.adjustsImageWhenHighlighted = false
-            $0.titleLabel?.font = .fontAwesome(.regular, size: 20)
-            $0.contentVerticalAlignment = .bottom
-            $0.contentEdgeInsets = UIEdgeInsets(bottom: 10)
-            $0.addTarget(for: .touchUpInside) {
-                guard let info = Contentful.LocalStorage.table?.info, !info.isEmpty else { return }
-                UIAlertController.alert(message: info).addAction(title: "OK").present()
-            }
-        }
-    }
-    
-}
-
-final class CommunityQuestionsView: View {
-    
-    private let label = UILabel()
-    
-    override func setup() {
-        super.setup()
-        
-        backgroundColor = .lightBackground
-        
-        label.add(toSuperview: self).customize {
-            $0.pinTop(to: self).pinBottom(to: self)
-            $0.pinLeading(to: self, plus: .padding).constrainSize(toFit: .vertical, .horizontal)
-            $0.backgroundColor = .lightBackground
-            $0.attributedText = "Community Questions".attributed.font(.extraBold(size: 20)).color(.dark)
-        }
-        
-        UIButton().add(toSuperview: self).customize {
-            $0.pinTop(to: self).pinBottom(to: self)
-            $0.pinLeading(to: label, .trailing).pinTrailing(to: self, plus: -.padding)
-            $0.constrainWidth(to: 40, .greaterThanOrEqual)
-            $0.setTitle(Icon.infoCircle.string, for: .normal)
-            $0.setTitleColor(.dark, for: .normal)
-            $0.setTitleColor(.black, for: .highlighted)
-            $0.adjustsImageWhenHighlighted = false
-            $0.titleLabel?.font = .fontAwesome(.regular, size: 18)
-            $0.contentVerticalAlignment = .bottom
-            $0.contentHorizontalAlignment = .left
-            $0.contentEdgeInsets = UIEdgeInsets(bottom: 4, left: 10)
-            $0.addTarget(for: .touchUpInside) {
-                guard let questionsPost = Contentful.LocalStorage.communityQuestions else { return }
-                TextPostViewController(textPost: questionsPost).show()
-            }
-        }
-    }
-    
-}
-
-
 final class HomeViewController: ViewController {
     
     private let scrollView        = UIScrollView()
     private let containerView     = StackView(axis: .vertical)
+    private let tableHeaderView   = TableHeaderView()
     private let tableSectionView  = TableSectionView()
-    private let pantrySectionView = PantrySectionView()
+    private let questionsView     = CommunityQuestionsView()
     private let loadingIndicator  = LoadingView()
     private let refreshControl    = UIRefreshControl()
     
@@ -98,6 +26,17 @@ final class HomeViewController: ViewController {
         return .lightContent
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if !Storage.has(.introVideoWasShown) {
+            Notifier.onIntroChanged.subscribePastOnce(with: self) {
+                VideoViewController().show(buttonMinY: .safeTop + 44)
+                Storage.set(true, for: .introVideoWasShown)
+            }.onQueue(.main)
+        }
+    }
+    
     override func setup() {
         super.setup()
         
@@ -105,7 +44,7 @@ final class HomeViewController: ViewController {
         
         scrollView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .grayBlue
+            $0.backgroundColor = .darkBlue
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
         }
@@ -144,7 +83,7 @@ final class HomeViewController: ViewController {
             let number = UILabel(superview: view).customize {
                 $0.pinTop(to: view).pinBottom(to: view, atPriority: .required - 1)
                 $0.pinLeading(to: view, plus: .padding).constrainWidth(to: 30).constrainHeight(to: 30)
-                $0.backgroundColor = .orange
+                $0.backgroundColor = .gold
                 $0.cornerRadius = 15
                 $0.text = "\(value)"
                 $0.textColor = .white
@@ -167,19 +106,12 @@ final class HomeViewController: ViewController {
         
         containerView.configure(elements: [
             .view(.clear, 44),
-            .custom(TableHeaderView()),
+            .custom(tableHeaderView),
             .view(.clear, .padding),
             .custom(tableSectionView),
             .view(.clear, .padding),
             .view(.lightBackground, .padding),
-            .custom(CommunityQuestionsView()),
-            .view(.lightBackground, .padding),
-            .custom(number(1, text: "What has God taught you this week?", backgroundColor: .lightBackground)),
-            .view(.lightBackground, .padding),
-            .custom(number(2, text: "What thoughts or actions have hindered your walk with Christ this week?", backgroundColor: .lightBackground)),
-            .view(.lightBackground, .padding),
-            .custom(number(3, text: "How have you helped others see or know Jesus this week?", backgroundColor: .lightBackground)),
-            .view(.lightBackground, .padding),
+            .custom(questionsView),
         ])
         
         UIView().add(toSuperview: containerView, at: 0).customize {
@@ -191,7 +123,7 @@ final class HomeViewController: ViewController {
         UIView(superview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.pinTop(to: view).pinSafely(.bottom, to: view, .top)
-            $0.backgroundColor = .grayBlue
+            $0.backgroundColor = .darkBlue
         }
         
         loadingIndicator.add(toSuperview: view).customize {
@@ -203,9 +135,14 @@ final class HomeViewController: ViewController {
         
         Notifier.onTableChanged.subscribePast(with: self) { [weak self] in
             self?.tableSectionView.configure(table: Contentful.LocalStorage.table)
-            self?.pantrySectionView.configure(shelves: Contentful.LocalStorage.pantry?.shelves ?? [])
+            self?.tableHeaderView.configure(table: Contentful.LocalStorage.table)
             self?.loadingIndicator.stopAnimating()
             self?.refreshControl.endRefreshing()
+        }.onQueue(.main)
+        
+        Notifier.onCommunityQuestionsChanged.subscribePast(with: self) { [weak self] in
+            guard let questions = Contentful.LocalStorage.communityQuestions else { return }
+            self?.questionsView.configure(communityQuestions: questions)
         }.onQueue(.main)
     }
     

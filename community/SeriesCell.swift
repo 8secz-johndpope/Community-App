@@ -35,7 +35,7 @@ final class SeriesCell: CollectionViewCell {
             $0.pinLeading(to: containerView.container, plus: .padding).pinTrailing(to: containerView.container, plus: -.padding)
             $0.pinCenterY(to: containerView.container).constrainSize(toFit: .vertical)
             $0.numberOfLines = 3
-            $0.font = .semiBold(size: 20)
+            $0.font = .bold(size: 20)
             $0.textColor = .dark
             $0.textAlignment = .center
         }

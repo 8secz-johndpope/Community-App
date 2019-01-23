@@ -37,24 +37,23 @@ final class TablePostCell: CollectionViewCell {
             $0.pinTop(to: shadowView.container).pinBottom(to: shadowView.container)
 //            $0.pinTop(to: shadowView.container).constrainHeight(to: $0, .width, times: 9/16)
             $0.contentMode = .scaleAspectFill
-            $0.isHidden = true
             $0.clipsToBounds = true
             $0.showDimmer = true
         }
         
-        dateLabel.add(toSuperview: shadowView.container).customize {
-            $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
-            $0.pinBottom(to: shadowView.container, plus: -.padding).constrainSize(toFit: .vertical)
-            $0.font = .regular(size: 14)
-            $0.textColor = .white
-            $0.textAlignment = .left
-            $0.numberOfLines = 0
-        }
+//        dateLabel.add(toSuperview: shadowView.container).customize {
+//            $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
+//            $0.pinBottom(to: shadowView.container, plus: -.padding).constrainSize(toFit: .vertical)
+//            $0.font = .regular(size: 14)
+//            $0.textColor = .white
+//            $0.textAlignment = .left
+//            $0.numberOfLines = 0
+//        }
         
         titleLabel.add(toSuperview: shadowView.container).customize {
             $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
-            $0.pinBottom(to: dateLabel, .top, plus: -10).constrainSize(toFit: .vertical)
-            $0.font = .bold(size: 18)
+            $0.pinBottom(to: shadowView.container, plus: -.padding).constrainSize(toFit: .vertical)
+            $0.font = .title
             $0.textColor = .white
             $0.textAlignment = .left
             $0.numberOfLines = 0
@@ -115,11 +114,13 @@ final class TablePostCell: CollectionViewCell {
         
         if let image = post.image {
             imageView.load(url: image)
-            imageView.isHidden = false
+            imageView.showDimmer = true
 //            lineView.isHidden = false
         }
         else {
-            imageView.isHidden = true
+            shadowView.backgroundColor = post.type.backgroundColor
+            imageView.image = post.type.image
+            imageView.showDimmer = false
 //            lineView.isHidden = true
         }
     }
@@ -132,6 +133,7 @@ final class TablePostCell: CollectionViewCell {
         typeLabel.text = nil
         titleLabel.text = nil
         dateLabel.text = nil
+        shadowView.backgroundColor = .dark
     }
     
     static func size(forPost post: Contentful.Post, in collectionView: UICollectionView) -> CGSize {

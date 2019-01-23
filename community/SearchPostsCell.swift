@@ -83,7 +83,7 @@ extension SearchPostsCell: UICollectionViewDelegate, UICollectionViewDelegateFlo
         
         switch post {
         case .external(let post): DeepLink.handle(url: post.url)
-        case .text(let post):     TextPostViewController(textPost: post).show()
+        case .text(let post):     ContentViewController(textPost: post).show()
         }
     }
     
@@ -101,7 +101,7 @@ extension SearchPostsCell {
             
             let shadowView = ContainerShadowView(superview: contentView).customize {
                 $0.constrainEdgesToSuperview()
-                $0.backgroundColor = .grayBlue
+                $0.backgroundColor = .darkBlue
                 $0.containerCornerRadius = 8
                 $0.shadowOpacity = 0.2
             }
@@ -114,7 +114,7 @@ extension SearchPostsCell {
             titleLabel.add(toSuperview: holderView).customize {
                 $0.pinLeading(to: holderView).pinTrailing(to: holderView)
                 $0.pinTop(to: holderView).constrainSize(toFit: .horizontal, .vertical)
-                $0.font = .semiBold(size: 16)
+                $0.font = .bold(size: 16)
                 $0.textColor = .white
                 $0.numberOfLines = 2
             }
@@ -141,7 +141,7 @@ extension SearchPostsCell {
         }
         
         static func size(forPost post: Contentful.Post, in collectionView: UICollectionView) -> CGSize {
-            let titleWidth = post.title.size(boundingWidth: collectionView.width * 0.7, boundingHeight: 44, font: .semiBold(size: 16)).width
+            let titleWidth = post.title.size(boundingWidth: collectionView.width * 0.7, boundingHeight: 44, font: .bold(size: 16)).width
             let width = (.padding + titleWidth + .padding).limited(150, collectionView.width * 0.7)
             
             return CGSize(width: width, height: .searchPostHeight)

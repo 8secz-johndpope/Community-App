@@ -64,7 +64,7 @@ extension TableSectionView: UICollectionViewDelegate, UICollectionViewDelegateFl
         guard let post = posts.at(indexPath.row) else { return }
         switch post {
         case .external(let post): DeepLink.handle(url: post.url)
-        case .text(let post):     TextPostViewController(textPost: post).show()
+        case .text(let post):     ContentViewController(textPost: post).show()
         }
     }
     

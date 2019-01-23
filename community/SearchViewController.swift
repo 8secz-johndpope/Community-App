@@ -19,12 +19,16 @@ final class SearchViewController: ViewController {
         case messages([Watermark.Message])
         case speakers([Watermark.Speaker])
         
-        static let suggestions: [Cell] = [
-            .header("Try Searching"),
-            .suggestion("Conflict"),
-            .suggestion("Moneywise"),
-            .suggestion("The Outsiders"),
-        ]
+        static var suggestions: [Cell] {
+            let searchSuggestions = Contentful.LocalStorage.search?.suggestions.map(Cell.suggestion) ?? []
+            
+            if searchSuggestions.isEmpty {
+                return []
+            }
+            else {
+                return [.header("Try Searching")] + searchSuggestions
+            }
+        }
         
         func size(in collectionView: UICollectionView) -> CGSize {
             switch self {
@@ -41,7 +45,7 @@ final class SearchViewController: ViewController {
     
     private var cells: [Cell] = Cell.suggestions
     
-    private var headerHeight: CGFloat = 155
+    private var headerHeight: CGFloat = 154
     
     private let headerShadowView = ShadowView()
     private let headerView       = UIView()
@@ -53,6 +57,7 @@ final class SearchViewController: ViewController {
     override func setup() {
         super.setup()
         
+        navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .lightBackground
         
         collectionView.add(toSuperview: view).customize {
@@ -110,7 +115,7 @@ final class SearchViewController: ViewController {
         headerLabel.add(toSuperview: headerView).customize {
             $0.pinLeading(to: headerView, plus: .padding).pinTrailing(to: headerView, plus: -.padding)
             $0.pinBottom(to: searchField, .top, plus: -10).constrainSize(toFit: .vertical)
-            $0.font = .extraBold(size: 35)
+            $0.font = .header
             $0.textColor = .dark
             $0.text = "Search"
         }
@@ -120,6 +125,17 @@ final class SearchViewController: ViewController {
             $0.constrainWidth(to: 30).constrainHeight(to: 30)
             $0.color = .dark
         }
+        
+        reload()
+        
+        Notifier.onSearchChanged.subscribePast(with: self) { [weak self] in
+            self?.reload()
+        }.onQueue(.main)
+    }
+    
+    private func reload() {
+        cells = Cell.suggestions
+        collectionView.reloadData()
     }
     
     private func search(query: String) {
@@ -198,10 +214,7 @@ final class SearchViewController: ViewController {
 extension SearchViewController: UITextFieldDelegate {
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        
-        cells = Cell.suggestions
-        collectionView.reloadData()
-        
+        reload()
         return true
     }
     

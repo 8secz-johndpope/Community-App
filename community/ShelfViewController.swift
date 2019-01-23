@@ -16,7 +16,7 @@ final class ShelfViewController: ViewController {
         
         func size(in collectionView: UICollectionView) -> CGSize {
             switch self {
-            case .shelf:          return CGSize(width: collectionView.width, height: 60)
+            case .shelf:          return CGSize(width: collectionView.width, height: 50)
             case .post(let post): return PantryPostCell.size(forPost: post, in: collectionView)
             }
         }
@@ -25,7 +25,7 @@ final class ShelfViewController: ViewController {
     private let shelf: Contentful.Shelf
     private let cells: [Cell]
     
-    private let collectionView: UICollectionView
+    private let collectionView = UICollectionView(layout: .vertical(lineSpacing: .padding, sectionInset: UIEdgeInsets(top: .padding, bottom: .padding)))
     
     private let shadowView = ShadowView()
     private let headerView = UIView()
@@ -33,17 +33,7 @@ final class ShelfViewController: ViewController {
     
     required init(shelf: Contentful.Shelf) {
         self.shelf = shelf
-        self.cells = shelf.shelves.map(Cell.shelf) + shelf.posts.map(Cell.post)
-        
-        let topPadding: CGFloat
-        if shelf.shelves.isEmpty {
-            topPadding = .padding
-        }
-        else {
-            topPadding = 0
-        }
-        
-        self.collectionView = UICollectionView(layout: .vertical(lineSpacing: .padding, sectionInset: UIEdgeInsets(top: topPadding, bottom: .padding)))
+        self.cells = shelf.posts.map(Cell.post) + shelf.shelves.map(Cell.shelf)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -166,7 +156,7 @@ extension ShelfViewController: UICollectionViewDelegate, UICollectionViewDelegat
         case .post(let post):
             switch post {
             case .external(let post): DeepLink.handle(url: post.url)
-            case .text(let post):     TextPostViewController(textPost: post).show(in: self)
+            case .text(let post):     ContentViewController(textPost: post).show(in: self)
             }
         }
     }

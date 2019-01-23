@@ -76,7 +76,7 @@ extension SearchMessagesCell: UICollectionViewDelegate, UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let message = self.messages.at(indexPath.row) else { return }
-        MessageViewController(message: message).show()
+        ContentViewController(message: message).show()
     }
     
 }
@@ -113,7 +113,7 @@ extension SearchMessagesCell {
             titleLabel.add(toSuperview: holderView).customize {
                 $0.pinLeading(to: holderView).pinTrailing(to: holderView)
                 $0.pinTop(to: holderView).constrainSize(toFit: .vertical)
-                $0.font = .semiBold(size: 16)
+                $0.font = .bold(size: 16)
                 $0.textColor = .dark
                 $0.numberOfLines = 2
             }

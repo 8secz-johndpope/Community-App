@@ -11,9 +11,13 @@ extension URL {
     
     public init(base: URL, parameters: [String : String]) {
         guard let components = URLComponents(url: base, parameters: parameters), let url = components.url
-            else { fatalError("URL could not be created: \(base), with parameters: \(parameters)") }
+        else { fatalError("URL could not be created: \(base), with parameters: \(parameters)") }
         
         self = url
+    }
+    
+    public var components: URLComponents? {
+        return URLComponents(url: self, resolvingAgainstBaseURL: false)
     }
     
 }

@@ -22,6 +22,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
+    
+    static var shared: AppDelegate {
+        return UIApplication.shared.delegate as! AppDelegate
+    }
 
 }
 

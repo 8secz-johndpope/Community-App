@@ -11,6 +11,7 @@ import Alexandria
 final class PantryPostCell: CollectionViewCell {
     
     private let shadowView = ContainerShadowView()
+    private let imageView  = LoadingImageView()
     private let titleLabel = UILabel()
     private let dateLabel  = UILabel()
     
@@ -21,15 +22,21 @@ final class PantryPostCell: CollectionViewCell {
         
         shadowView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .grayBlue
+            $0.backgroundColor = .darkBlue
             $0.containerCornerRadius = 8
             $0.shadowOpacity = 0.2
+        }
+        
+        imageView.add(toSuperview: shadowView.container).customize {
+            $0.constrainEdgesToSuperview()
+            $0.contentMode = .scaleAspectFill
+            $0.showDimmer = false
         }
         
         titleLabel.add(toSuperview: shadowView.container).customize {
             $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
             $0.pinTop(to: shadowView.container, plus: .padding).constrainSize(toFit: .vertical)
-            $0.font = .semiBold(size: 20)
+            $0.font = .bold(size: 20)
             $0.textColor = .lightBackground
             $0.numberOfLines = 0
         }
@@ -43,6 +50,7 @@ final class PantryPostCell: CollectionViewCell {
     }
     
     func configure(post: Contentful.Post) {
+        imageView.image = post.type.image
         titleLabel.text = post.title
         dateLabel.text = DateFormatter.readable.string(from: post.publishDate)
     }
@@ -57,7 +65,7 @@ final class PantryPostCell: CollectionViewCell {
         let cellWidth = collectionView.width - .padding * 2
         let labelWidth = cellWidth - .padding * 2
         
-        let titleHeight = post.title.size(boundingWidth: labelWidth, font: .semiBold(size: 20)).height.rounded(.up)
+        let titleHeight = post.title.size(boundingWidth: labelWidth, font: .bold(size: 20)).height.rounded(.up)
         let dateHeight = DateFormatter.readable.string(from: post.publishDate).size(boundingWidth: labelWidth, font: .regular(size: 16)).height.rounded(.up)
         
         return CGSize(

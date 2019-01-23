@@ -15,6 +15,7 @@ extension Contentful {
         static var externalPosts: [Contentful.ExternalPost] = []
         static var textPosts: [Contentful.TextPost]         = []
         static var shelves: [Contentful.Shelf]              = []
+        static var questions: [Contentful.Question]         = []
         
         static var posts: [Contentful.Post] {
             return externalPosts.map(Contentful.Post.external) + textPosts.map(Contentful.Post.text)
@@ -32,8 +33,22 @@ extension Contentful {
             }
         }
         
-        static var communityQuestions: Contentful.TextPost? {
-            return textPosts.first(where: { $0.title.lowercased() == "community questions" })
+        static var communityQuestions: Contentful.CommunityQuestions? {
+            didSet {
+                Notifier.onCommunityQuestionsChanged.fire(())
+            }
+        }
+        
+        static var search: Contentful.Search? {
+            didSet {
+                Notifier.onSearchChanged.fire(())
+            }
+        }
+        
+        static var intro: Contentful.Intro? {
+            didSet {
+                Notifier.onIntroChanged.fire(())
+            }
         }
     }
     

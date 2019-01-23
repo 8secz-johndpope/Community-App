@@ -19,6 +19,20 @@ extension UIColor {
     static let gray            = #colorLiteral(red: 0.6666666667, green: 0.6666666667, blue: 0.6666666667, alpha: 1)  // #AAAAAA
     static let loading         = #colorLiteral(red: 0.7294117647, green: 0.8, blue: 0.8901960784, alpha: 1)  // #BACCE3
     
+    static let lightBlue = #colorLiteral(red: 0.5490196078, green: 0.7294117647, blue: 0.8196078431, alpha: 1)  // #8CBAD1
+    static let darkBlue  = #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.4117647059, alpha: 1)  // #324E69
+    static let grey      = #colorLiteral(red: 0.4235294118, green: 0.431372549, blue: 0.4235294118, alpha: 1)  // #6C6E6C
+    static let gold      = #colorLiteral(red: 0.6588235294, green: 0.5647058824, blue: 0.4352941176, alpha: 1)  // #A8906F
+    
+    static let darkBluePattern  = UIColor(patternImage: #imageLiteral(resourceName: "tile1"))
+    static let lightBluePattern = UIColor(patternImage: #imageLiteral(resourceName: "tile2"))
+    static let greyPattern      = UIColor(patternImage: #imageLiteral(resourceName: "tile3"))
+    static let goldPattern      = UIColor(patternImage: #imageLiteral(resourceName: "tile4"))
+    
+    static var randomPattern: UIColor {
+        return [.darkBluePattern, .lightBluePattern, .greyPattern, .goldPattern].random()
+    }
+    
 }
 
 struct Gradient {

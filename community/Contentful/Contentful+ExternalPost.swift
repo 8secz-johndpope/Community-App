@@ -30,7 +30,8 @@ extension Contentful {
                 let title = json.dictionary(forKey: "fields").string(forKey: "title"),
                 let publishDate = json.dictionary(forKey: "fields").date(forKey: "publishDate", formatter: .yearMonthDay),
                 let url = json.dictionary(forKey: "fields").url(forKey: "url"),
-                let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue")
+                let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue"),
+                publishDate < Date()
             else { return nil }
             
             self.id               = id

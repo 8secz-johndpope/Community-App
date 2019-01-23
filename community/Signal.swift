@@ -8,8 +8,11 @@
 import Foundation
 
 enum Notifier {
-    static let onTableChanged         = Signal<Void>()
-    static let onPantryChanged        = Signal<Void>()
+    static let onTableChanged              = Signal<Void>()
+    static let onPantryChanged             = Signal<Void>()
+    static let onCommunityQuestionsChanged = Signal<Void>()
+    static let onSearchChanged             = Signal<Void>()
+    static let onIntroChanged              = Signal<Void>()
 }
 
 /// Create instances of `Signal` and assign them to constants on your class for each event type that your
@@ -245,7 +248,7 @@ final class SignalSubscription<T> {
                 queuedData = data
                 let block = { [weak self] in
                     guard
-                        let `self` = self,
+                        let self = self,
                         let data = self.queuedData
                         else { return }
                     

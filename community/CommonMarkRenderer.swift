@@ -36,8 +36,9 @@ extension Array where Element: NSAttributedString {
 
 extension UIFont {
     var regular: UIFont {
-        let boldFontDescriptor = fontDescriptor.withSymbolicTraits(.traitBold)
-        return UIFont(descriptor: boldFontDescriptor!, size: 0)
+        var traits = fontDescriptor.symbolicTraits
+        traits.remove(.traitBold)
+        return UIFont(descriptor: fontDescriptor.withSymbolicTraits(traits)!, size: 0)
     }
     
     var bold: UIFont {
@@ -117,11 +118,10 @@ extension Inline: Render {
         case .link(let children, _, let url):
             return children.renderedString(font: font.bold)
                 .url(URL(string: url!)!)
-                .color(.orange)
-                .underline(style: .single, color: .orange)
-        case let .image(_, _, three):
-            let attachment = AsyncTextAttachment(imageURL: URL(string: "https:\(three!)"), delegate: nil)
-            attachment.displaySize = CGSize(width: 150, height: 150)
+                .color(.lightBlue)
+                .underline(style: .single, color: .lightBlue)
+        case let .image(_, _, url):
+            let attachment = AsyncTextAttachment(imageURL: URL(string: "https:\(url!)"), delegate: nil)
             return NSAttributedString(attachment: attachment).mutable
         }
     }
@@ -130,6 +130,7 @@ extension Inline: Render {
 extension Block {
     
     static let baseFont: UIFont = .regular(size: 16)
+    static let baseHeaderFont: UIFont = .crimsonText(.semiBold, size: 18)
     
     func render(font: UIFont) -> NSMutableAttributedString {
         switch self {
@@ -168,10 +169,10 @@ extension Block {
             
             let headerFont: UIFont
             switch level {
-            case 1:  headerFont = Block.baseFont.withSize(24).bold
-            case 2:  headerFont = Block.baseFont.withSize(18).bold
-            case 3:  headerFont = Block.baseFont.withSize(16).bold
-            default: headerFont = Block.baseFont
+            case 1:  headerFont = Block.baseHeaderFont.withSize(28)
+            case 2:  headerFont = Block.baseHeaderFont.withSize(23)
+            case 3:  headerFont = Block.baseHeaderFont.withSize(20)
+            default: headerFont = Block.baseHeaderFont
             }
             
             return children.map { $0.render(font: headerFont) }.join()

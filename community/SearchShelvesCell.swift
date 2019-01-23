@@ -71,7 +71,7 @@ extension SearchShelvesCell: UICollectionViewDelegate, UICollectionViewDelegateF
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let shelf = self.shelves.at(indexPath.row) else { return }
-        ShelfViewController(shelf: shelf).show()
+        UIViewController.current?.navigationController?.pushViewController(ShelfViewController(shelf: shelf), animated: true)
     }
     
 }
@@ -98,10 +98,11 @@ extension SearchShelvesCell {
                 $0.constrainSize(toFit: .vertical, .horizontal)
                 $0.font = .fontAwesome(.solid, size: 20)
                 $0.textColor = .dark
+                $0.isHidden = true
             }
             
             titleLabel.add(toSuperview: shadowView.container).customize {
-                $0.pinLeading(to: shadowView.container, plus: .padding * 3).pinTrailing(to: shadowView.container, plus: -.padding)
+                $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
                 $0.pinCenterY(to: shadowView.container).constrainSize(toFit: .vertical)
                 $0.font = .regular(size: 16)
                 $0.textColor = .dark
@@ -111,7 +112,7 @@ extension SearchShelvesCell {
         }
         
         func configure(shelf: Contentful.Shelf) {
-            iconView.set(icon: shelf.icon)
+            shelf.icon.flatMap(iconView.set(icon:))
             titleLabel.text = shelf.name
         }
         
@@ -123,7 +124,7 @@ extension SearchShelvesCell {
         
         static func size(forShelf shelf: Contentful.Shelf, in collectionView: UICollectionView) -> CGSize {
             let nameWidth = shelf.name.size(font: .regular(size: 16)).width.rounded(.up)
-            let width = (.padding * 3 + nameWidth + .padding).limited(50, collectionView.width * 0.9)
+            let width = (.padding + nameWidth + .padding).limited(50, collectionView.width * 0.9)
             
             return CGSize(width: width, height: collectionView.height)
         }

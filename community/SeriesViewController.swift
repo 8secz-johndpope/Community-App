@@ -81,7 +81,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
                 ImagePipeline.shared.loadImage(with: url, completion: { response, error in
                     if let image = response?.image {
                         image.getColors { [weak self] colors in
-                            guard let `self` = self else { return }
+                            guard let self = self else { return }
                             
                             let isLightColor = colors.background.isLightColor
                             
@@ -203,7 +203,7 @@ extension SeriesViewController: UICollectionViewDelegate, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let message = messages.at(indexPath.row) else { return }
-        MessageViewController(message: message).show()
+        ContentViewController(message: message).show()
     }
     
 }

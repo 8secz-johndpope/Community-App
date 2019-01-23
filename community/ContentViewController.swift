@@ -1,5 +1,5 @@
 //
-//  MessageViewController.swift
+//  ContentViewController.swift
 //  community
 //
 //  Created by Jonathan Landon on 7/14/18.
@@ -8,15 +8,41 @@
 import UIKit
 import Alexandria
 
-final class MessageViewController: ViewController, StatusBarViewController {
+final class ContentViewController: ViewController, StatusBarViewController {
     
-    let message: Watermark.Message
+    enum Content {
+        case message(Watermark.Message)
+        case textPost(Contentful.TextPost)
+        
+        var title: String {
+            switch self {
+            case .message(let message): return message.title
+            case .textPost(let post):   return post.title
+            }
+        }
+        
+        var isMessage: Bool {
+            if case .message = self {
+                return true
+            }
+            return false
+        }
+        
+        var isTextPost: Bool {
+            if case .textPost = self {
+                return true
+            }
+            return false
+        }
+    }
+    
+    let content: Content
     
     var showStatusBarBackground = false {
         didSet {
             updateStatusBarBackground()
             
-            if showStatusBarBackground {
+            if showStatusBarBackground, case .message = content {
                 closeButton.configure(normal: .dark, highlighted: .black)
             }
             else {
@@ -34,10 +60,10 @@ final class MessageViewController: ViewController, StatusBarViewController {
     let scrollView          = UIScrollView()
     let statusBarBackground = ShadowView()
     
-    private let containerView: MessageContainerView
+    private let containerView: ContentContainerView
     
     private let statusBarCover = UIView()
-    private let headerView     = MessageHeaderView()
+    private let headerView     = ContentHeaderView()
     private let closeButton    = CloseButton()
     private let titleLabel     = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 20)
     
@@ -56,11 +82,19 @@ final class MessageViewController: ViewController, StatusBarViewController {
     private var videoConstraint = NSLayoutConstraint()
     private var controlsObserver: NSKeyValueObservation?
     
-    required init(message: Watermark.Message) {
-        self.message = message
-        self.containerView = MessageContainerView(message: message)
+    required init(content: Content) {
+        self.content = content
+        self.containerView = ContentContainerView(content: content)
         
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    convenience init(message: Watermark.Message) {
+        self.init(content: .message(message))
+    }
+    
+    convenience init(textPost: Contentful.TextPost) {
+        self.init(content: .textPost(textPost))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -96,14 +130,14 @@ final class MessageViewController: ViewController, StatusBarViewController {
         view.backgroundColor = .clear
         view.clipsToBounds = true
         
-        headerView.add(toSuperview: view)
         scrollView.add(toSuperview: view)
+        headerView.add(toSuperview: scrollView)
         containerView.add(toSuperview: scrollView)
         
         headerView.customize {
-            $0.pinSafely(.top, to: view).pinBottom(to: containerView, .top, plus: 50, atPriority: .required - 2)
+            $0.pinTop(to: view).pinBottom(to: containerView, .top, plus: 50, atPriority: .required - 1)
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.configure(message: message)
+            $0.configure(content: content)
             $0.delegate = self
             
             videoConstraint = $0.constrain(.bottom, to: view, .bottom, atPriority: .required - 1)
@@ -111,7 +145,7 @@ final class MessageViewController: ViewController, StatusBarViewController {
         }
         
         controlsObserver = headerView.observe(\.isShowingControls, options: .new) { [weak self] headerView, change in
-            guard let `self` = self else { return }
+            guard let self = self else { return }
             
             UIView.animate(withDuration: 0.25) {
                 self.setNeedsStatusBarAppearanceUpdate()
@@ -149,13 +183,21 @@ final class MessageViewController: ViewController, StatusBarViewController {
             $0.pinTop(to: view).pinSafely(.bottom, to: view, .top)
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.backgroundColor = .black
+            
+            if content.isTextPost {
+                statusBarCover.isHidden = true
+            }
         }
         
         statusBarBackground.add(toSuperview: view).customize {
             $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 50)
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.backgroundColor = .lightBackground
             $0.alpha = 0
+            
+            switch content {
+            case .message:  $0.backgroundColor = .lightBackground
+            case .textPost: $0.backgroundColor = .darkBlue
+            }
         }
         
         closeButton.add(toSuperview: view).customize {
@@ -167,17 +209,24 @@ final class MessageViewController: ViewController, StatusBarViewController {
         titleLabel.add(toSuperview: statusBarBackground).customize {
             $0.pinBottom(to: statusBarBackground).pinSafely(.top, to: statusBarBackground)
             $0.pinLeading(to: view, plus: .padding).pinTrailing(to: view, plus: -.closeButtonWidth)
-            $0.font = .bold(size: 16)
-            $0.textColor = .dark
+            $0.font = .bold(size: 18)
+            $0.text = content.title
             $0.textAlignment = .left
-            $0.text = message.title
             $0.isUserInteractionEnabled = true
             $0.addGesture(type: .tap) { [weak self] _ in self?.scrollView.setContentOffset(x: 0, y: 0) }
+            
+            switch content {
+            case .message:  $0.textColor = .dark
+            case .textPost: $0.textColor = .lightBackground
+            }
         }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return showStatusBarBackground ? .default : .lightContent
+        switch content {
+        case .message:  return showStatusBarBackground ? .default : .lightContent
+        case .textPost: return .lightContent
+        }
     }
     
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
@@ -231,52 +280,56 @@ final class MessageViewController: ViewController, StatusBarViewController {
     
 }
 
-extension MessageViewController: MessageHeaderViewDelegate {
+extension ContentViewController: ContentHeaderViewDelegate {
     
-    func didUpdate(progress: CGFloat, in view: MessageHeaderView) {
+    func didUpdate(progress: CGFloat, in view: ContentHeaderView) {
         containerView.progress = progress
         containerView.update(currentTime: Double(progress) * headerView.duration, duration: headerView.duration)
     }
     
-    func didUpdate(buffer: CGFloat, in view: MessageHeaderView) {
+    func didUpdate(buffer: CGFloat, in view: ContentHeaderView) {
         containerView.bufferProgress = buffer
     }
     
-    func didShowOverlay(in view: MessageHeaderView) {
+    func didShowOverlay(in view: ContentHeaderView) {
         containerView.update(isProgressButtonVisible: true)
     }
     
-    func didHideOverlay(in view: MessageHeaderView) {
+    func didHideOverlay(in view: ContentHeaderView) {
         containerView.update(isProgressButtonVisible: false)
     }
     
-    func didPlay(in view: MessageHeaderView) {
+    func didPlay(in view: ContentHeaderView) {
         containerView.update(isPlaying: true)
+        
+        if case .textPost(let post) = content {
+            statusBarCover.isHidden = (post.mediaURL == nil)
+        }
     }
     
-    func didPause(in view: MessageHeaderView) {
+    func didPause(in view: ContentHeaderView) {
         containerView.update(isPlaying: false)
     }
     
 }
 
-extension MessageViewController: MessageContainerViewDelegate {
+extension ContentViewController: ContentContainerViewDelegate {
     
-    func didSeek(toProgress progress: CGFloat, in view: MessageContainerView) {
+    func didSeek(toProgress progress: CGFloat, in view: ContentContainerView) {
         headerView.seek(toProgress: progress)
     }
     
-    func didCommit(toProgress progress: CGFloat, in view: MessageContainerView) {
+    func didCommit(toProgress progress: CGFloat, in view: ContentContainerView) {
         headerView.commit(toProgress: progress)
     }
     
-    func didTapPlayPauseButton(in view: MessageContainerView) {
+    func didTapPlayPauseButton(in view: ContentContainerView) {
         headerView.togglePlayback()
     }
     
 }
 
-extension MessageViewController: UIScrollViewDelegate {
+extension ContentViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         check(containerView: containerView, in: self)

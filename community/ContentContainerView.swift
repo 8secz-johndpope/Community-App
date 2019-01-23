@@ -1,5 +1,5 @@
 //
-//  MessageContainerView.swift
+//  ContentContainerView.swift
 //  community
 //
 //  Created by Jonathan Landon on 7/16/18.
@@ -8,15 +8,15 @@
 import UIKit
 import Alexandria
 
-protocol MessageContainerViewDelegate: AnyObject {
-    func didSeek(toProgress progress: CGFloat, in view: MessageContainerView)
-    func didCommit(toProgress progress: CGFloat, in view: MessageContainerView)
-    func didTapPlayPauseButton(in view: MessageContainerView)
+protocol ContentContainerViewDelegate: AnyObject {
+    func didSeek(toProgress progress: CGFloat, in view: ContentContainerView)
+    func didCommit(toProgress progress: CGFloat, in view: ContentContainerView)
+    func didTapPlayPauseButton(in view: ContentContainerView)
 }
 
-final class MessageContainerView: ShadowView {
+final class ContentContainerView: ShadowView {
     
-    let message: Watermark.Message
+    let content: ContentViewController.Content
     
     var progress: CGFloat = 0 {
         didSet {
@@ -32,7 +32,7 @@ final class MessageContainerView: ShadowView {
         }
     }
     
-    weak var delegate: MessageContainerViewDelegate?
+    weak var delegate: ContentContainerViewDelegate?
     
     private let playbackInfoView     = UIView()
     private let timeLabel            = UILabel()
@@ -40,9 +40,8 @@ final class MessageContainerView: ShadowView {
     private let progressView         = MediaProgressView()
     private let progressButtonHolder = UIView()
     private let progressButton       = UIView()
-    private let titleLabel           = UILabel()
-    private let subtitleLabel        = UILabel()
-    private let descriptionView      = SelfSizingTextView()
+    private let messageContentView   = MessageContentView()
+    private let textPostContentView  = TextPostContentView()
     
     private var startingProgress: CGFloat = 0
     private var duration: TimeInterval = 0
@@ -63,8 +62,8 @@ final class MessageContainerView: ShadowView {
         }
     }
     
-    required init(message: Watermark.Message) {
-        self.message = message
+    required init(content: ContentViewController.Content) {
+        self.content = content
         super.init(frame: .zero)
         setup()
     }
@@ -75,7 +74,7 @@ final class MessageContainerView: ShadowView {
     
 }
 
-extension MessageContainerView {
+extension ContentContainerView {
     
     func resetProgressButton() {
         progressButtonHolder.center = CGPoint(x: leftProgressOffset, y: progressView.centerY)
@@ -114,7 +113,7 @@ extension MessageContainerView {
             $0.setTitleColor(.lightBackground, for: .normal)
             $0.titleLabel?.font = .fontAwesome(.solid, size: 25)
             $0.addTarget(for: .touchUpInside) { [weak self] in
-                guard let `self` = self else { return }
+                guard let self = self else { return }
                 self.delegate?.didTapPlayPauseButton(in: self)
             }
         }
@@ -125,7 +124,7 @@ extension MessageContainerView {
             $0.font = .regular(size: 14)
             $0.textColor = .lightBackground
             $0.textAlignment = .right
-            $0.text = "00:00 / 00:00"
+            $0.text = "0:00 / 0:00"
         }
         
         progressView.add(toSuperview: playbackInfoView).customize {
@@ -151,61 +150,26 @@ extension MessageContainerView {
             $0.isUserInteractionEnabled = false
         }
         
-        titleLabel.add(toSuperview: self).customize {
-            $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
-            $0.pinTop(to: progressView, .bottom, plus: 50).constrainSize(toFit: .vertical)
-            $0.numberOfLines = 0
-            $0.font = .bold(size: 20)
-            $0.textColor = .dark
-            $0.textAlignment = .left
-            $0.text = message.title
-        }
-        
-        subtitleLabel.add(toSuperview: self).customize {
-            $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
-            $0.pinTop(to: titleLabel, .bottom, plus: 10).constrainSize(toFit: .vertical)
-            $0.numberOfLines = 0
-            $0.attributedText = (
-                message.speakers.map { $0.name }.joined(separator: ", ").attributed.font(.bold(size: 14)) +
-                "   •   \(DateFormatter.readable.string(from: message.date))".attributed.font(.regular(size: 14))
-            ).color(.dark)
-        }
-        
-        descriptionView.add(toSuperview: self).customize {
-            $0.pinTop(to: subtitleLabel, .bottom)
-            $0.pinLeading(to: self).pinTrailing(to: self)
-            $0.textContainerInset = UIEdgeInsets(inset: .textInset)
-            $0.backgroundColor = .lightBackground
-            $0.isEditable = false
-            $0.isSelectable = true
-            $0.delegate = self
-            $0.linkTextAttributes = [.foregroundColor : UIColor.orange]
-            $0.attributedText = message.details.attributed
-                .color(.dark)
-                .font(.regular(size: 14))
-                .lineSpacing(5)
-        }
-        
-        if !message.scriptureReferences.isEmpty {
-            
-            let scriptureReferenceTitleLabel = UILabel(superview: self).customize {
-                $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
-                $0.pinTop(to: descriptionView, .bottom).constrainSize(toFit: .vertical)
-                $0.font = .bold(size: 16)
-                $0.textColor = .dark
-                $0.text = "Scripture References"
+        switch content {
+        case .message(let message):
+            messageContentView.add(toSuperview: self).customize {
+                $0.pinTop(to: playPauseButton, .bottom).pinBottom(to: self)
+                $0.pinLeading(to: self).pinTrailing(to: self)
+                $0.configure(message: message)
+            }
+        case .textPost(let post):
+            textPostContentView.add(toSuperview: self).customize {
+                $0.pinTop(to: playPauseButton, .bottom).pinBottom(to: self)
+                $0.pinLeading(to: self).pinTrailing(to: self)
+                $0.configure(textPost: post)
             }
             
-            ScriptureReferenceCollectionView().add(toSuperview: self).customize {
-                $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
-                $0.pinTop(to: scriptureReferenceTitleLabel, .bottom, plus: 10).pinBottom(to: self, plus: -.padding * 2)
-                $0.configure(references: message.scriptureReferences.map { $0.reference })
+            update(isPlaying: false)
+            
+            if post.mediaURL == nil {
+                playbackInfoView.isHidden = true
             }
         }
-        else {
-            descriptionView.pinBottom(to: self, plus: -.padding * 2)
-        }
-        
     }
     
     func update(currentTime: TimeInterval, duration: TimeInterval) {
@@ -276,7 +240,7 @@ extension MessageContainerView {
     
 }
 
-extension MessageContainerView: UITextViewDelegate {
+extension ContentContainerView: UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIViewController.current?.showInSafari(url: URL)
