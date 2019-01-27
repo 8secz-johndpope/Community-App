@@ -7,10 +7,50 @@
 
 import Foundation
 
-enum Video {
+enum MediaType {
+    case audio
+    case video
+}
+
+enum Media {
     case message(Int)
     case raw(URL)
     case youtube(String)
+    
+    enum Error: Swift.Error {
+        case missingURL
+        case unknown
+    }
+    
+    func fetch(completion: @escaping (Result<(URL, MediaType), Error>) -> Void) {
+        switch self {
+        case .message(let id):
+            Watermark.API.Messages.fetch(id: id) { result in
+                DispatchQueue.main.async {
+                    guard let message = result.value else { return completion(.error(.missingURL)) }
+                    
+                    switch message.mediaAsset {
+                    case .audio(let asset): completion(.value((asset.url, .audio)))
+                    case .video(let asset): completion(.value((asset.url, .video)))
+                    }
+                }
+            }
+        case .raw(let url):
+            if url.isAudio {
+                completion(.value((url, .audio)))
+            }
+            else if url.isVideo {
+                completion(.value((url, .video)))
+            }
+        case .youtube(let id):
+            YouTube.fetchVideo(id: id) { url in
+                DispatchQueue.main.async {
+                    guard let url = url else { return completion(.error(.missingURL)) }
+                    completion(.value((url, .video)))
+                }
+            }
+        }
+    }
 }
 
 extension Contentful {
@@ -27,7 +67,11 @@ extension Contentful {
         let createdAt: Date
         let updatedAt: Date
         let type: PostType
-        let video: Video?
+        let media: Media?
+        
+        var hasMedia: Bool {
+            return mediaURL != nil
+        }
         
         var author: Contentful.Author? {
             return Contentful.LocalStorage.authors.first(where: { $0.id == authorID })
@@ -65,24 +109,24 @@ extension Contentful {
                     let pathComponents = mediaURL.path.components(separatedBy: "/").filter { !$0.isEmpty }
                     
                     if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "message" {
-                        self.video = .message(id)
+                        self.media = .message(id)
                     }
                     else {
-                        self.video = nil
+                        self.media = nil
                     }
                 case "www.youtube.com":
                     if let id = mediaURL.components?.queryItems?.first(where: { $0.name == "v" })?.value {
-                        self.video = .youtube(id)
+                        self.media = .youtube(id)
                     }
                     else {
-                        self.video = nil
+                        self.media = nil
                     }
                 default:
-                    self.video = .raw(mediaURL)
+                    self.media = .raw(mediaURL)
                 }
             }
             else {
-                self.video = nil
+                self.media = nil
             }
         }
     }

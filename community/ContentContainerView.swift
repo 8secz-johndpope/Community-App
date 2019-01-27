@@ -173,6 +173,7 @@ extension ContentContainerView {
     }
     
     func update(currentTime: TimeInterval, duration: TimeInterval) {
+        guard !currentTime.isNaN, !duration.isNaN else { return }
         self.duration = duration
         timeLabel.text = "\(Int(currentTime).timeString) / \(Int(duration).timeString)"
     }

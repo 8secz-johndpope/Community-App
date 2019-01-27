@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MobileCoreServices
 
 extension URL {
     
@@ -18,6 +19,31 @@ extension URL {
     
     public var components: URLComponents? {
         return URLComponents(url: self, resolvingAgainstBaseURL: false)
+    }
+    
+    var isAudio: Bool {
+        guard let uti = UTTypeCreatePreferredIdentifierForTag(
+            kUTTagClassFilenameExtension,
+            lastPathComponent.ns.pathExtension.lowercased() as CFString,
+            nil
+        )?.takeRetainedValue() else { return false }
+        
+        return UTTypeConformsTo(uti, kUTTypeAppleProtectedMPEG4Audio) ||
+               UTTypeConformsTo(uti, kUTTypeMPEG4Audio) ||
+               UTTypeConformsTo(uti, kUTTypeMP3)
+    }
+    
+    var isVideo: Bool {
+        guard let uti = UTTypeCreatePreferredIdentifierForTag(
+            kUTTagClassFilenameExtension,
+            lastPathComponent.ns.pathExtension.lowercased() as CFString,
+            nil
+        )?.takeRetainedValue() else { return false }
+        
+        return UTTypeConformsTo(uti, kUTTypeVideo) ||
+               UTTypeConformsTo(uti, kUTTypeQuickTimeMovie) ||
+               UTTypeConformsTo(uti, kUTTypeMPEG) ||
+               UTTypeConformsTo(uti, kUTTypeMPEG4)
     }
     
 }

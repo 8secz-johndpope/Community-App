@@ -32,7 +32,7 @@ extension Watermark {
         let series: Series
         let seriesIndex: Int
         let link: URL
-        let videoAsset: VideoAsset?
+        let mediaAsset: MediaAsset
         let images: [ImageAsset.Size : ImageAsset]
         
         var wideImage: ImageAsset? {
@@ -52,7 +52,7 @@ extension Watermark {
                 let series: Series = json.initialize(forKey: "series"),
                 let seriesIndex = json.int(forKey: "series_position"),
                 let link = json.dictionary(forKey: "_links").url(forKey: "self"),
-                let videoAsset: VideoAsset = json.dictionary(forKey: "assets").initialize(forKey: "streaming_video") ?? json.dictionary(forKey: "assets").initialize(forKey: "progressive_video")
+                let mediaAsset: MediaAsset = json.initialize(forKey: "assets")
             else { return nil }
             
             self.id                  = id
@@ -65,7 +65,7 @@ extension Watermark {
             self.series              = series
             self.seriesIndex         = seriesIndex
             self.link                = link
-            self.videoAsset          = videoAsset
+            self.mediaAsset          = mediaAsset
             self.images              = Dictionary.flatten([
                 .banner : json.dictionary(forKey: "images").initialize(forKey: "banner"),
                 .square : json.dictionary(forKey: "images").initialize(forKey: "square"),

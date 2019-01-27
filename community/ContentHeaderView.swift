@@ -26,6 +26,7 @@ final class ContentHeaderView: View {
         case fill
     }
     
+    private(set) var mediaType: MediaType = .video
     private var aspectMode: AspectMode = .fill
     
     @objc dynamic private(set) var isShowingControls = true
@@ -33,6 +34,7 @@ final class ContentHeaderView: View {
     private var content: ContentViewController.Content?
     private var isDragging = false
     
+    private let audioPlayer      = AudioPlayer()
     private let videoView        = VideoView()
     private let dimmerView       = UIView()
     private let loadingIndicator = LoadingView()
@@ -67,24 +69,48 @@ final class ContentHeaderView: View {
     weak var delegate: ContentHeaderViewDelegate?
     
     var duration: TimeInterval {
-        return videoView.duration.limited(0, .greatestFiniteMagnitude)
+        switch mediaType {
+        case .audio: return audioPlayer.duration.limited(0, .greatestFiniteMagnitude)
+        case .video: return videoView.duration.limited(0, .greatestFiniteMagnitude)
+        }
+    }
+    
+    var currentTime: TimeInterval {
+        switch mediaType {
+        case .audio: return audioPlayer.currentTime.limited(0, .greatestFiniteMagnitude)
+        case .video: return videoView.currentTime.limited(0, .greatestFiniteMagnitude)
+        }
     }
     
     deinit {
+        audioPlayer.stop()
         videoView.stop()
         AVAudioSession.configureBackgroundAudio(isEnabled: false)
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [:]
     }
     
     func togglePlayback() {
-        if videoView.isPlaying {
-            videoView.pause()
-        }
-        else {
-            AVAudioSession.configureBackgroundAudio(isEnabled: true)
-            imageView.isHidden = true
-            videoView.playFromCurrentTime()
-            hideControls()
+        switch mediaType {
+        case .audio:
+            if audioPlayer.isPlaying {
+                audioPlayer.pause()
+            }
+            else {
+                AVAudioSession.configureBackgroundAudio(isEnabled: true)
+                audioPlayer.playFromCurrentTime()
+                updateNowPlayingInfo()
+            }
+        case .video:
+            if videoView.isPlaying {
+                videoView.pause()
+            }
+            else {
+                AVAudioSession.configureBackgroundAudio(isEnabled: true)
+                imageView.isHidden = true
+                videoView.playFromCurrentTime()
+                hideControls()
+                updateNowPlayingInfo()
+            }
         }
     }
     
@@ -120,6 +146,11 @@ final class ContentHeaderView: View {
             $0.constrainEdgesToSuperview()
             $0.contentMode = .scaleAspectFill
             $0.clipsToBounds = true
+        }
+        
+        audioPlayer.customize {
+            $0.delegate = self
+            $0.playbackDelegate = self
         }
         
         videoView.customize {
@@ -165,13 +196,11 @@ extension ContentHeaderView {
         let skipBackCommand = commandCenter.skipBackwardCommand
         skipBackCommand.isEnabled = true
         skipBackCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            if let currentTime = self?.videoView.currentTime, let duration = self?.videoView.duration, currentTime >= 0, duration > 0 {
-                let newTime = (currentTime - 15).limited(0, duration)
-                self?.videoView.seek(to: newTime)
-                return .success
-            }
-            else {
-                return .commandFailed
+            guard let self = self else { return .commandFailed }
+            
+            switch self.mediaType {
+            case .audio: return self.audioPlayer.handleSkipBackCommand()
+            case .video: return self.videoView.handleSkipBackCommand()
             }
         }
         skipBackCommand.preferredIntervals = [15]
@@ -179,13 +208,11 @@ extension ContentHeaderView {
         let skipForwardCommand = commandCenter.skipForwardCommand
         skipForwardCommand.isEnabled = true
         skipForwardCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            if let currentTime = self?.videoView.currentTime, let duration = self?.videoView.duration, currentTime >= 0, duration > 0 {
-                let newTime = (currentTime + 15).limited(0, duration)
-                self?.videoView.seek(to: newTime)
-                return .success
-            }
-            else {
-                return .commandFailed
+            guard let self = self else { return .commandFailed }
+            
+            switch self.mediaType {
+            case .audio: return self.audioPlayer.handleSkipForwardCommand()
+            case .video: return self.videoView.handleSkipForwardCommand()
             }
         }
         skipForwardCommand.preferredIntervals = [15]
@@ -193,14 +220,26 @@ extension ContentHeaderView {
         let playCommand = commandCenter.playCommand
         playCommand.isEnabled = true
         playCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            self?.videoView.playFromCurrentTime()
+            guard let self = self else { return .commandFailed }
+            
+            switch self.mediaType {
+            case .audio: self.audioPlayer.playFromCurrentTime()
+            case .video: self.videoView.playFromCurrentTime()
+            }
+            
             return .success
         }
         
         let pauseCommand = commandCenter.pauseCommand
         pauseCommand.isEnabled = true
         pauseCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            self?.videoView.pause()
+            guard let self = self else { return .commandFailed }
+            
+            switch self.mediaType {
+            case .audio: self.audioPlayer.pause()
+            case .video: self.videoView.pause()
+            }
+            
             return .success
         }
     }
@@ -213,15 +252,15 @@ extension ContentHeaderView {
             MPNowPlayingInfoCenter.update(
                 message: message,
                 image: imageView.image,
-                currentTime: videoView.currentTime,
-                duration: videoView.duration
+                currentTime: currentTime,
+                duration: duration
             )
         case .textPost(let post):
             MPNowPlayingInfoCenter.update(
                 textPost: post,
                 image: imageView.image,
-                currentTime: videoView.currentTime,
-                duration: videoView.duration
+                currentTime: currentTime,
+                duration: duration
             )
         }
     }
@@ -295,7 +334,10 @@ extension ContentHeaderView {
         overlayTimer?.invalidate()
         overlayTimer = nil
         
-        videoView.pause()
+        switch mediaType {
+        case .audio: audioPlayer.pause()
+        case .video: videoView.pause()
+        }
     }
     
     func hideControls() {
@@ -319,12 +361,21 @@ extension ContentHeaderView {
         AVAudioSession.configureBackgroundAudio(isEnabled: true)
         
         imageView.load(url: message.image?.url)
-        imageView.isHidden = true
         
         isLoading = true
         
-        videoView.autoPlay = true
-        videoView.setup(url: message.videoAsset?.url)
+        switch message.mediaAsset {
+        case .audio(let asset):
+            mediaType = .audio
+            audioPlayer.autoPlay = true
+            audioPlayer.setup(url: asset.url)
+            imageView.isHidden = false
+        case .video(let asset):
+            mediaType = .video
+            videoView.autoPlay = true
+            videoView.setup(url: asset.url)
+            imageView.isHidden = true
+        }
     }
     
     func update(message: Watermark.Message, startTime: TimeInterval? = nil) {
@@ -348,11 +399,27 @@ extension ContentHeaderView {
         
         titleLabel.text = textPost.title
         
-        if let video = textPost.video {
-            isLoading = true
-            
-            videoView.autoPlay = false
-            videoView.setup(video: video)
+        if let media = textPost.media {
+            media.fetch { [weak self] result in
+                switch result {
+                case .value(let url, let mediaType):
+                    self?.isLoading = true
+                    
+                    switch mediaType {
+                    case .audio:
+                        self?.mediaType = .audio
+                        self?.audioPlayer.autoPlay = false
+                        self?.audioPlayer.setup(url: url)
+                    case .video:
+                        self?.mediaType = .video
+                        self?.videoView.autoPlay = false
+                        self?.videoView.setup(url: url)
+                    }
+                case .error:
+                    self?.imageView.isHidden = false
+                    self?.videoView.isHidden = true
+                }
+            }
         }
         else {
             imageView.isHidden = false
@@ -361,33 +428,44 @@ extension ContentHeaderView {
     }
     
     func seek(toProgress progress: CGFloat) {
-        guard videoView.duration > 0 else { return }
+        guard duration > 0 else { return }
         
         isDragging = true
         
-        videoView.pause()
+        switch mediaType {
+        case .audio: audioPlayer.pause()
+        case .video: videoView.pause()
+        }
         
         overlayTimer?.invalidate()
         overlayTimer = nil
     }
     
     func commit(toTime time: TimeInterval) {
-        guard videoView.duration > 0 else { return }
+        guard duration > 0 else { return }
         
         isLoading = true
         
-        videoView.pause()
-        videoView.seek(to: time) { [weak self] _ in
-            self?.videoView.playFromCurrentTime()
-            self?.hideControls()
+        switch mediaType {
+        case .audio:
+            audioPlayer.pause()
+            audioPlayer.seek(to: time) { [weak self] _ in
+                self?.audioPlayer.playFromCurrentTime()
+            }
+        case .video:
+            videoView.pause()
+            videoView.seek(to: time) { [weak self] _ in
+                self?.videoView.playFromCurrentTime()
+                self?.hideControls()
+            }
         }
         
         isDragging = false
     }
     
     func commit(toProgress progress: CGFloat) {
-        guard videoView.duration > 0 else { return }
-        let seekTime = TimeInterval(progress) * videoView.duration
+        guard duration > 0 else { return }
+        let seekTime = TimeInterval(progress) * duration
         commit(toTime: seekTime)
     }
     
@@ -409,6 +487,8 @@ extension ContentHeaderView {
     }
     
 }
+
+// MARK: - VideoDelegate
 
 extension ContentHeaderView: VideoDelegate {
     
@@ -459,6 +539,8 @@ extension ContentHeaderView: VideoDelegate {
     
 }
 
+// MARK: - VideoPlaybackDelegate
+
 extension ContentHeaderView: VideoPlaybackDelegate {
     
     func videoCurrentTimeDidChange(_ player: VideoView) {
@@ -482,6 +564,86 @@ extension ContentHeaderView: VideoPlaybackDelegate {
     }
     
     func videoPlaybackWillLoop(_ player: VideoView) {
+        
+    }
+    
+}
+
+// MARK: - AudioPlayerDelegate
+
+extension ContentHeaderView: AudioPlayerDelegate {
+    
+    func playerReady(_ player: AudioPlayer) {
+        guard window != nil, player.playbackState != .paused, player.autoPlay else { return }
+        player.playFromCurrentTime()
+    }
+    
+    func playerPlaybackStateDidChange(_ player: AudioPlayer) {
+        switch player.playbackState {
+        case .playing:
+            isLoading = false
+            delegate?.didPlay(in: self)
+        case .paused:
+            if !isShowingControls {
+                toggleControls()
+            }
+            delegate?.didPause(in: self)
+        case .stopped:
+            delegate?.didPause(in: self)
+        case .failed(let error):
+            delegate?.didPause(in: self)
+            UIAlertController.alert(title: "Error", message: error.localizedDescription).addAction(title: "OK").present()
+        }
+    }
+    
+    func playerBufferingStateDidChange(_ player: AudioPlayer) {
+        
+    }
+    
+    func playerBufferTimeDidChange(_ bufferTime: Double) {
+        guard audioPlayer.duration > 0 else { return }
+        delegate?.didUpdate(buffer: CGFloat(bufferTime/audioPlayer.duration), in: self)
+    }
+    
+    func playerDidBecomeReadyToPlay(_ player: AudioPlayer) {
+        isLoading = false
+        
+        guard
+            player.playbackState != .paused,
+            player.autoPlay,
+            window != nil
+        else { return }
+        
+        updateNowPlayingInfo()
+    }
+    
+}
+
+// MARK: - AudioPlayerPlaybackDelegate
+
+extension ContentHeaderView: AudioPlayerPlaybackDelegate {
+    
+    func playerCurrentTimeDidChange(_ player: AudioPlayer) {
+        guard player.duration > 0 else { return }
+        
+        let progress = CGFloat(player.currentTime/player.duration)
+        
+        delegate?.didUpdate(progress: progress, in: self)
+        
+        if progress >= 1 {
+            audioPlayer.stop()
+        }
+    }
+    
+    func playerPlaybackWillStartFromBeginning(_ player: AudioPlayer) {
+        
+    }
+    
+    func playerPlaybackDidEnd(_ player: AudioPlayer) {
+        
+    }
+    
+    func playerPlaybackWillLoop(_ player: AudioPlayer) {
         
     }
     

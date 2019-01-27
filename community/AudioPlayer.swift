@@ -1,12 +1,11 @@
 //
-//  VideoView.swift
+//  AudioPlayer.swift
 //  community
 //
-//  Created by Jonathan Landon on 7/15/18.
+//  Created by Jonathan Landon on 1/26/19.
 //
 
 import Foundation
-import Alexandria
 import AVFoundation
 import UIKit
 import AVKit
@@ -15,34 +14,26 @@ import MediaPlayer
 // MARK: - PlayerDelegate
 
 /// Player delegate protocol
-protocol VideoDelegate: AnyObject {
-    func videoReady(_ player: VideoView)
-    func videoPlaybackStateDidChange(_ player: VideoView)
-    func videoBufferingStateDidChange(_ player: VideoView)
-    func videoBufferTimeDidChange(_ bufferTime: Double)
-    func videoDidBecomeReadyToPlay(_ player: VideoView)
+protocol AudioPlayerDelegate: AnyObject {
+    func playerReady(_ player: AudioPlayer)
+    func playerPlaybackStateDidChange(_ player: AudioPlayer)
+    func playerBufferingStateDidChange(_ player: AudioPlayer)
+    func playerBufferTimeDidChange(_ bufferTime: Double)
+    func playerDidBecomeReadyToPlay(_ player: AudioPlayer)
 }
 
 
 /// Player playback protocol
-protocol VideoPlaybackDelegate: AnyObject {
-    func videoCurrentTimeDidChange(_ player: VideoView)
-    func videoPlaybackWillStartFromBeginning(_ player: VideoView)
-    func videoPlaybackDidEnd(_ player: VideoView)
-    func videoPlaybackWillLoop(_ player: VideoView)
+protocol AudioPlayerPlaybackDelegate: AnyObject {
+    func playerCurrentTimeDidChange(_ player: AudioPlayer)
+    func playerPlaybackWillStartFromBeginning(_ player: AudioPlayer)
+    func playerPlaybackDidEnd(_ player: AudioPlayer)
+    func playerPlaybackWillLoop(_ player: AudioPlayer)
 }
 
-struct BackgroundVideo {
-    static var player: AVPlayer?
-}
-
-final class VideoView: UIView {
+final class AudioPlayer: NSObject {
     
-    enum AutoDimension {
-        case none
-        case width
-        case height
-    }
+    private let isLoggingEnabled = false
     
     private var playerRateObserver: NSKeyValueObservation?
     private var playerStatusObserver: NSKeyValueObservation?
@@ -52,82 +43,11 @@ final class VideoView: UIView {
     private var itemKeepUpObserver: NSKeyValueObservation?
     private var itemLoadedTimeRangesObserver: NSKeyValueObservation?
     
-    private var layerReadyForDisplayObserver: NSKeyValueObservation?
-    
-    private var widthConstraint = NSLayoutConstraint()
-    private var heightConstraint = NSLayoutConstraint()
-    
-    private var lastDimensions: CGSize = .zero {
-        didSet {
-            guard
-                lastDimensions.height > 0,
-                oldValue.height > 0,
-                lastDimensions.width/lastDimensions.height != oldValue.width/oldValue.height
-            else { return }
-            
-            DispatchQueue.main.async {
-                self.removeConstraints([self.widthConstraint, self.heightConstraint])
-                
-                self.widthConstraint = self.constrain(.width, to: self, .height, times: self.lastDimensions.width/self.lastDimensions.height, atPriority: .required - 1)
-                self.heightConstraint = self.constrain(.height, to: self, .width, times: self.lastDimensions.height/self.lastDimensions.width, atPriority: .required - 1)
-                
-                switch self.autoDimension {
-                case .none:
-                    self.widthConstraint.isActive = false
-                    self.heightConstraint.isActive = false
-                case .height:
-                    self.widthConstraint.isActive = false
-                    self.heightConstraint.isActive = true
-                case .width:
-                    self.widthConstraint.isActive = true
-                    self.heightConstraint.isActive = false
-                }
-            }
-        }
-    }
-    
-    private var isBackgrounded = false
-    
-    var autoDimension: AutoDimension = .none {
-        didSet {
-            switch autoDimension {
-            case .none:
-                widthConstraint.isActive = false
-                heightConstraint.isActive = false
-            case .height:
-                widthConstraint.isActive = false
-                heightConstraint.isActive = true
-            case .width:
-                widthConstraint.isActive = true
-                heightConstraint.isActive = false
-            }
-        }
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         player = AVPlayer()
         player?.actionAtItemEnd = .pause
         timeObserver = nil
-        playerLayer.backgroundColor = UIColor.black.cgColor
-        playerLayer.videoGravity = .resizeAspect
-        accessibilityIgnoresInvertColors = true
-        
-        self.widthConstraint = self.constrain(.width, to: self, .height, times: 16/9, atPriority: .required - 1)
-        self.widthConstraint.isActive = false
-        
-        self.heightConstraint = self.constrain(.height, to: self, .width, times: 9/16, atPriority: .required - 1)
-        self.heightConstraint.isActive = false
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        player = AVPlayer()
-        player?.actionAtItemEnd = .pause
-        timeObserver = nil
-        playerLayer.backgroundColor = UIColor.black.cgColor
-        playerLayer.videoGravity = .resizeAspect
-        accessibilityIgnoresInvertColors = true
     }
     
     deinit {
@@ -143,11 +63,12 @@ final class VideoView: UIView {
         removeApplicationObservers()
         
         playbackDelegate = nil
-        removePlayerLayerObservers()
         
         player = nil
-        
-        BackgroundVideo.player = nil
+    }
+    
+    var durationWatched: TimeInterval {
+        return (item?.accessLog()?.events.reduce(0) { $0 + $1.durationWatched } ?? 0).limited(0, duration).rounded(.up)
     }
     
     func handleSkipBackCommand() -> MPRemoteCommandHandlerStatus {
@@ -173,6 +94,7 @@ final class VideoView: UIView {
     }
     
     func printAccessLog() {
+        guard isLoggingEnabled else { return }
         
         let log = item?.accessLog()
         
@@ -183,7 +105,6 @@ final class VideoView: UIView {
                 -------------------------------------------------------
                 
                 Average audio bitrate: \(event.averageAudioBitrate)
-                Average video bitrate: \(event.averageVideoBitrate)
                 Duration watched: \(event.durationWatched)
                 Number of stalls: \(event.numberOfStalls)
                 Playback type: \(event.playbackType ?? "null")
@@ -193,7 +114,6 @@ final class VideoView: UIView {
                 Indicated bitrate: \(event.indicatedBitrate)
                 Observed bitrate: \(event.observedBitrate)
                 Number of bytes transferred: \(event.numberOfBytesTransferred)
-                Number of dropped video frames: \(event.numberOfDroppedVideoFrames)
                 Number of media requests: \(event.numberOfMediaRequests)
                 Playback session ID: \(event.playbackSessionID ?? "null")
                 Switch bitrate: \(event.switchBitrate)
@@ -205,21 +125,10 @@ final class VideoView: UIView {
     
     // MARK: - Properties
     
-    weak var delegate: VideoDelegate?
-    weak var playbackDelegate: VideoPlaybackDelegate?
-    
-    override class var layerClass: Swift.AnyClass {
-        return AVPlayerLayer.self
-    }
+    weak var delegate: AudioPlayerDelegate?
+    weak var playbackDelegate: AudioPlayerPlaybackDelegate?
     
     var autoPlay = true
-    
-    var playerLayer: AVPlayerLayer { return layer as! AVPlayerLayer }
-    
-    var videoGravity: AVLayerVideoGravity {
-        get { return playerLayer.videoGravity }
-        set { playerLayer.videoGravity = newValue }
-    }
     
     var isPlaying: Bool {
         return playbackState == .playing
@@ -230,9 +139,6 @@ final class VideoView: UIView {
     private var item: AVPlayerItem?
     private var timeObserver: Any?
     private var seekTimeRequested: TimeInterval?
-    private let videoOutput = AVPlayerItemVideoOutput(pixelBufferAttributes: [
-        kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
-    ])
     
     /// Mutes audio playback when true.
     var isMuted: Bool {
@@ -245,7 +151,6 @@ final class VideoView: UIView {
         get { return player?.volume ?? 0 }
         set { player?.volume = newValue }
     }
-    
     
     /// Playback automatically loops continuously when true.
     var playbackLoops: Bool {
@@ -269,7 +174,7 @@ final class VideoView: UIView {
     var playbackState: PlaybackState = .stopped {
         didSet {
             if playbackState != oldValue {
-                DispatchQueue.onMain { self.delegate?.videoPlaybackStateDidChange(self) }
+                DispatchQueue.onMain { self.delegate?.playerPlaybackStateDidChange(self) }
             }
         }
     }
@@ -278,20 +183,20 @@ final class VideoView: UIView {
     var bufferingState: BufferingState = .unknown {
         didSet {
             if bufferingState != oldValue {
-                self.delegate?.videoBufferingStateDidChange(self)
+                self.delegate?.playerBufferingStateDidChange(self)
             }
         }
     }
     
     /// Media playback's current time.
     var currentTime: TimeInterval {
-        guard let item = item else { return CMTime.indefinite.seconds }
+        guard let item = item else { return 0 }
         return item.currentTime().seconds
     }
     
     /// Media plaback's duration.
     var duration: TimeInterval {
-        guard let item = item else { return CMTime.indefinite.seconds }
+        guard let item = item else { return 0 }
         return item.duration.seconds
     }
     
@@ -302,7 +207,7 @@ final class VideoView: UIView {
     
 }
 
-extension VideoView {
+extension AudioPlayer {
     
     enum PlaybackState: Equatable {
         case stopped
@@ -327,7 +232,7 @@ extension VideoView {
         case delayed
     }
     
-    enum PlaybackError: Swift.Error, LocalizedError {
+    enum PlaybackError: Swift.Error {
         case ns(NSError?)
         case notPlayable
         case failedToPlayToEndTime
@@ -349,7 +254,7 @@ extension VideoView {
 
 // MARK: - Setup
 
-extension VideoView {
+extension AudioPlayer {
     
     enum Keys: String {
         case tracks
@@ -371,7 +276,6 @@ extension VideoView {
         
         setup(item: nil)
         
-        removePlayerLayerObservers()
         removePlayerObservers()
         removeApplicationObservers()
         
@@ -380,7 +284,6 @@ extension VideoView {
             setup(asset: asset)
         }
         
-        addPlayerLayerObservers()
         addPlayerObservers()
         addApplicationObservers()
     }
@@ -418,11 +321,9 @@ extension VideoView {
         }
     }
     
-    private func setup(item: AVPlayerItem?) {
+    fileprivate func setup(item: AVPlayerItem?) {
         
         removeItemObservers()
-        
-        item?.remove(videoOutput)
         
         self.item = item
         
@@ -432,8 +333,6 @@ extension VideoView {
         }
         
         addItemObservers()
-        
-        item?.add(videoOutput)
         
         if autoPlay {
             player?.rate = 1
@@ -454,23 +353,23 @@ extension VideoView {
 
 // MARK: - Playback
 
-extension VideoView {
+extension AudioPlayer {
     
     /// Begins playback of the media from the beginning.
     func playFromBeginning() {
-        playbackDelegate?.videoPlaybackWillStartFromBeginning(self)
+        playbackDelegate?.playerPlaybackWillStartFromBeginning(self)
         player?.seek(to: .zero)
         playFromCurrentTime()
     }
     
     /// Begins playback of the media from the current time.
-    public func playFromCurrentTime() {
+    func playFromCurrentTime() {
         playbackState = .playing
         player?.play()
     }
     
     /// Pauses playback of the media.
-    public func pause() {
+    func pause() {
         if playbackState != .playing {
             return
         }
@@ -480,14 +379,14 @@ extension VideoView {
     }
     
     /// Stops playback of the media.
-    public func stop() {
+    func stop() {
         if playbackState == .stopped {
             return
         }
         
         player?.pause()
         playbackState = .stopped
-        playbackDelegate?.videoPlaybackDidEnd(self)
+        playbackDelegate?.playerPlaybackDidEnd(self)
     }
     
     /// Updates playback to the specified time.
@@ -496,7 +395,7 @@ extension VideoView {
     func seek(to time: TimeInterval, completion: ((Bool) -> Void)? = nil) {
         if let playerItem = item {
             let timescale = playerItem.asset.duration.timescale
-            let time = CMTime(seconds: time, preferredTimescale: timescale)
+            let time = CMTimeMakeWithSeconds(time, preferredTimescale: timescale)
             guard ![.invalid, .indefinite, .positiveInfinity, .negativeInfinity].contains(time) else { return }
             playerItem.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero, completionHandler: completion)
         }
@@ -505,17 +404,25 @@ extension VideoView {
         }
     }
     
+    func goBack(seconds: TimeInterval) {
+        seek(to: (currentTime - seconds).limited(0, .greatestFiniteMagnitude))
+    }
+    
+    func goForward(seconds: TimeInterval, max: TimeInterval? = nil) {
+        seek(to: (currentTime + seconds).limited(0, max ?? duration))
+    }
+    
 }
 
-// MARK: NSNotifications
+// MARK: - NSNotifications
 
-extension VideoView {
+extension AudioPlayer {
     
     // MARK: AVPlayerItem
     
-    @objc private func playerItemDidPlayToEndTime(_ notification: Notification) {
+    @objc private func playerItemDidPlayToEndTime(_ aNotification: Notification) {
         if playbackLoops {
-            playbackDelegate?.videoPlaybackWillLoop(self)
+            playbackDelegate?.playerPlaybackWillLoop(self)
             player?.seek(to: .zero)
         }
         else {
@@ -528,7 +435,7 @@ extension VideoView {
         }
     }
     
-    @objc private func playerItemFailedToPlayToEndTime(_ notification: Notification) {
+    @objc private func playerItemFailedToPlayToEndTime(_ aNotification: Notification) {
         playbackState = .failed(.failedToPlayToEndTime)
     }
     
@@ -550,9 +457,9 @@ extension VideoView {
     
 }
 
-// MARK: UIApplication
+// MARK: - UIApplication
 
-extension VideoView {
+extension AudioPlayer {
     
     private func addApplicationObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleApplicationWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: UIApplication.shared)
@@ -565,56 +472,36 @@ extension VideoView {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: Handlers
+    // MARK: - handlers
     
     @objc private func handleApplicationWillResignActive(_ notification: Notification) {
-        isBackgrounded = true
-    }
-    
-    @objc private func handleApplicationWillEnterForeground(_ notification: Notification) {
-        isBackgrounded = false
-        guard window != nil else { return }
         
-        playerLayer.player = player
-        playerLayer.isHidden = false
     }
     
     @objc private func handleApplicationDidEnterBackground(_ notification: Notification) {
-        isBackgrounded = true
-        guard window != nil else { return }
-        playerLayer.player = nil
+        
+    }
+    
+    @objc private func handleApplicationWillEnterForeground(_ notification: Notification) {
+        
     }
     
     @objc private func handleApplicationDidBecomeActive(_ notification: Notification) {
-        isBackgrounded = false
-        guard window != nil else { return }
         
-        playerLayer.player = player
-        playerLayer.isHidden = false
     }
     
 }
 
 // MARK: - Observer setup
 
-extension VideoView {
-    
-    // MARK: AVPlayerLayerObservers
-    
-    private func addPlayerLayerObservers() {
-        layerReadyForDisplayObserver = playerLayer.observe(\.isReadyForDisplay) { [weak self] _, change in self?.layerIsReadyForDisplay(change: change) }
-    }
-    
-    private func removePlayerLayerObservers() {
-        layerReadyForDisplayObserver = nil
-    }
+extension AudioPlayer {
     
     // MARK: AVPlayerObservers
     
     private func addPlayerObservers() {
-        timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 10), queue: .main) { [weak self] timeInterval in
-            guard let self = self else { return }
-            self.playbackDelegate?.videoCurrentTimeDidChange(self)
+        timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 100), queue: .main) { [weak self] timeInterval in
+            guard let `self` = self else { return }
+            self.playbackDelegate?.playerCurrentTimeDidChange(self)
         }
         
         playerRateObserver = player?.observe(\.rate) { [weak self] _, change in self?.playerRate(change: change) }
@@ -663,46 +550,32 @@ extension VideoView {
             NotificationCenter.default.removeObserver(self, name: .AVPlayerItemNewAccessLogEntry, object: currentPlayerItem)
         }
     }
+    
 }
 
 // MARK: - Observers
 
-extension VideoView {
-    
-    // MARK: Layer observation
-    
-    private func layerIsReadyForDisplay(change: NSKeyValueObservedChange<Bool>) {
-        print("""
-            --------------------------------------------------
-            Layer isReadyForDisplay: \(playerLayer.isReadyForDisplay)
-            Date: \(Date().second)
-            """)
-        
-        DispatchQueue.onMain { self.delegate?.videoReady(self) }
-    }
+extension AudioPlayer {
     
     // MARK: Player observation
     
     private func playerRate(change: NSKeyValueObservedChange<Float>) {
-        print("""
-            --------------------------------------------------
-            Player rate: \(player?.rate ?? -1)
-            Date: \(Date().second)
-            """)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Player rate: \(player?.rate ?? -1)
+                Date: \(Date().second)
+                """)
+        }
     }
     
     private func playerStatus(change: NSKeyValueObservedChange<AVPlayer.Status>) {
-        guard let player = player else { return }
-        
-        print("""
-            --------------------------------------------------
-            Player status: \(player.status)
-            Date: \(Date().second)
-            """)
-        
-        if case .readyToPlay = player.status {
-            playerLayer.player = player
-            playerLayer.isHidden = false
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Player status: \(player?.status ?? .unknown)
+                Date: \(Date().second)
+                """)
         }
     }
     
@@ -711,21 +584,21 @@ extension VideoView {
     private func itemStatus(change: NSKeyValueObservedChange<AVPlayerItem.Status>) {
         guard let item = self.item else { return }
         
-        print("""
-            --------------------------------------------------
-            Item status: \(item.status)
-            Date: \(Date().second)
-            """)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Item status: \(item.status)
+                Date: \(Date().second)
+                """)
+        }
         
         switch item.status {
         case .readyToPlay:
             DispatchQueue.onMain {
-                self.delegate?.videoReady(self)
+                self.delegate?.playerReady(self)
             }
         case .failed:
-            DispatchQueue.onMain {
-                self.playbackState = .failed((item.error as NSError?).flatMap(PlaybackError.ns) ?? .avPlayerFailed)
-            }
+            playbackState = .failed((item.error as NSError?).flatMap(PlaybackError.ns) ?? .avPlayerFailed)
         case .unknown:
             break
         }
@@ -734,11 +607,13 @@ extension VideoView {
     private func itemPlaybackBufferEmpty(change: NSKeyValueObservedChange<Bool>) {
         guard let item = self.item else { return }
         
-        print("""
-            --------------------------------------------------
-            Item isPlaybackBufferEmpty: \(item.isPlaybackBufferEmpty)
-            Date: \(Date().second)
-            """)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Item isPlaybackBufferEmpty: \(item.isPlaybackBufferEmpty)
+                Date: \(Date().second)
+                """)
+        }
         
         if item.isPlaybackBufferEmpty {
             bufferingState = .delayed
@@ -746,8 +621,7 @@ extension VideoView {
         
         switch item.status {
         case .readyToPlay:
-            playerLayer.player = player
-            playerLayer.isHidden = false
+            break
         case .failed:
             playbackState = .failed(.avPlayerFailed)
         case .unknown:
@@ -758,11 +632,13 @@ extension VideoView {
     private func itemKeepUp(change: NSKeyValueObservedChange<Bool>) {
         guard let item = self.item else { return }
         
-        print("""
-            --------------------------------------------------
-            Item isPlaybackLikelyToKeepUp: \(item.isPlaybackLikelyToKeepUp), \(item.status)
-            Date: \(Date().second)
-            """)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Item isPlaybackLikelyToKeepUp: \(item.isPlaybackLikelyToKeepUp), \(item.status)
+                Date: \(Date().second)
+                """)
+        }
         
         if item.isPlaybackLikelyToKeepUp {
             bufferingState = .ready
@@ -770,11 +646,8 @@ extension VideoView {
         
         switch item.status {
         case .readyToPlay:
-            playerLayer.player = player
-            playerLayer.isHidden = false
-            
             if item.isPlaybackLikelyToKeepUp {
-                delegate?.videoDidBecomeReadyToPlay(self)
+                delegate?.playerDidBecomeReadyToPlay(self)
             }
         case .failed:
             playbackState = .failed(.avPlayerFailed)
@@ -791,7 +664,7 @@ extension VideoView {
         if let timeRange = item.loadedTimeRanges.first?.timeRangeValue {
             let bufferedTime = (timeRange.start + timeRange.duration).seconds
             DispatchQueue.onMain {
-                self.delegate?.videoBufferTimeDidChange(bufferedTime)
+                self.delegate?.playerBufferTimeDidChange(bufferedTime)
             }
         }
         else if autoPlay {
@@ -800,40 +673,3 @@ extension VideoView {
     }
     
 }
-
-extension AVPlayerItem.Status: CustomStringConvertible {
-    
-    public var description: String {
-        switch self {
-        case .readyToPlay: return "Ready to play"
-        case .failed:      return "Failed"
-        case .unknown:     return "Unknown"
-        }
-    }
-    
-}
-
-extension AVPlayer.Status: CustomStringConvertible {
-    
-    public var description: String {
-        switch self {
-        case .readyToPlay: return "Ready to play"
-        case .failed:      return "Failed"
-        case .unknown:     return "Unknown"
-        }
-    }
-    
-}
-
-extension CMTime {
-    
-    init(timeInterval: TimeInterval) {
-        self.init(seconds: timeInterval, preferredTimescale: 1000000000)
-    }
-    
-    var seconds: Float64 {
-        return CMTimeGetSeconds(self)
-    }
-    
-}
-

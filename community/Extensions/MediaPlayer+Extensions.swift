@@ -26,7 +26,7 @@ extension MPNowPlayingInfoCenter {
             title: message?.title,
             organization: message?.series.title,
             author: message?.speakers.map({ $0.name }).joined(separator: ", "),
-            url: message?.videoAsset?.url,
+            url: message?.mediaAsset.url,
             image: image,
             currentTime: currentTime,
             duration: duration
@@ -37,20 +37,18 @@ extension MPNowPlayingInfoCenter {
         
         guard
             let title = title,
-            let organization = organization,
-            let author = author,
             let url = url,
             duration > 0
         else { return }
         
-        var info: [String : Any] = [
+        var info: [String : Any] = Dictionary.flatten([
             MPMediaItemPropertyTitle : title,
             MPMediaItemPropertyAlbumTitle : organization,
             MPMediaItemPropertyArtist : author,
             MPNowPlayingInfoPropertyElapsedPlaybackTime : NSNumber(value: currentTime),
             MPMediaItemPropertyPlaybackDuration : NSNumber(value: duration),
             MPMediaItemPropertyAssetURL : url
-        ]
+        ])
         
         if let image = image {
             print("Image: \(image)")

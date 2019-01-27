@@ -37,6 +37,37 @@ extension Watermark {
             }
         }
     }
+    
+    enum MediaAsset: Initializable {
+        case audio(AudioAsset)
+        case video(VideoAsset)
+        
+        var id: Int {
+            switch self {
+            case .audio(let asset): return asset.id
+            case .video(let asset): return asset.id
+            }
+        }
+        
+        var url: URL {
+            switch self {
+            case .audio(let asset): return asset.url
+            case .video(let asset): return asset.url
+            }
+        }
+        
+        init?(json: [String : Any]) {
+            if let videoAsset: VideoAsset = json.initialize(forKey: "streaming_video") ?? json.initialize(forKey: "progressive_video") {
+                self = .video(videoAsset)
+            }
+            else if let audioAsset: AudioAsset = json.initialize(forKey: "audio") {
+                self = .audio(audioAsset)
+            }
+            else {
+                return nil
+            }
+        }
+    }
 
     struct VideoAsset: Initializable {
         let id: Int

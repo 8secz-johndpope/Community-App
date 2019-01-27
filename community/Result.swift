@@ -8,20 +8,20 @@
 import Foundation
 
 enum Result<Value, Error: Swift.Error> {
-    case success(Value)
-    case failure(Error)
+    case value(Value)
+    case error(Error)
     
     var value: Value? {
         switch self {
-        case .success(let value): return value
-        case .failure:            return nil
+        case .value(let value): return value
+        case .error:            return nil
         }
     }
     
     var error: Error? {
         switch self {
-        case .success:            return nil
-        case .failure(let error): return error
+        case .value:            return nil
+        case .error(let error): return error
         }
     }
 }

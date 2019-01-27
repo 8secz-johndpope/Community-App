@@ -20,11 +20,11 @@ extension Watermark {
         static func fetch(request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data else {
-                    completion(.failure(.unknown))
+                    completion(.error(.unknown))
                     return
                 }
                 
-                completion(.success(data))
+                completion(.value(data))
             }
             task.resume()
             
@@ -48,17 +48,17 @@ extension Watermark.API {
             let request = Watermark.API.createRequest(endpoint: .messages(.id(id)))
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let series = Watermark.Message(json: json.dictionary(forKey: "message")) {
-                        completion(.success(series))
+                        completion(.value(series))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -68,17 +68,17 @@ extension Watermark.API {
             let request = Watermark.API.createRequest(endpoint: .messages(.all), parameters: ["filter[tag_id]" : "1,40"])
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let response = Watermark.MessageResponse(json: json) {
-                        completion(.success(response.messages))
+                        completion(.value(response.messages))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -88,17 +88,17 @@ extension Watermark.API {
             let request = Watermark.API.createRequest(endpoint: .messages(.all), parameters: ["filter[series_id]" : "\(seriesID)"])
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let response = Watermark.MessageResponse(json: json) {
-                        completion(.success(response.messages))
+                        completion(.value(response.messages))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -111,17 +111,17 @@ extension Watermark.API {
             ])
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let response = Watermark.MessageResponse(json: json) {
-                        completion(.success(response.messages))
+                        completion(.value(response.messages))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -133,17 +133,17 @@ extension Watermark.API {
             
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let response = Watermark.MessageResponse(json: json) {
-                        completion(.success(response.messages))
+                        completion(.value(response.messages))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -181,7 +181,7 @@ extension Watermark.API {
                     series.append(contentsOf: result.value ?? [])
                     series.sort(by: { $0.latestDate > $1.latestDate })
                     dequeue()
-                    completion(.success(series))
+                    completion(.value(series))
                 }
             }
         }
@@ -195,17 +195,17 @@ extension Watermark.API {
             ])
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let response = Watermark.SeriesResponse(json: json) {
-                        completion(.success(response.series))
+                        completion(.value(response.series))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -215,17 +215,17 @@ extension Watermark.API {
             let request = Watermark.API.createRequest(endpoint: .series(.id(id)))
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let series = Watermark.Series(json: json.dictionary(forKey: "series")) {
-                        completion(.success(series))
+                        completion(.value(series))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -237,17 +237,17 @@ extension Watermark.API {
             
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let response = Watermark.SeriesResponse(json: json) {
-                        completion(.success(response.series))
+                        completion(.value(response.series))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -263,17 +263,17 @@ extension Watermark.API {
             
             return Watermark.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
                     if let response = Watermark.SpeakerResponse(json: json) {
-                        completion(.success(response.speakers))
+                        completion(.value(response.speakers))
                     }
                     else {
-                        completion(.failure(.unknown))
+                        completion(.error(.unknown))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }

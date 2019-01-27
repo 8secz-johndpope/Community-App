@@ -122,6 +122,7 @@
 		8167820121F3CA0C00E96C29 /* MessageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8167820021F3CA0C00E96C29 /* MessageContentView.swift */; };
 		8167820321F3CA1300E96C29 /* TextPostContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8167820221F3CA1300E96C29 /* TextPostContentView.swift */; };
 		8168FEB321FCFF73009B4189 /* AVFoundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8168FEB221FCFF73009B4189 /* AVFoundation+Extensions.swift */; };
+		8168FEB521FD032F009B4189 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8168FEB421FD032F009B4189 /* AudioPlayer.swift */; };
 		816A4F852116906000179C76 /* ShelfViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F842116906000179C76 /* ShelfViewController.swift */; };
 		816A4F872116AEE200179C76 /* AsyncTextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F862116AEE200179C76 /* AsyncTextAttachment.swift */; };
 		816A4F892116B00B00179C76 /* NSLayoutManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F882116B00B00179C76 /* NSLayoutManager+Extensions.swift */; };
@@ -352,6 +353,7 @@
 		8167820021F3CA0C00E96C29 /* MessageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContentView.swift; sourceTree = "<group>"; };
 		8167820221F3CA1300E96C29 /* TextPostContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPostContentView.swift; sourceTree = "<group>"; };
 		8168FEB221FCFF73009B4189 /* AVFoundation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVFoundation+Extensions.swift"; sourceTree = "<group>"; };
+		8168FEB421FD032F009B4189 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		816A4F842116906000179C76 /* ShelfViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfViewController.swift; sourceTree = "<group>"; };
 		816A4F862116AEE200179C76 /* AsyncTextAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncTextAttachment.swift; sourceTree = "<group>"; };
 		816A4F882116B00B00179C76 /* NSLayoutManager+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+Extensions.swift"; sourceTree = "<group>"; };
@@ -558,6 +560,7 @@
 			isa = PBXGroup;
 			children = (
 				8116F20120F9A7D5005A2171 /* AppDelegate.swift */,
+				8168FEB421FD032F009B4189 /* AudioPlayer.swift */,
 				8116F20320F9A7D5005A2171 /* ViewController.swift */,
 				814E3D472119108F00D9DA26 /* HomeViewController.swift */,
 				811BEB17211A7BA900C037C2 /* SearchViewController.swift */,
@@ -1065,6 +1068,7 @@
 				812069FE20FD6ECF00696D32 /* ContentContainerView.swift in Sources */,
 				81938C0B20F9B9180080DEFF /* JSONSerialization+Extensions.swift in Sources */,
 				81CFC91E20FB0C87006BF518 /* VideoView.swift in Sources */,
+				8168FEB521FD032F009B4189 /* AudioPlayer.swift in Sources */,
 				81ED74DE20FA763C00BE1F4C /* MessageListViewController.swift in Sources */,
 				81B61F6F211D2715001B517F /* LeftAlignedCollectionViewLayout.swift in Sources */,
 				81938C2220FA69590080DEFF /* Images.swift in Sources */,

@@ -37,13 +37,13 @@ extension Contentful {
         static func fetch(request: URLRequest, completion: @escaping (Result<Data, Contentful.API.Error>) -> Void = { _ in }) -> URLSessionDataTask {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let data = data {
-                    completion(.success(data))
+                    completion(.value(data))
                 }
                 else if let error = error as? Contentful.API.Error {
-                    completion(.failure(error))
+                    completion(.error(error))
                 }
                 else {
-                    completion(.failure(.unknown))
+                    completion(.error(.unknown))
                 }
             }
             task.resume()
@@ -134,7 +134,7 @@ extension Contentful.API {
         
         static func search(query: String, completion: @escaping (Result<[Contentful.ExternalPost], Contentful.API.Error>) -> Void) {
             let posts = Contentful.LocalStorage.externalPosts.filter { $0.title.lowercased().contains(query.lowercased()) }
-            completion(.success(posts))
+            completion(.value(posts))
         }
         
         static func fetchAll(completion: @escaping (Result<[Contentful.ExternalPost], Contentful.API.Error>) -> Void) {
@@ -147,7 +147,7 @@ extension Contentful.API {
         
         static func search(query: String, completion: @escaping (Result<[Contentful.TextPost], Contentful.API.Error>) -> Void) {
             let posts = Contentful.LocalStorage.textPosts.filter { $0.title.lowercased().contains(query.lowercased()) }
-            completion(.success(posts))
+            completion(.value(posts))
         }
         
         static func fetchAll(completion: @escaping (Result<[Contentful.TextPost], Contentful.API.Error>) -> Void) {
@@ -160,7 +160,7 @@ extension Contentful.API {
         
         static func search(query: String, completion: @escaping (Result<[Contentful.Shelf], Contentful.API.Error>) -> Void) {
             let shelves = Contentful.LocalStorage.shelves.filter { $0.name.lowercased().contains(query.lowercased()) }
-            completion(.success(shelves))
+            completion(.value(shelves))
         }
         
         static func fetchAll(completion: @escaping (Result<[Contentful.Shelf], Contentful.API.Error>) -> Void) {
@@ -174,10 +174,10 @@ extension Contentful.API {
         static func fetchAll(completion: @escaping (Result<[Contentful.Entry], Contentful.API.Error>) -> Void) {
             Contentful.API.fetchAll(contentType: nil) { result in
                 switch result {
-                case .success(let items):
-                    completion(.success(items.compactMap(Contentful.Entry.init(json:))))
-                case .failure(let error):
-                    completion(.failure(error))
+                case .value(let items):
+                    completion(.value(items.compactMap(Contentful.Entry.init(json:))))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -191,11 +191,11 @@ extension Contentful.API {
             
             Contentful.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
-                    completion(.success(Contentful.Asset(json: json)!))
-                case .failure(let error):
-                    completion(.failure(error))
+                    completion(.value(Contentful.Asset(json: json)!))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -205,11 +205,11 @@ extension Contentful.API {
             
             Contentful.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
-                    completion(.success(json.array(forKey: "items")))
-                case .failure(let error):
-                    completion(.failure(error))
+                    completion(.value(json.array(forKey: "items")))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -219,7 +219,7 @@ extension Contentful.API {
             
             Contentful.API.fetch(request: request) { result in
                 switch result {
-                case .success(let data):
+                case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     let limit = json.int(forKey: "limit") ?? 0
                     let total = json.int(forKey: "total") ?? 0
@@ -246,15 +246,15 @@ extension Contentful.API {
                         }
                         
                         serialProcessor.enqueue { dequeue in
-                            completion(.success(assets))
+                            completion(.value(assets))
                             dequeue()
                         }
                     }
                     else {
-                        completion(.success(values))
+                        completion(.value(values))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
+                case .error(let error):
+                    completion(.error(error))
                 }
             }
         }
@@ -281,10 +281,10 @@ extension Contentful.API {
     static func fetchAll<T: Initializable>(type: ContentType, completion: @escaping (Result<[T], Contentful.API.Error>) -> Void) {
         fetchAll(contentType: type.rawValue) { result in
             switch result {
-            case .success(let items):
-                completion(.success(items.compactMap(T.init(json:))))
-            case .failure(let error):
-                completion(.failure(error))
+            case .value(let items):
+                completion(.value(items.compactMap(T.init(json:))))
+            case .error(let error):
+                completion(.error(error))
             }
         }
     }
@@ -300,11 +300,11 @@ extension Contentful.API {
         
         Contentful.API.fetch(request: request) { result in
             switch result {
-            case .success(let data):
+            case .value(let data):
                 let json = JSONSerialization.dictionary(from: data)
-                completion(.success(json.array(forKey: "items").dictionaries))
-            case .failure(let error):
-                completion(.failure(error))
+                completion(.value(json.array(forKey: "items").dictionaries))
+            case .error(let error):
+                completion(.error(error))
             }
         }
     }
@@ -320,7 +320,7 @@ extension Contentful.API {
         
         Contentful.API.fetch(request: request) { result in
             switch result {
-            case .success(let data):
+            case .value(let data):
                 let json = JSONSerialization.dictionary(from: data)
                 let limit = json.int(forKey: "limit") ?? 0
                 let total = json.int(forKey: "total") ?? 0
@@ -347,15 +347,15 @@ extension Contentful.API {
                     }
                     
                     serialProcessor.enqueue { dequeue in
-                        completion(.success(entries))
+                        completion(.value(entries))
                         dequeue()
                     }
                 }
                 else {
-                    completion(.success(values))
+                    completion(.value(values))
                 }
-            case .failure(let error):
-                completion(.failure(error))
+            case .error(let error):
+                completion(.error(error))
             }
         }
     }

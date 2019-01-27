@@ -237,7 +237,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIViewController.current == self {
+        if UIViewController.current == self, headerView.mediaType == .video {
             return .allButUpsideDown
         }
         else {
@@ -301,8 +301,17 @@ extension ContentViewController: ContentHeaderViewDelegate {
     func didPlay(in view: ContentHeaderView) {
         containerView.update(isPlaying: true)
         
-        if case .textPost(let post) = content {
-            statusBarCover.isHidden = (post.mediaURL == nil)
+        switch content {
+        case .textPost(let post):
+            switch view.mediaType {
+            case .audio: statusBarCover.isHidden = true
+            case .video: statusBarCover.isHidden = !post.hasMedia
+            }
+        case .message:
+            switch view.mediaType {
+            case .audio: statusBarCover.isHidden = true
+            case .video: statusBarCover.isHidden = false
+            }
         }
     }
     
