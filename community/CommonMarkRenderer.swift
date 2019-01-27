@@ -160,9 +160,9 @@ extension Block {
                 
                 return string.adding(attribute: .paragraphStyle, value: paragraphStyle).mutable
                 }.join(separator: "\n")
-        case .blockQuote(_):   fatalError("Block quote not supported")
-        case .codeBlock(_, _): fatalError("Code block not supported")
-        case .html(_):         fatalError("HTML not supported")
+        case .blockQuote(_):   return "".attributed
+        case .codeBlock(_, _): return "".attributed
+        case .html(_):         return "".attributed
         case .paragraph(let children):
             return children.map { $0.render(font: font) }.join()
         case .heading(let children, let level):
@@ -176,8 +176,8 @@ extension Block {
             }
             
             return children.map { $0.render(font: headerFont) }.join()
-        case .custom(_): fatalError("Custom not supported")
-        case .thematicBreak: fatalError("Thematic break not supported")
+        case .custom(_): return "".attributed
+        case .thematicBreak: return "".attributed
         }
     }
 }

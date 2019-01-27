@@ -22,7 +22,6 @@ final class TableHeaderView: View {
             $0.pinTop(to: self).pinLeading(to: self, plus: .padding)
             $0.constrainSize(toFit: .vertical, .horizontal)
             $0.backgroundColor = .clear
-            $0.attributedText = "The Table".attributed.font(.header).color(.lightBackground)
         }
         
         subtitleLabel.add(toSuperview: self).customize {
@@ -53,6 +52,7 @@ final class TableHeaderView: View {
     }
     
     func configure(table: Contentful.Table?) {
+        titleLabel.attributedText    = table?.title.attributed.font(.header).color(.lightBackground)
         subtitleLabel.attributedText = table?.info.attributed.font(.subHeader).color(.lightBackground)
     }
     

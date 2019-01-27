@@ -72,7 +72,7 @@ final class ContentHeaderView: View {
     
     deinit {
         videoView.stop()
-        configureBackgroundAudio(isEnabled: false)
+        AVAudioSession.configureBackgroundAudio(isEnabled: false)
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [:]
     }
     
@@ -81,6 +81,7 @@ final class ContentHeaderView: View {
             videoView.pause()
         }
         else {
+            AVAudioSession.configureBackgroundAudio(isEnabled: true)
             imageView.isHidden = true
             videoView.playFromCurrentTime()
             hideControls()
@@ -305,40 +306,6 @@ extension ContentHeaderView {
         }
     }
     
-    func configureBackgroundAudio(isEnabled: Bool) {
-        if isEnabled {
-            do {
-                try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-                try AVAudioSession.sharedInstance().setActive(true)
-                UIApplication.shared.beginReceivingRemoteControlEvents()
-            }
-            catch {
-                print("""
-                    ===========================================================================
-                    
-                    Error starting audio session: \(error.localizedDescription)
-                    
-                    ===========================================================================
-                    """)
-            }
-        }
-        else {
-            do {
-                UIApplication.shared.endReceivingRemoteControlEvents()
-                try AVAudioSession.sharedInstance().setActive(false)
-            }
-            catch {
-                print("""
-                    ===========================================================================
-                    
-                    Error deactivating audio session: \(error.localizedDescription)
-                    
-                    ===========================================================================
-                    """)
-            }
-        }
-    }
-    
     func configure(content: ContentViewController.Content) {
         switch content {
         case .message(let message): configure(message: message)
@@ -349,7 +316,7 @@ extension ContentHeaderView {
     func configure(message: Watermark.Message) {
         self.content = .message(message)
         
-        configureBackgroundAudio(isEnabled: true)
+        AVAudioSession.configureBackgroundAudio(isEnabled: true)
         
         imageView.load(url: message.image?.url)
         imageView.isHidden = true
@@ -368,7 +335,7 @@ extension ContentHeaderView {
     func configure(textPost: Contentful.TextPost) {
         self.content = .textPost(textPost)
         
-        configureBackgroundAudio(isEnabled: true)
+        AVAudioSession.configureBackgroundAudio(isEnabled: true, category: .ambient)
         
         if let image = textPost.image?.url {
             imageView.load(url: image)

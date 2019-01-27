@@ -117,7 +117,6 @@ final class SearchViewController: ViewController {
             $0.pinBottom(to: searchField, .top, plus: -10).constrainSize(toFit: .vertical)
             $0.font = .header
             $0.textColor = .dark
-            $0.text = "Search"
         }
         
         loadingIndicator.add(toSuperview: view).customize {
@@ -134,6 +133,7 @@ final class SearchViewController: ViewController {
     }
     
     private func reload() {
+        headerLabel.text = Contentful.LocalStorage.search?.title
         cells = Cell.suggestions
         collectionView.reloadData()
     }

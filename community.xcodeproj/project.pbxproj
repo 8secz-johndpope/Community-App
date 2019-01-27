@@ -121,6 +121,7 @@
 		816781FD21F2E58200E96C29 /* YouTube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816781FC21F2E58200E96C29 /* YouTube.swift */; };
 		8167820121F3CA0C00E96C29 /* MessageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8167820021F3CA0C00E96C29 /* MessageContentView.swift */; };
 		8167820321F3CA1300E96C29 /* TextPostContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8167820221F3CA1300E96C29 /* TextPostContentView.swift */; };
+		8168FEB321FCFF73009B4189 /* AVFoundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8168FEB221FCFF73009B4189 /* AVFoundation+Extensions.swift */; };
 		816A4F852116906000179C76 /* ShelfViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F842116906000179C76 /* ShelfViewController.swift */; };
 		816A4F872116AEE200179C76 /* AsyncTextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F862116AEE200179C76 /* AsyncTextAttachment.swift */; };
 		816A4F892116B00B00179C76 /* NSLayoutManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F882116B00B00179C76 /* NSLayoutManager+Extensions.swift */; };
@@ -350,6 +351,7 @@
 		816781FC21F2E58200E96C29 /* YouTube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTube.swift; sourceTree = "<group>"; };
 		8167820021F3CA0C00E96C29 /* MessageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContentView.swift; sourceTree = "<group>"; };
 		8167820221F3CA1300E96C29 /* TextPostContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPostContentView.swift; sourceTree = "<group>"; };
+		8168FEB221FCFF73009B4189 /* AVFoundation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVFoundation+Extensions.swift"; sourceTree = "<group>"; };
 		816A4F842116906000179C76 /* ShelfViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfViewController.swift; sourceTree = "<group>"; };
 		816A4F862116AEE200179C76 /* AsyncTextAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncTextAttachment.swift; sourceTree = "<group>"; };
 		816A4F882116B00B00179C76 /* NSLayoutManager+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+Extensions.swift"; sourceTree = "<group>"; };
@@ -703,6 +705,7 @@
 		81938BFC20F9B3760080DEFF /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				8168FEB221FCFF73009B4189 /* AVFoundation+Extensions.swift */,
 				81938BD320F9AC720080DEFF /* UIView+Extensions.swift */,
 				81938BFA20F9B36B0080DEFF /* UIEdgeInsets+Extensions.swift */,
 				81938C0820F9B8FF0080DEFF /* CharacterSet+Extensions.swift */,
@@ -1019,6 +1022,7 @@
 				817298F420FEB38A00596B35 /* Int+Extensions.swift in Sources */,
 				812311D9211BD7A100D596EB /* SettingsViewController.swift in Sources */,
 				81938C0920F9B8FF0080DEFF /* CharacterSet+Extensions.swift in Sources */,
+				8168FEB321FCFF73009B4189 /* AVFoundation+Extensions.swift in Sources */,
 				81938C1520F9BE260080DEFF /* Result.swift in Sources */,
 				817BB7B92113C0E6005DE341 /* SeriesSectionView.swift in Sources */,
 				817BB7B72113BE58005DE341 /* ShelfCell.swift in Sources */,

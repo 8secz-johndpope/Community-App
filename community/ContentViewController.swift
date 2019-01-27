@@ -104,7 +104,6 @@ final class ContentViewController: ViewController, StatusBarViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         scrollView.delegate = self
-        headerView.configureBackgroundAudio(isEnabled: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

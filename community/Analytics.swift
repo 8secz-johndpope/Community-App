@@ -23,7 +23,11 @@ enum Analytics {
     }
     
     static func log(_ event: Event, with parameters: [String : Any] = [:]) {
+        #if DEBUG
+        print("Logging event: \(event.rawValue), parameters: \(parameters)")
+        #else
         FirebaseAnalytics.Analytics.logEvent(event.rawValue, parameters: parameters)
+        #endif
     }
     
 }

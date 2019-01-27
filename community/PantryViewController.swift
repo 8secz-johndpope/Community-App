@@ -64,7 +64,7 @@ final class PantryViewController: ViewController {
         }
         
         refreshControl.add(toSuperview: collectionView).customize {
-            $0.addTarget(self, action: #selector(reload), for: .valueChanged)
+            $0.addTarget(self, action: #selector(reloadContent), for: .valueChanged)
             $0.tintColor = .dark
         }
         
@@ -89,13 +89,11 @@ final class PantryViewController: ViewController {
             $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
             $0.font = .bold(size: 16)
             $0.textColor = .dark
-            $0.text = "The Pantry"
+            $0.text = Contentful.LocalStorage.pantry?.title
         }
         
         Notifier.onPantryChanged.subscribePast(with: self) { [weak self] in
-            self?.generateCells()
-            self?.collectionView.reloadData()
-            self?.refreshControl.endRefreshing()
+            self?.reload()
         }.onQueue(.main)
     }
     
@@ -111,9 +109,16 @@ final class PantryViewController: ViewController {
         return false
     }
     
+    private func reload() {
+        headerLabel.text = Contentful.LocalStorage.pantry?.title
+        generateCells()
+        collectionView.reloadData()
+        refreshControl.endRefreshing()
+    }
+    
     private func generateCells() {
         cells.removeAll()
-        cells.append(.header("The Pantry", Contentful.LocalStorage.pantry?.info ?? ""))
+        cells.append(.header(Contentful.LocalStorage.pantry?.title ?? "", Contentful.LocalStorage.pantry?.info ?? ""))
         cells.append(.space(.padding))
         cells.append(contentsOf: Contentful.LocalStorage.pantry?.shelves.map(Cell.shelf) ?? [])
     }
@@ -123,7 +128,7 @@ final class PantryViewController: ViewController {
         UIAlertController.alert(message: info).addAction(title: "OK").present()
     }
     
-    @objc dynamic private func reload() {
+    @objc dynamic private func reloadContent() {
         Contentful.API.loadAllContent()
     }
     
