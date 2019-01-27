@@ -19,10 +19,15 @@ extension Contentful {
         let icon: Icon?
         
         var posts: [Contentful.Post] {
-            return (
-                Contentful.LocalStorage.externalPosts.filter { postIDs.contains($0.id) }.map(Contentful.Post.external) +
-                Contentful.LocalStorage.textPosts.filter { postIDs.contains($0.id) }.map(Contentful.Post.text)
-            ).sorted(by: { $0.updatedAt < $1.updatedAt })
+            var posts: [Contentful.Post] = []
+            
+            for id in postIDs {
+                if let post = Contentful.LocalStorage.posts.first(where: { $0.id == id }) {
+                    posts.append(post)
+                }
+            }
+            
+            return posts
         }
         
         var shelves: [Contentful.Shelf] {

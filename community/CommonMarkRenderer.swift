@@ -7,6 +7,7 @@
 
 import Foundation
 import CommonMark
+import Alexandria
 
 extension String {
     
@@ -159,10 +160,32 @@ extension Block {
                 ]
                 
                 return string.adding(attribute: .paragraphStyle, value: paragraphStyle).mutable
-                }.join(separator: "\n")
-        case .blockQuote(_):   return "".attributed
-        case .codeBlock(_, _): return "".attributed
-        case .html(_):         return "".attributed
+            }.join(separator: "\n")
+        case .blockQuote(let quote):
+            let paragraphStyle = NSMutableParagraphStyle().customize {
+                $0.headIndent = 28
+                $0.firstLineHeadIndent = 0
+                $0.lineSpacing = 5
+            }
+            
+            let quoteString = "“  "
+                .attributed.adding(attribute: .foregroundColor, value: UIColor.blockQuote)
+                .adding(attribute: .font, value: UIFont.boldItalic(size: 30)).mutable
+                .adding(attribute: .paragraphStyle, value: paragraphStyle).mutable
+            
+            let blockString = quote.map { block in
+                let string = block.render(font: font)
+                
+                return string
+                    .adding(attribute: .foregroundColor, value: UIColor.blockQuote)
+                    .adding(attribute: .font, value: UIFont.italic(size: 20))//(string.allAttributes[.font] as? UIFont)?.pointSize ?? 16))
+                    .adding(attribute: .paragraphStyle, value: paragraphStyle)
+                    .mutable
+            }.join(separator: "\n")
+            
+            return quoteString + blockString
+        case .codeBlock(_, _): fatalError("Code block type not supported")
+        case .html(_):         fatalError("HTML type not supported")
         case .paragraph(let children):
             return children.map { $0.render(font: font) }.join()
         case .heading(let children, let level):
@@ -176,8 +199,8 @@ extension Block {
             }
             
             return children.map { $0.render(font: headerFont) }.join()
-        case .custom(_): return "".attributed
-        case .thematicBreak: return "".attributed
+        case .custom(_): fatalError("Custom type not supported")
+        case .thematicBreak: fatalError("Thematic break type not supported")
         }
     }
 }

@@ -18,6 +18,7 @@ extension UIColor {
     static let lightBackground = #colorLiteral(red: 0.9764705882, green: 0.9764705882, blue: 0.9843137255, alpha: 1)  // #F9F9FB
     static let gray            = #colorLiteral(red: 0.6666666667, green: 0.6666666667, blue: 0.6666666667, alpha: 1)  // #AAAAAA
     static let loading         = #colorLiteral(red: 0.7294117647, green: 0.8, blue: 0.8901960784, alpha: 1)  // #BACCE3
+    static let blockQuote      = #colorLiteral(red: 0.4941176471, green: 0.5058823529, blue: 0.5215686275, alpha: 1)  // #7E8185
     
     static let lightBlue = #colorLiteral(red: 0.5490196078, green: 0.7294117647, blue: 0.8196078431, alpha: 1)  // #8CBAD1
     static let darkBlue  = #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.4117647059, alpha: 1)  // #324E69
