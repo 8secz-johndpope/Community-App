@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MessageUI
 
 class ViewController: UIViewController {
     
@@ -49,6 +50,14 @@ class ViewController: UIViewController {
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
+    }
+    
+}
+
+extension ViewController: MFMailComposeViewControllerDelegate {
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
     
 }

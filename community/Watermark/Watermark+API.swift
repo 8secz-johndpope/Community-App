@@ -51,8 +51,8 @@ extension Watermark.API {
                 case .value(let data):
                     let json = JSONSerialization.dictionary(from: data)
                     
-                    if let series = Watermark.Message(json: json.dictionary(forKey: "message")) {
-                        completion(.value(series))
+                    if let message = Watermark.Message(json: json.dictionary(forKey: "message")) {
+                        completion(.value(message))
                     }
                     else {
                         completion(.error(.unknown))

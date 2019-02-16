@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MessageUI
 
 enum DeepLink {
     case message(Int)
@@ -41,8 +42,17 @@ enum DeepLink {
                 UIViewController.current?.showInSafari(url: url)
             }
         }
-        else {
+        else if url.isHTTP {
             UIViewController.current?.showInSafari(url: url)
+        }
+        else if url.isEmail, MFMailComposeViewController.canSendMail(), UIViewController.current is MFMailComposeViewControllerDelegate {
+            MFMailComposeViewController().customize {
+                $0.setToRecipients([url.absoluteString])
+                $0.mailComposeDelegate = UIViewController.current as? MFMailComposeViewControllerDelegate
+            }.show()
+        }
+        else {
+            UIApplication.shared.open(url)
         }
     }
 }

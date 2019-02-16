@@ -69,20 +69,6 @@ extension Watermark {
             if self.images.isEmpty {
                 return nil
             }
-            
-            let excludedSeries: [String] = [
-                "re|engage Testimonies",
-                "Re-Engage",
-                "Fort Worth: Conflict",
-                "Plano: The Outsiders",
-                "Launch 2016",
-                "Launch 2017",
-                "Launch 2018"
-            ]
-            
-            if excludedSeries.contains(title) {
-                return nil
-            }
         }
         
         var description: String {

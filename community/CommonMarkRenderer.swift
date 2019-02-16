@@ -117,12 +117,14 @@ extension Inline: Render {
         case .strong(let children):   return children.renderedString(font: font.bold)
         case .custom(_):              return "".attributed
         case .link(let children, _, let url):
+            guard let url = url?.removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlAllowed).flatMap(URL.init(string:)) else { return "".attributed }
             return children.renderedString(font: font.bold)
-                .url(URL(string: url!)!)
+                .url(url)
                 .color(.lightBlue)
                 .underline(style: .single, color: .lightBlue)
         case let .image(_, _, url):
-            let attachment = AsyncTextAttachment(imageURL: URL(string: "https:\(url!)"), delegate: nil)
+            guard let url = url?.removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlAllowed) else { return "".attributed }
+            let attachment = AsyncTextAttachment(imageURL: URL(string: "https:\(url)"), delegate: nil)
             return NSAttributedString(attachment: attachment).mutable
         }
     }

@@ -46,4 +46,18 @@ extension URL {
                UTTypeConformsTo(uti, kUTTypeMPEG4)
     }
     
+    var isHTTP: Bool {
+        return ["http", "https"].contains(scheme ?? "")
+    }
+    
+    var isEmail: Bool {
+        if scheme?.contains("mailto") == true {
+            return true
+        }
+        else {
+            let pattern = "[_A-Za-z0-9-+]+(?:\\.[_A-Za-z0-9-+]+)*@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+            return NSPredicate(format: "SELF MATCHES %@", pattern).evaluate(with: absoluteString)
+        }
+    }
+    
 }

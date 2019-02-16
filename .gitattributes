@@ -1,0 +1,5 @@
+Crashlytics.framework/* linguist-vendored
+Fabric.framework/* linguist-vendored
+Firebase/* linguist-vendored
+Carthage/* linguist-vendored
+CommonMark/cmark/* linguist-vendored

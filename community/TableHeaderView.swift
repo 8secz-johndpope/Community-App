@@ -18,6 +18,8 @@ final class TableHeaderView: View {
         
         backgroundColor = .clear
         
+        constrain(.height, .greaterThanOrEqual, to: 64)
+        
         titleLabel.add(toSuperview: self).customize {
             $0.pinTop(to: self).pinLeading(to: self, plus: .padding)
             $0.constrainSize(toFit: .vertical, .horizontal)
@@ -26,7 +28,7 @@ final class TableHeaderView: View {
         
         subtitleLabel.add(toSuperview: self).customize {
             $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
-            $0.pinTop(to: titleLabel, .bottom).pinBottom(to: self)
+            $0.pinTop(to: titleLabel, .bottom).pinBottom(to: self, relation: .greaterThanOrEqual)
             $0.constrainSize(toFit: .vertical)
             $0.backgroundColor = .clear
             $0.numberOfLines = 2

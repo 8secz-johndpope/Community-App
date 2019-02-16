@@ -134,7 +134,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
         containerView.add(toSuperview: scrollView)
         
         headerView.customize {
-            $0.pinTop(to: view).pinBottom(to: containerView, .top, plus: 50, atPriority: .required - 1)
+            $0.pinTop(to: view).pinBottom(to: containerView, .top, plus: 50, atPriority: .required - 2)
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.configure(content: content)
             $0.delegate = self

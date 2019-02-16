@@ -12,6 +12,8 @@ final class TableSectionView: View {
     
     private var posts: [Contentful.Post] = []
     
+    private var shouldAnimateCells = true
+    
     private let collectionView = UICollectionView(layout: .horizontal(lineSpacing: .padding, sectionInset: UIEdgeInsets(left: .padding, right: .padding)))
     
     override func setup() {
@@ -58,6 +60,21 @@ extension TableSectionView: UICollectionViewDelegate, UICollectionViewDelegateFl
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 220, height: .tablePostHeight)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        guard shouldAnimateCells else { return }
+        
+        if indexPath.row >= 1 {
+            shouldAnimateCells = false
+        }
+        
+        cell.transform = .translate(UIScreen.main.width, 0)
+        
+        UIView.animate(withDuration: 0.5, delay: 0.25 + indexPath.row.double * 0.05, usingSpringWithDamping: 0.85, initialSpringVelocity: 0, options: [], animations: {
+            cell.transform = .identity
+        }, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
