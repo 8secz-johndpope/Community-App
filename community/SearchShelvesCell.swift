@@ -124,7 +124,7 @@ extension SearchShelvesCell {
         }
         
         static func size(forShelf shelf: Contentful.Shelf, in collectionView: UICollectionView) -> CGSize {
-            let nameWidth = shelf.name.size(font: .regular(size: 16)).width.rounded(.up)
+            let nameWidth = shelf.name.size(boundingWidth: collectionView.width * 0.7, boundingHeight: 44, font: .regular(size: 16)).width.rounded(.up)
             let width = (.padding + nameWidth + .padding).limited(50, collectionView.width * 0.9)
             
             return CGSize(width: width, height: collectionView.height)

@@ -25,14 +25,11 @@ public struct YouTube {
     
     public static func fetchVideo(id: String?, completion: @escaping (URL?) -> Void = { _ in }) {
         
-        guard let id = id else {
-            completion(nil)
-            return
+        guard let id = id, let url = URL(string: "https://www.youtube.com/get_video_info?video_id=\(id)") else {
+            return completion(nil)
         }
         
-        let url = URL(string: "https://www.youtube.com/get_video_info?video_id=\(id)")
-        
-        URLSession.shared.dataTask(with: url!) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             
             guard
                 let data = data,

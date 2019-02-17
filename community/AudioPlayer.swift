@@ -71,26 +71,28 @@ final class AudioPlayer: NSObject {
         return (item?.accessLog()?.events.reduce(0) { $0 + $1.durationWatched } ?? 0).limited(0, duration).rounded(.up)
     }
     
-    func handleSkipBackCommand() -> MPRemoteCommandHandlerStatus {
-        if currentTime >= 0, duration > 0 {
-            let newTime = (currentTime - 15).limited(0, duration)
-            seek(to: newTime)
-            return .success
-        }
-        else {
-            return .commandFailed
-        }
+    func handleSkipBack(event: MPRemoteCommandEvent, completion: @escaping () -> Void) -> MPRemoteCommandHandlerStatus {
+        guard let skipEvent = event as? MPSkipIntervalCommandEvent, let player = player else { return .commandFailed }
+        
+        let currentTime = player.currentTime()
+        let interval = CMTime(seconds: skipEvent.interval, preferredTimescale: 1000)
+        let skipTime = CMTimeSubtract(currentTime, interval)
+        
+        player.seek(to: skipTime) { _ in completion() }
+        
+        return .success
     }
     
-    func handleSkipForwardCommand() -> MPRemoteCommandHandlerStatus {
-        if currentTime >= 0, duration > 0 {
-            let newTime = (currentTime + 15).limited(0, duration)
-            seek(to: newTime)
-            return .success
-        }
-        else {
-            return .commandFailed
-        }
+    func handleSkipForward(event: MPRemoteCommandEvent, completion: @escaping () -> Void) -> MPRemoteCommandHandlerStatus {
+        guard let skipEvent = event as? MPSkipIntervalCommandEvent, let player = player else { return .commandFailed }
+        
+        let currentTime = player.currentTime()
+        let interval = CMTime(seconds: skipEvent.interval, preferredTimescale: 1000)
+        let skipTime = CMTimeAdd(currentTime, interval)
+        
+        player.seek(to: skipTime) { _ in completion() }
+        
+        return .success
     }
     
     func printAccessLog() {

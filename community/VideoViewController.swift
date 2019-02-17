@@ -40,10 +40,15 @@ final class VideoViewController: ViewController {
     private let videoButton        = UIButton()
     
     private var startingButtonMinY: CGFloat?
+    private var heightConstraint: NSLayoutConstraint?
     
     deinit {
         videoView.stop()
         AVAudioSession.configureBackgroundAudio(isEnabled: false)
+    }
+    
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        return true
     }
     
     override func setup() {
@@ -73,12 +78,14 @@ final class VideoViewController: ViewController {
             $0.pinLeading(to: view, plus: .padding).pinTrailing(to: view, plus: -.padding)
             $0.pinTop(to: videoButton, .bottom)
             $0.backgroundColor = .clear
+            
+            heightConstraint = $0.constrain(.height, to: $0, .width, times: 9/16)
         }
         
         videoView.add(toSuperview: videoContainerView).customize {
             $0.pinLeading(to: videoContainerView).pinTrailing(to: videoContainerView)
             $0.pinTop(to: videoContainerView, plus: 10).pinBottom(to: videoContainerView)
-            $0.autoDimension = .width
+            $0.videoGravity = .resizeAspectFill
             $0.backgroundColor = .black
             $0.borderColor = .white
             $0.cornerRadius = 8
@@ -131,18 +138,21 @@ final class VideoViewController: ViewController {
 
 extension VideoViewController: VideoDelegate {
     
-    func videoReady(_ player: VideoView) {}
+    func videoReady(_ player: VideoView) {
+        guard let size = player.naturalSize, size.width > 0, size.height > 0 else { return }
+        
+        let multiplier = (size.height/size.width).limited(1/2, 16/9)
+        
+        heightConstraint.flatMap(videoContainerView.removeConstraint)
+        heightConstraint = videoContainerView.constrain(.height, to: videoContainerView, .width, times: multiplier)
+    }
     
     func videoPlaybackStateDidChange(_ player: VideoView) {
         switch player.playbackState {
-        case .playing:
-            loadingIndicator.stopAnimating()
-        case .paused:
-            break
-        case .stopped:
-            break
-        case .failed:
-            hide()
+        case .playing: loadingIndicator.stopAnimating()
+        case .paused:  break
+        case .stopped: break
+        case .failed:  hide()
         }
     }
     

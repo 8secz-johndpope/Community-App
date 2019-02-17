@@ -44,6 +44,8 @@ final class VideoView: UIView {
         case height
     }
     
+    private let isLoggingEnabled = false
+    
     private var playerRateObserver: NSKeyValueObservation?
     private var playerStatusObserver: NSKeyValueObservation?
     
@@ -56,6 +58,10 @@ final class VideoView: UIView {
     
     private var widthConstraint = NSLayoutConstraint()
     private var heightConstraint = NSLayoutConstraint()
+    
+    var naturalSize: CGSize? {
+        return item?.asset.tracks.first?.naturalSize
+    }
     
     private var lastDimensions: CGSize = .zero {
         didSet {
@@ -150,29 +156,32 @@ final class VideoView: UIView {
         BackgroundVideo.player = nil
     }
     
-    func handleSkipBackCommand() -> MPRemoteCommandHandlerStatus {
-        if currentTime >= 0, duration > 0 {
-            let newTime = (currentTime - 15).limited(0, duration)
-            seek(to: newTime)
-            return .success
-        }
-        else {
-            return .commandFailed
-        }
+    func handleSkipBack(event: MPRemoteCommandEvent, completion: @escaping () -> Void) -> MPRemoteCommandHandlerStatus {
+        guard let skipEvent = event as? MPSkipIntervalCommandEvent, let player = player else { return .commandFailed }
+        
+        let currentTime = player.currentTime()
+        let interval = CMTime(seconds: skipEvent.interval, preferredTimescale: 1000)
+        let skipTime = CMTimeSubtract(currentTime, interval)
+        
+        player.seek(to: skipTime) { _ in completion() }
+        
+        return .success
     }
     
-    func handleSkipForwardCommand() -> MPRemoteCommandHandlerStatus {
-        if currentTime >= 0, duration > 0 {
-            let newTime = (currentTime + 15).limited(0, duration)
-            seek(to: newTime)
-            return .success
-        }
-        else {
-            return .commandFailed
-        }
+    func handleSkipForward(event: MPRemoteCommandEvent, completion: @escaping () -> Void) -> MPRemoteCommandHandlerStatus {
+        guard let skipEvent = event as? MPSkipIntervalCommandEvent, let player = player else { return .commandFailed }
+        
+        let currentTime = player.currentTime()
+        let interval = CMTime(seconds: skipEvent.interval, preferredTimescale: 1000)
+        let skipTime = CMTimeAdd(currentTime, interval)
+        
+        player.seek(to: skipTime) { _ in completion() }
+        
+        return .success
     }
     
     func printAccessLog() {
+        guard isLoggingEnabled else { return }
         
         let log = item?.accessLog()
         
@@ -672,11 +681,13 @@ extension VideoView {
     // MARK: Layer observation
     
     private func layerIsReadyForDisplay(change: NSKeyValueObservedChange<Bool>) {
-        print("""
-            --------------------------------------------------
-            Layer isReadyForDisplay: \(playerLayer.isReadyForDisplay)
-            Date: \(Date().second)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Layer isReadyForDisplay: \(playerLayer.isReadyForDisplay)
+                Date: \(Date().second)
             """)
+        }
         
         DispatchQueue.onMain { self.delegate?.videoReady(self) }
     }
@@ -684,21 +695,25 @@ extension VideoView {
     // MARK: Player observation
     
     private func playerRate(change: NSKeyValueObservedChange<Float>) {
-        print("""
-            --------------------------------------------------
-            Player rate: \(player?.rate ?? -1)
-            Date: \(Date().second)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Player rate: \(player?.rate ?? -1)
+                Date: \(Date().second)
             """)
+        }
     }
     
     private func playerStatus(change: NSKeyValueObservedChange<AVPlayer.Status>) {
         guard let player = player else { return }
         
-        print("""
-            --------------------------------------------------
-            Player status: \(player.status)
-            Date: \(Date().second)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Player status: \(player.status)
+                Date: \(Date().second)
             """)
+        }
         
         if case .readyToPlay = player.status {
             playerLayer.player = player
@@ -711,11 +726,13 @@ extension VideoView {
     private func itemStatus(change: NSKeyValueObservedChange<AVPlayerItem.Status>) {
         guard let item = self.item else { return }
         
-        print("""
-            --------------------------------------------------
-            Item status: \(item.status)
-            Date: \(Date().second)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Item status: \(item.status)
+                Date: \(Date().second)
             """)
+        }
         
         switch item.status {
         case .readyToPlay:
@@ -734,11 +751,13 @@ extension VideoView {
     private func itemPlaybackBufferEmpty(change: NSKeyValueObservedChange<Bool>) {
         guard let item = self.item else { return }
         
-        print("""
-            --------------------------------------------------
-            Item isPlaybackBufferEmpty: \(item.isPlaybackBufferEmpty)
-            Date: \(Date().second)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Item isPlaybackBufferEmpty: \(item.isPlaybackBufferEmpty)
+                Date: \(Date().second)
             """)
+        }
         
         if item.isPlaybackBufferEmpty {
             bufferingState = .delayed
@@ -758,11 +777,13 @@ extension VideoView {
     private func itemKeepUp(change: NSKeyValueObservedChange<Bool>) {
         guard let item = self.item else { return }
         
-        print("""
-            --------------------------------------------------
-            Item isPlaybackLikelyToKeepUp: \(item.isPlaybackLikelyToKeepUp), \(item.status)
-            Date: \(Date().second)
+        if isLoggingEnabled {
+            print("""
+                --------------------------------------------------
+                Item isPlaybackLikelyToKeepUp: \(item.isPlaybackLikelyToKeepUp), \(item.status)
+                Date: \(Date().second)
             """)
+        }
         
         if item.isPlaybackLikelyToKeepUp {
             bufferingState = .ready

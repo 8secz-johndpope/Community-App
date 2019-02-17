@@ -143,8 +143,10 @@ extension SearchPostsCell {
         }
         
         static func size(forPost post: Contentful.Post, in collectionView: UICollectionView) -> CGSize {
-            let titleWidth = post.title.size(boundingWidth: collectionView.width * 0.7, boundingHeight: 44, font: .bold(size: 16)).width
-            let width = (.padding + titleWidth + .padding).limited(150, collectionView.width * 0.7)
+            let titleWidth = post.title.size(boundingWidth: collectionView.width * 0.7, boundingHeight: 44, font: .bold(size: 16)).width.rounded(.up)
+            let dateWidth = DateFormatter.readable.string(from: post.publishDate).size(boundingWidth: collectionView.width * 0.7, font: .regular(size: 14)).width.rounded(.up)
+            
+            let width = (.padding + max(titleWidth, dateWidth) + .padding).limited(200, collectionView.width * 0.7)
             
             return CGSize(width: width, height: .searchPostHeight)
         }

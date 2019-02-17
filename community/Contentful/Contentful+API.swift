@@ -23,9 +23,7 @@ extension Contentful {
             parameters: [String : String] = [:],
             headers: [String : String] = [:]) -> URLRequest
         {
-            let url = URLComponents(url: base + endpoint.path, parameters: parameters + ["access_token" : environment.token])!.url!
-            
-            var request = URLRequest(url: url)
+            var request = URLRequest(url: base + endpoint.path, parameters: parameters + ["access_token" : environment.token])
             request.httpMethod = method.rawValue
             request.httpBody = body.flatMap { try? JSONSerialization.data(withJSONObject: $0, options: .prettyPrinted) }
             request.set(httpHeaders: headers)

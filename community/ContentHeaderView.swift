@@ -197,10 +197,9 @@ extension ContentHeaderView {
         skipBackCommand.isEnabled = true
         skipBackCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
             guard let self = self else { return .commandFailed }
-            
             switch self.mediaType {
-            case .audio: return self.audioPlayer.handleSkipBackCommand()
-            case .video: return self.videoView.handleSkipBackCommand()
+            case .audio: return self.audioPlayer.handleSkipBack(event: event) { [weak self] in self?.updateNowPlayingInfo() }
+            case .video: return self.videoView.handleSkipBack(event: event) { [weak self] in self?.updateNowPlayingInfo() }
             }
         }
         skipBackCommand.preferredIntervals = [15]
@@ -209,10 +208,9 @@ extension ContentHeaderView {
         skipForwardCommand.isEnabled = true
         skipForwardCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
             guard let self = self else { return .commandFailed }
-            
             switch self.mediaType {
-            case .audio: return self.audioPlayer.handleSkipForwardCommand()
-            case .video: return self.videoView.handleSkipForwardCommand()
+            case .audio: return self.audioPlayer.handleSkipForward(event: event) { [weak self] in self?.updateNowPlayingInfo() }
+            case .video: return self.videoView.handleSkipForward(event: event) { [weak self] in self?.updateNowPlayingInfo() }
             }
         }
         skipForwardCommand.preferredIntervals = [15]

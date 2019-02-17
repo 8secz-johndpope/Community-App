@@ -254,10 +254,11 @@ final class ContentViewController: ViewController, StatusBarViewController {
         scrollView.isScrollEnabled = !isLandscape
         
         if isLandscape {
-            scrollView.setContentOffset(x: 0, y: 0)
+            scrollView.setContentOffset(x: 0, y: -25)
         }
         
-        containerView.isHidden       = isLandscape
+        containerView.adjustContentVisibility(isHidden: isLandscape)
+        
         closeButton.isHidden         = isLandscape
         statusBarBackground.isHidden = isLandscape
         statusBarCover.isHidden      = isLandscape
@@ -340,6 +341,11 @@ extension ContentViewController: ContentContainerViewDelegate {
 extension ContentViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if isLandscape {
+            scrollView.setContentOffset(x: 0, y: -25, animated: false)
+        }
+        
         check(containerView: containerView, in: self)
         
         scrollAlpha = 1 - scrollView.adjustedOffset.y.map(from: (view.height * 0.25)...(view.height * 0.4), to: 0...1).limited(0, 1)

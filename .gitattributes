@@ -3,3 +3,4 @@ Fabric.framework/* linguist-vendored
 Firebase/* linguist-vendored
 Carthage/* linguist-vendored
 CommonMark/cmark/* linguist-vendored
+CommonMark/CommonMark.h linguist-vendored

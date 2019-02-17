@@ -40,6 +40,7 @@ final class ContentContainerView: ShadowView {
     private let progressView         = MediaProgressView()
     private let progressButtonHolder = UIView()
     private let progressButton       = UIView()
+    private let colorBackgroundView  = UIView()
     private let messageContentView   = MessageContentView()
     private let textPostContentView  = TextPostContentView()
     
@@ -60,6 +61,12 @@ final class ContentContainerView: ShadowView {
             }
             return super.point(inside: point, with: event)
         }
+    }
+    
+    func adjustContentVisibility(isHidden: Bool) {
+        messageContentView.isHidden = isHidden
+        textPostContentView.isHidden = isHidden
+        colorBackgroundView.backgroundColor = isHidden ? .clear : .lightBackground
     }
     
     required init(content: ContentViewController.Content) {
@@ -95,7 +102,7 @@ extension ContentContainerView {
             $0.backgroundColor = .lightBackground
         }
         
-        UIView(superview: self).customize {
+        colorBackgroundView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview(top: 50)
             $0.backgroundColor = .lightBackground
         }
