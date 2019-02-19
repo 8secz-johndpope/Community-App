@@ -17,12 +17,18 @@ enum Media {
     case raw(URL)
     case youtube(String)
     
+    struct Data {
+        let url: URL
+        let mediaType: MediaType
+        let message: Watermark.Message?
+    }
+    
     enum Error: Swift.Error {
         case missingURL
         case unknown
     }
     
-    func fetch(completion: @escaping (Result<(URL, MediaType), Error>) -> Void) {
+    func fetch(completion: @escaping (Result<(Media.Data), Error>) -> Void) {
         switch self {
         case .message(let id):
             Watermark.API.Messages.fetch(id: id) { result in
@@ -30,23 +36,23 @@ enum Media {
                     guard let message = result.value else { return completion(.error(.missingURL)) }
                     
                     switch message.mediaAsset {
-                    case .audio(let asset): completion(.value((asset.url, .audio)))
-                    case .video(let asset): completion(.value((asset.url, .video)))
+                    case .audio(let asset): completion(.value(Data(url: asset.url, mediaType: .audio, message: message)))
+                    case .video(let asset): completion(.value(Data(url: asset.url, mediaType: .video, message: message)))
                     }
                 }
             }
         case .raw(let url):
             if url.isAudio {
-                completion(.value((url, .audio)))
+                completion(.value(Data(url: url, mediaType: .audio, message: nil)))
             }
             else if url.isVideo {
-                completion(.value((url, .video)))
+                completion(.value(Data(url: url, mediaType: .video, message: nil)))
             }
         case .youtube(let id):
             YouTube.fetchVideo(id: id) { url in
                 DispatchQueue.main.async {
                     guard let url = url else { return completion(.error(.missingURL)) }
-                    completion(.value((url, .video)))
+                    completion(.value(Data(url: url, mediaType: .video, message: nil)))
                 }
             }
         }

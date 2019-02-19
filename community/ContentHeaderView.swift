@@ -17,6 +17,7 @@ protocol ContentHeaderViewDelegate: AnyObject {
     func didHideOverlay(in view: ContentHeaderView)
     func didPlay(in view: ContentHeaderView)
     func didPause(in view: ContentHeaderView)
+    func didFailToLoadMedia(in view: ContentHeaderView)
 }
 
 final class ContentHeaderView: View {
@@ -32,6 +33,8 @@ final class ContentHeaderView: View {
     @objc dynamic private(set) var isShowingControls = true
     
     private var content: ContentViewController.Content?
+    private var message: Watermark.Message?
+    
     private var isDragging = false
     
     private let audioPlayer      = AudioPlayer()
@@ -254,12 +257,22 @@ extension ContentHeaderView {
                 duration: duration
             )
         case .textPost(let post):
-            MPNowPlayingInfoCenter.update(
-                textPost: post,
-                image: imageView.image,
-                currentTime: currentTime,
-                duration: duration
-            )
+            if let message = message {
+                MPNowPlayingInfoCenter.update(
+                    message: message,
+                    image: imageView.image,
+                    currentTime: currentTime,
+                    duration: duration
+                )
+            }
+            else {
+                MPNowPlayingInfoCenter.update(
+                    textPost: post,
+                    image: imageView.image,
+                    currentTime: currentTime,
+                    duration: duration
+                )
+            }
         }
     }
     
@@ -399,23 +412,28 @@ extension ContentHeaderView {
         
         if let media = textPost.media {
             media.fetch { [weak self] result in
+                guard let self = self else { return }
+                
                 switch result {
-                case .value(let url, let mediaType):
-                    self?.isLoading = true
+                case .value(let data):
+                    self.isLoading = true
                     
-                    switch mediaType {
+                    self.message = data.message
+                    
+                    switch data.mediaType {
                     case .audio:
-                        self?.mediaType = .audio
-                        self?.audioPlayer.autoPlay = false
-                        self?.audioPlayer.setup(url: url)
+                        self.mediaType = .audio
+                        self.audioPlayer.autoPlay = false
+                        self.audioPlayer.setup(url: data.url)
                     case .video:
-                        self?.mediaType = .video
-                        self?.videoView.autoPlay = false
-                        self?.videoView.setup(url: url)
+                        self.mediaType = .video
+                        self.videoView.autoPlay = false
+                        self.videoView.setup(url: data.url)
                     }
                 case .error:
-                    self?.imageView.isHidden = false
-                    self?.videoView.isHidden = true
+                    self.imageView.isHidden = false
+                    self.videoView.isHidden = true
+                    self.delegate?.didFailToLoadMedia(in: self)
                 }
             }
         }

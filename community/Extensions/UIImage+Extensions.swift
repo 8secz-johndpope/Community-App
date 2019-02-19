@@ -20,4 +20,19 @@ extension UIImage {
         return UIGraphicsGetImageFromCurrentImageContext()
     }
     
+    var square: UIImage {
+        let width = size.width
+        let height = size.height
+        let length = min(width, height)
+
+        let rect = CGRect(
+            x: (width - length)/2 * scale,
+            y: (height - length)/2 * scale,
+            width: length * scale,
+            height: length * scale
+        )
+
+        return cgImage?.cropping(to: rect).flatMap(UIImage.init(cgImage:)) ?? self
+    }
+    
 }

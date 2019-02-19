@@ -50,12 +50,8 @@ extension MPNowPlayingInfoCenter {
             MPMediaItemPropertyAssetURL : url
         ])
         
-        if let image = image {
-            print("Image: \(image)")
-            info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size) { _ in return image }
-        }
-        else {
-            print("No image")
+        if let squareImage = image?.square {
+            info[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: squareImage.size) { _ in return squareImage }
         }
         
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info

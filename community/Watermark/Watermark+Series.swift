@@ -65,10 +65,6 @@ extension Watermark {
                 .compactMap { $0 as? String }
                 .compactMap { DateFormatter.yearMonthDay.date(from: $0) }
                 .sorted(by: <)
-            
-            if self.images.isEmpty {
-                return nil
-            }
         }
         
         var description: String {

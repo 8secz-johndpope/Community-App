@@ -320,6 +320,10 @@ extension ContentViewController: ContentHeaderViewDelegate {
         containerView.update(isPlaying: false)
     }
     
+    func didFailToLoadMedia(in view: ContentHeaderView) {
+        containerView.adjustPlaybackInfoVisibility(isHidden: true)
+    }
+    
 }
 
 extension ContentViewController: ContentContainerViewDelegate {

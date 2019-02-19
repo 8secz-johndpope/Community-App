@@ -173,10 +173,12 @@ extension ContentContainerView {
             
             update(isPlaying: false)
             
-            if post.mediaURL == nil {
-                playbackInfoView.isHidden = true
-            }
+            adjustPlaybackInfoVisibility(isHidden: post.mediaURL == nil)
         }
+    }
+    
+    func adjustPlaybackInfoVisibility(isHidden: Bool) {
+        playbackInfoView.isHidden = isHidden
     }
     
     func update(currentTime: TimeInterval, duration: TimeInterval) {
