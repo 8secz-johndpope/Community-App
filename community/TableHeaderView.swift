@@ -9,7 +9,7 @@ import UIKit
 
 final class TableHeaderView: View {
     
-    private let titleLabel    = UILabel()
+    private let titleLabel    = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 50)
     private let subtitleLabel = UILabel()
     private let videoButton   = UIButton()
     
@@ -21,8 +21,8 @@ final class TableHeaderView: View {
         constrain(.height, .greaterThanOrEqual, to: 64)
         
         titleLabel.add(toSuperview: self).customize {
-            $0.pinTop(to: self).pinLeading(to: self, plus: .padding)
-            $0.constrainSize(toFit: .vertical, .horizontal)
+            $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -(.padding + 45))
+            $0.pinTop(to: self).constrainSize(toFit: .vertical)
             $0.backgroundColor = .clear
         }
         

@@ -9,7 +9,7 @@ import UIKit
 
 final class HeaderCell: CollectionViewCell {
     
-    private let titleLabel    = UILabel()
+    private let titleLabel    = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 50)
     private let subtitleLabel = UILabel()
     
     override func setup() {
@@ -18,8 +18,8 @@ final class HeaderCell: CollectionViewCell {
         contentView.clipsToBounds = false
         
         titleLabel.add(toSuperview: contentView).customize {
-            $0.pinTop(to: contentView).pinLeading(to: contentView)
-            $0.constrainSize(toFit: .horizontal)
+            $0.pinLeading(to: contentView).pinTrailing(to: contentView)
+            $0.pinTop(to: contentView).constrainSize(toFit: .vertical)
             $0.textColor = .dark
             $0.font = .header
         }
