@@ -656,6 +656,10 @@ extension AudioPlayer {
         case .readyToPlay:
             if item.isPlaybackLikelyToKeepUp {
                 delegate?.playerDidBecomeReadyToPlay(self)
+                
+                if autoPlay {
+                    playFromCurrentTime()
+                }
             }
         case .failed:
             playbackState = .failed(.avPlayerFailed)
@@ -674,9 +678,6 @@ extension AudioPlayer {
             DispatchQueue.onMain {
                 self.delegate?.playerBufferTimeDidChange(bufferedTime)
             }
-        }
-        else if autoPlay {
-            playFromCurrentTime()
         }
     }
     

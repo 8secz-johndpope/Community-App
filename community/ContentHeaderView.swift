@@ -319,8 +319,12 @@ extension ContentHeaderView {
     
     func reset() {
         switch mediaType {
-        case .audio: audioPlayer.reset()
-        case .video: videoView.reset()
+        case .audio:
+            audioPlayer.autoPlay = false
+            audioPlayer.reset()
+        case .video:
+            videoView.autoPlay = false
+            videoView.reset()
         }
         
         imageView.isHidden = false
@@ -585,10 +589,6 @@ extension ContentHeaderView: VideoPlaybackDelegate {
         let progress = CGFloat(player.currentTime/videoView.duration)
         
         delegate?.didUpdate(progress: progress, in: self)
-        
-        if progress >= 1 {
-            reset()
-        }
     }
     
     func videoPlaybackWillStartFromBeginning(_ player: VideoView) {
@@ -596,7 +596,7 @@ extension ContentHeaderView: VideoPlaybackDelegate {
     }
     
     func videoPlaybackDidEnd(_ player: VideoView) {
-        
+        reset()
     }
     
     func videoPlaybackWillLoop(_ player: VideoView) {
@@ -665,10 +665,6 @@ extension ContentHeaderView: AudioPlayerPlaybackDelegate {
         let progress = CGFloat(player.currentTime/player.duration)
         
         delegate?.didUpdate(progress: progress, in: self)
-        
-        if progress >= 1 {
-            reset()
-        }
     }
     
     func playerPlaybackWillStartFromBeginning(_ player: AudioPlayer) {
@@ -676,7 +672,7 @@ extension ContentHeaderView: AudioPlayerPlaybackDelegate {
     }
     
     func playerPlaybackDidEnd(_ player: AudioPlayer) {
-        
+        reset()
     }
     
     func playerPlaybackWillLoop(_ player: AudioPlayer) {

@@ -802,6 +802,10 @@ extension VideoView {
             
             if item.isPlaybackLikelyToKeepUp {
                 delegate?.videoDidBecomeReadyToPlay(self)
+                
+                if autoPlay {
+                    playFromCurrentTime()
+                }
             }
         case .failed:
             playbackState = .failed(.avPlayerFailed)
@@ -820,9 +824,6 @@ extension VideoView {
             DispatchQueue.onMain {
                 self.delegate?.videoBufferTimeDidChange(bufferedTime)
             }
-        }
-        else if autoPlay {
-            playFromCurrentTime()
         }
     }
     

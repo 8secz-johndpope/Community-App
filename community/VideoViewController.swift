@@ -126,6 +126,8 @@ final class VideoViewController: ViewController {
     }
     
     func hide() {
+        videoView.delegate = nil
+        videoView.playbackDelegate = nil
         videoView.stop()
         
         UIView.animate(withDuration: 0.4, animations: {
@@ -168,20 +170,13 @@ extension VideoViewController: VideoDelegate {
 
 extension VideoViewController: VideoPlaybackDelegate {
     
-    func videoCurrentTimeDidChange(_ player: VideoView) {
-        guard player.duration > 0 else { return }
-        
-        let progress = CGFloat(player.currentTime/videoView.duration)
-        
-        if progress >= 1 {
-            videoView.stop()
-            hide()
-        }
-    }
+    func videoCurrentTimeDidChange(_ player: VideoView) {}
     
     func videoPlaybackWillStartFromBeginning(_ player: VideoView) {}
     
-    func videoPlaybackDidEnd(_ player: VideoView) {}
+    func videoPlaybackDidEnd(_ player: VideoView) {
+        hide()
+    }
     
     func videoPlaybackWillLoop(_ player: VideoView) {}
     
