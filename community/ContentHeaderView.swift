@@ -316,6 +316,11 @@ extension ContentHeaderView {
         }, completion: nil)
     }
     
+    func showControls() {
+        guard !isShowingControls else { return }
+        toggleControls()
+    }
+    
     func toggleControls() {
         
         overlayTimer?.invalidate()
@@ -338,7 +343,7 @@ extension ContentHeaderView {
             }
         }
         
-        isShowingControls = !isShowingControls
+        isShowingControls.toggle()
     }
     
     func pause() {
@@ -434,12 +439,15 @@ extension ContentHeaderView {
                     self.imageView.isHidden = false
                     self.videoView.isHidden = true
                     self.delegate?.didFailToLoadMedia(in: self)
+                    self.showControls()
                 }
             }
         }
         else {
             imageView.isHidden = false
             videoView.isHidden = true
+            delegate?.didFailToLoadMedia(in: self)
+            showControls()
         }
     }
     

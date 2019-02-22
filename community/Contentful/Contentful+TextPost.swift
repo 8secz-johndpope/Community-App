@@ -121,12 +121,23 @@ extension Contentful {
                         self.media = nil
                     }
                 case "www.youtube.com":
+                    // http://www.youtube.com/watch?v=:id
                     if let id = mediaURL.components?.queryItems?.first(where: { $0.name == "v" })?.value {
                         self.media = .youtube(id)
                     }
                     else {
-                        self.media = nil
+                        // http://www.youtube.com/v/:id
+                        let pathComponents = Array(mediaURL.pathComponents.dropFirst())
+                        if pathComponents.count == 2, pathComponents.first == "v" {
+                            self.media = .youtube(pathComponents[1])
+                        }
+                        else {
+                            self.media = nil
+                        }
                     }
+                case "youtu.be":
+                    // http://youtu.be/:id
+                    self.media = .youtube(mediaURL.lastPathComponent)
                 default:
                     self.media = .raw(mediaURL)
                 }

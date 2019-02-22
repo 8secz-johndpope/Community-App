@@ -173,7 +173,7 @@ extension ContentContainerView {
             
             update(isPlaying: false)
             
-            adjustPlaybackInfoVisibility(isHidden: post.mediaURL == nil)
+            adjustPlaybackInfoVisibility(isHidden: post.media == nil)
         }
     }
     

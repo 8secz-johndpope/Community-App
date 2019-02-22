@@ -69,6 +69,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
     
     private var isLandscape = false
     private var scrollAlpha: CGFloat = 1
+    private var allowRotation = true
     
     private var buttonAlpha: CGFloat {
         if showStatusBarBackground || headerView.isShowingControls {
@@ -136,8 +137,8 @@ final class ContentViewController: ViewController, StatusBarViewController {
         headerView.customize {
             $0.pinTop(to: view).pinBottom(to: containerView, .top, plus: 50, atPriority: .required - 2)
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.configure(content: content)
             $0.delegate = self
+            $0.configure(content: content)
             
             videoConstraint = $0.constrain(.bottom, to: view, .bottom, atPriority: .required - 1)
             videoConstraint.isActive = false
@@ -166,7 +167,10 @@ final class ContentViewController: ViewController, StatusBarViewController {
             $0.pinLeading(to: scrollView).pinTrailing(to: scrollView).constrainWidth(to: scrollView)
             $0.backgroundColor = .clear
             
-            headerTapGesture = $0.addGesture(type: .tap) { [weak self] in self?.headerView.tapped(location: $0.location(in: self?.headerView)) }
+            headerTapGesture = $0.addGesture(type: .tap) { [weak self] in
+                guard let self = self, self.allowRotation else { return }
+                self.headerView.tapped(location: $0.location(in: self.headerView))
+            }
             headerDoubleTapGesture = $0.addGesture(type: .doubleTap) { [weak self] _ in self?.headerView.doubleTapped() }
             
             headerTapGesture?.require(toFail: headerDoubleTapGesture!)
@@ -237,7 +241,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIViewController.current == self, headerView.mediaType == .video {
+        if UIViewController.current == self, headerView.mediaType == .video, allowRotation {
             return .allButUpsideDown
         }
         else {
@@ -321,6 +325,7 @@ extension ContentViewController: ContentHeaderViewDelegate {
     }
     
     func didFailToLoadMedia(in view: ContentHeaderView) {
+        allowRotation = false
         containerView.adjustPlaybackInfoVisibility(isHidden: true)
     }
     
