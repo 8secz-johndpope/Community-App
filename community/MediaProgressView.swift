@@ -29,6 +29,7 @@ final class MediaProgressView: View {
     
     override func setup() {
         
+        clipsToBounds = true
         constrainHeight(to: .mediaProgressHeight)
         
         backgroundView.add(toSuperview: self).customize {

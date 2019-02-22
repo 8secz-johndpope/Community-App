@@ -329,6 +329,10 @@ extension ContentViewController: ContentHeaderViewDelegate {
         containerView.adjustPlaybackInfoVisibility(isHidden: true)
     }
     
+    func didReset(in view: ContentHeaderView) {
+        statusBarCover.isHidden = true
+    }
+    
 }
 
 extension ContentViewController: ContentContainerViewDelegate {

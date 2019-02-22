@@ -76,7 +76,7 @@ extension Contentful {
         let media: Media?
         
         var hasMedia: Bool {
-            return mediaURL != nil
+            return media != nil
         }
         
         var author: Contentful.Author? {

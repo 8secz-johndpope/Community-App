@@ -132,6 +132,7 @@ extension ContentContainerView {
             $0.textColor = .lightBackground
             $0.textAlignment = .right
             $0.text = "0:00 / 0:00"
+            $0.adjustsFontSizeToFitWidth = true
         }
         
         progressView.add(toSuperview: playbackInfoView).customize {

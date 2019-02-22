@@ -465,6 +465,12 @@ extension VideoView {
 
 extension VideoView {
     
+    /// Stops media and seeks to the beginning.
+    func reset() {
+        stop()
+        player?.seek(to: .zero)
+    }
+    
     /// Begins playback of the media from the beginning.
     func playFromBeginning() {
         playbackDelegate?.videoPlaybackWillStartFromBeginning(self)

@@ -18,6 +18,7 @@ protocol ContentHeaderViewDelegate: AnyObject {
     func didPlay(in view: ContentHeaderView)
     func didPause(in view: ContentHeaderView)
     func didFailToLoadMedia(in view: ContentHeaderView)
+    func didReset(in view: ContentHeaderView)
 }
 
 final class ContentHeaderView: View {
@@ -316,8 +317,24 @@ extension ContentHeaderView {
         }, completion: nil)
     }
     
+    func reset() {
+        switch mediaType {
+        case .audio: audioPlayer.reset()
+        case .video: videoView.reset()
+        }
+        
+        imageView.isHidden = false
+        showControls()
+        
+        delegate?.didReset(in: self)
+    }
+    
     func showControls() {
-        guard !isShowingControls else { return }
+        guard !isShowingControls else {
+            overlayTimer?.invalidate()
+            overlayTimer = nil
+            return
+        }
         toggleControls()
     }
     
@@ -473,15 +490,10 @@ extension ContentHeaderView {
         switch mediaType {
         case .audio:
             audioPlayer.pause()
-            audioPlayer.seek(to: time) { [weak self] _ in
-                self?.audioPlayer.playFromCurrentTime()
-            }
+            audioPlayer.seek(to: time) { [weak self] _ in self?.togglePlayback() }
         case .video:
             videoView.pause()
-            videoView.seek(to: time) { [weak self] _ in
-                self?.videoView.playFromCurrentTime()
-                self?.hideControls()
-            }
+            videoView.seek(to: time) { [weak self] _ in self?.togglePlayback() }
         }
         
         isDragging = false
@@ -575,7 +587,7 @@ extension ContentHeaderView: VideoPlaybackDelegate {
         delegate?.didUpdate(progress: progress, in: self)
         
         if progress >= 1 {
-            videoView.stop()
+            reset()
         }
     }
     
@@ -655,7 +667,7 @@ extension ContentHeaderView: AudioPlayerPlaybackDelegate {
         delegate?.didUpdate(progress: progress, in: self)
         
         if progress >= 1 {
-            audioPlayer.stop()
+            reset()
         }
     }
     
