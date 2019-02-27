@@ -21,7 +21,7 @@ final class MessageContentView: View {
             $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
             $0.pinTop(to: self, plus: 30).constrainSize(toFit: .vertical)
             $0.numberOfLines = 0
-            $0.font = .bold(size: 20)
+            $0.font = .bold(size: 22)
             $0.textColor = .dark
             $0.textAlignment = .left
         }
@@ -49,13 +49,13 @@ final class MessageContentView: View {
         titleLabel.text = message.title
         
         subtitleLabel.attributedText = (
-            message.speakers.map { $0.name }.joined(separator: ", ").attributed.font(.bold(size: 14)) +
-            "   •   \(DateFormatter.readable.string(from: message.date))".attributed.font(.regular(size: 14))
+            message.speakers.map { $0.name }.joined(separator: ", ").attributed.font(.bold(size: 16)) +
+            "\n\(DateFormatter.readable.string(from: message.date))".attributed.font(.regular(size: 16))
         ).color(.dark)
         
         descriptionView.attributedText = message.details.attributed
             .color(.dark)
-            .font(.regular(size: 14))
+            .font(.regular(size: 16))
             .lineSpacing(5)
         
         if !message.scriptureReferences.isEmpty {
@@ -63,7 +63,7 @@ final class MessageContentView: View {
             let scriptureReferenceTitleLabel = UILabel(superview: self).customize {
                 $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
                 $0.pinTop(to: descriptionView, .bottom).constrainSize(toFit: .vertical)
-                $0.font = .bold(size: 16)
+                $0.font = .bold(size: 18)
                 $0.textColor = .dark
                 $0.text = "Scripture References"
             }

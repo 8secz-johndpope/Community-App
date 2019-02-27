@@ -186,10 +186,10 @@ extension Block {
             }.join(separator: "\n")
             
             return quoteString + blockString
-        case .codeBlock(_, _): fatalError("Code block type not supported")
-        case .html(_):         fatalError("HTML type not supported")
+        case .codeBlock(_, _): return "".attributed
+        case .html(_):         return "".attributed
         case .paragraph(let children):
-            return children.map { $0.render(font: font) }.join()
+            return children.map { $0.render(font: font) }.join().lineSpacing(5)
         case .heading(let children, let level):
             
             let headerFont: UIFont
@@ -201,8 +201,8 @@ extension Block {
             }
             
             return children.map { $0.render(font: headerFont) }.join()
-        case .custom(_): fatalError("Custom type not supported")
-        case .thematicBreak: fatalError("Thematic break type not supported")
+        case .custom(_): return "".attributed
+        case .thematicBreak: return "".attributed
         }
     }
 }

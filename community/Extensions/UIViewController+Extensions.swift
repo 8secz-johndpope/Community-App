@@ -10,6 +10,10 @@ import SafariServices
 
 extension UIViewController {
     
+    static func isCurrentPlaying(content: ContentViewController.Content?) -> Bool {
+        return (current as? ContentViewController)?.content == content
+    }
+    
     func show(in controller: UIViewController? = .current, animated: Bool = true, completion: @escaping () -> Void = {}) {
         controller?.present(self, animated: animated, completion: completion)
     }

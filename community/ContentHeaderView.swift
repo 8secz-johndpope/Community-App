@@ -19,6 +19,7 @@ protocol ContentHeaderViewDelegate: AnyObject {
     func didPause(in view: ContentHeaderView)
     func didFailToLoadMedia(in view: ContentHeaderView)
     func didReset(in view: ContentHeaderView)
+    func didUpdateLoadingState(isLoading: Bool, in view: ContentHeaderView)
 }
 
 final class ContentHeaderView: View {
@@ -38,13 +39,11 @@ final class ContentHeaderView: View {
     
     private var isDragging = false
     
-    private let audioPlayer      = AudioPlayer()
-    private let videoView        = VideoView()
-    private let dimmerView       = UIView()
-    private let loadingIndicator = LoadingView()
-    private let titleLabel       = UILabel()
-    
-    private let imageView = LoadingImageView()
+    private let audioPlayer = AudioPlayer()
+    private let videoView   = VideoView()
+    private let dimmerView  = UIView()
+    private let titleLabel  = UILabel()
+    private let imageView   = LoadingImageView()
     
     private var isLandscape = false
     private var scrollAlpha: CGFloat = 1
@@ -53,14 +52,7 @@ final class ContentHeaderView: View {
     
     private var isLoading = false {
         didSet {
-            if isLoading {
-                titleLabel.isHidden = true
-                loadingIndicator.startAnimating()
-            }
-            else {
-                titleLabel.isHidden = false
-                loadingIndicator.stopAnimating()
-            }
+            delegate?.didUpdateLoadingState(isLoading: isLoading, in: self)
         }
     }
     
@@ -182,11 +174,6 @@ final class ContentHeaderView: View {
             $0.textAlignment = .center
         }
         
-        loadingIndicator.add(toSuperview: self).customize {
-            $0.pinCenterX(to: self).pinCenterY(to: self)
-            $0.constrainWidth(to: 30).constrainHeight(to: 30)
-        }
-        
         setupRemoteCommands()
     }
     
@@ -200,7 +187,7 @@ extension ContentHeaderView {
         let skipBackCommand = commandCenter.skipBackwardCommand
         skipBackCommand.isEnabled = true
         skipBackCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            guard let self = self else { return .commandFailed }
+            guard let self = self, UIViewController.isCurrentPlaying(content: self.content) else { return .commandFailed }
             switch self.mediaType {
             case .audio: return self.audioPlayer.handleSkipBack(event: event) { [weak self] in self?.updateNowPlayingInfo() }
             case .video: return self.videoView.handleSkipBack(event: event) { [weak self] in self?.updateNowPlayingInfo() }
@@ -211,7 +198,7 @@ extension ContentHeaderView {
         let skipForwardCommand = commandCenter.skipForwardCommand
         skipForwardCommand.isEnabled = true
         skipForwardCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            guard let self = self else { return .commandFailed }
+            guard let self = self, UIViewController.isCurrentPlaying(content: self.content) else { return .commandFailed }
             switch self.mediaType {
             case .audio: return self.audioPlayer.handleSkipForward(event: event) { [weak self] in self?.updateNowPlayingInfo() }
             case .video: return self.videoView.handleSkipForward(event: event) { [weak self] in self?.updateNowPlayingInfo() }
@@ -222,26 +209,16 @@ extension ContentHeaderView {
         let playCommand = commandCenter.playCommand
         playCommand.isEnabled = true
         playCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            guard let self = self else { return .commandFailed }
-            
-            switch self.mediaType {
-            case .audio: self.audioPlayer.playFromCurrentTime()
-            case .video: self.videoView.playFromCurrentTime()
-            }
-            
+            guard let self = self, UIViewController.isCurrentPlaying(content: self.content) else { return .commandFailed }
+            self.togglePlayback()
             return .success
         }
         
         let pauseCommand = commandCenter.pauseCommand
         pauseCommand.isEnabled = true
         pauseCommand.addTarget { [weak self] event -> MPRemoteCommandHandlerStatus in
-            guard let self = self else { return .commandFailed }
-            
-            switch self.mediaType {
-            case .audio: self.audioPlayer.pause()
-            case .video: self.videoView.pause()
-            }
-            
+            guard let self = self, UIViewController.isCurrentPlaying(content: self.content) else { return .commandFailed }
+            self.togglePlayback()
             return .success
         }
     }

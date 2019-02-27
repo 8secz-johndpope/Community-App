@@ -149,7 +149,7 @@ extension Node {
         case CMARK_NODE_STRONG:        return .strong(children: children.inlines)
         case CMARK_NODE_LINK:          return .link(children: children.inlines, title: title, url: urlString)
         case CMARK_NODE_IMAGE:         return .image(children: children.inlines, title: title, url: urlString)
-        default:                       fatalError("Expected inline element, got \(typeString)")
+        default:                       return .text(text: "")
         }
         
     }
@@ -157,7 +157,7 @@ extension Node {
     var listItem: [Block] {
         switch type {
         case CMARK_NODE_ITEM: return children.blocks
-        default:              fatalError("Unrecognized node \(typeString), expected a list item")
+        default:              return []
         }
     }
     
@@ -171,7 +171,7 @@ extension Node {
         case CMARK_NODE_CUSTOM_BLOCK:   return .custom(literal: literal)
         case CMARK_NODE_HEADING:        return .heading(text: children.inlines, level: headerLevel)
         case CMARK_NODE_THEMATIC_BREAK: return .thematicBreak
-        default:                        fatalError("Unrecognized node: \(typeString)")
+        default:                        return .custom(literal: literal)
         }
     }
     

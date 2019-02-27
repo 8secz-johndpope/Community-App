@@ -10,7 +10,7 @@ import Alexandria
 
 final class ContentViewController: ViewController, StatusBarViewController {
     
-    enum Content {
+    enum Content: Equatable {
         case message(Watermark.Message)
         case textPost(Contentful.TextPost)
         
@@ -240,7 +240,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
     }
     
     override var prefersStatusBarHidden: Bool {
-        return false
+        return isLandscape
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -276,6 +276,8 @@ final class ContentViewController: ViewController, StatusBarViewController {
         if #available(iOS 11.0, *) {
             setNeedsUpdateOfHomeIndicatorAutoHidden()
         }
+        
+        setNeedsStatusBarAppearanceUpdate()
     }
     
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -336,6 +338,10 @@ extension ContentViewController: ContentHeaderViewDelegate {
     
     func didReset(in view: ContentHeaderView) {
         statusBarCover.isHidden = true
+    }
+    
+    func didUpdateLoadingState(isLoading: Bool, in view: ContentHeaderView) {
+        containerView.update(isLoading: isLoading)
     }
     
 }

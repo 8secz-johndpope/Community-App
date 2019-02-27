@@ -12,7 +12,7 @@ enum MediaType {
     case video
 }
 
-enum Media {
+enum Media: Equatable {
     case message(Int)
     case raw(URL)
     case youtube(String)
@@ -61,7 +61,7 @@ enum Media {
 
 extension Contentful {
     
-    struct TextPost: Initializable {
+    struct TextPost: Initializable, Equatable {
         let id: String
         let title: String
         let content: String

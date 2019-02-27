@@ -43,6 +43,7 @@ final class ContentContainerView: ShadowView {
     private let colorBackgroundView  = UIView()
     private let messageContentView   = MessageContentView()
     private let textPostContentView  = TextPostContentView()
+    private let loadingIndicator     = LoadingView()
     
     private var startingProgress: CGFloat = 0
     private var duration: TimeInterval = 0
@@ -91,6 +92,17 @@ extension ContentContainerView {
         playPauseButton.isSelected = !isPlaying
     }
     
+    func update(isLoading: Bool) {
+        if isLoading {
+            playPauseButton.isHidden = true
+            loadingIndicator.startAnimating()
+        }
+        else {
+            playPauseButton.isHidden = false
+            loadingIndicator.stopAnimating()
+        }
+    }
+    
     private func setup() {
         
         backgroundColor = .clear
@@ -123,6 +135,11 @@ extension ContentContainerView {
                 guard let self = self else { return }
                 self.delegate?.didTapPlayPauseButton(in: self)
             }
+        }
+        
+        loadingIndicator.add(toSuperview: playbackInfoView).customize {
+            $0.pinCenterX(to: playPauseButton).pinCenterY(to: playPauseButton)
+            $0.constrainWidth(to: 20).constrainHeight(to: 20)
         }
         
         timeLabel.add(toSuperview: playbackInfoView).customize {
@@ -348,7 +365,7 @@ final class ScriptureReferenceCell: CollectionViewCell {
         label.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
             $0.textColor = .orange
-            $0.font = .bold(size: 14)
+            $0.font = .bold(size: 16)
             $0.backgroundColor = .lightBackground
         }
     }
@@ -367,7 +384,7 @@ final class ScriptureReferenceCell: CollectionViewCell {
     
     static func size(forReference reference: String, includeComma: Bool, in collectionView: UICollectionView) -> CGSize {
         let string = includeComma ? "\(reference), " : reference
-        let size = string.size(font: .bold(size: 14))
+        let size = string.size(font: .bold(size: 16))
         
         return CGSize(width: size.width.rounded(.up), height: size.height.rounded(.up))
     }
