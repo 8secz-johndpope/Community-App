@@ -114,7 +114,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        scrollView.scrollIndicatorInsets.bottom = view.safeAreaInsets.bottom
+        scrollView.scrollIndicatorInsets.bottom = view.safeInsets.bottom
     }
     
     override func viewDidLayout() {
@@ -159,7 +159,10 @@ final class ContentViewController: ViewController, StatusBarViewController {
             $0.backgroundColor = .clear
             $0.scrollIndicatorInsets.top = .messageVideoHeight + 50
             $0.panGestureRecognizer.addTarget(self, action: #selector(userDidPan))
-            $0.contentInsetAdjustmentBehavior = .never
+            
+            if #available(iOS 11.0, *) {
+                $0.contentInsetAdjustmentBehavior = .never
+            }
         }
         
         UIView().add(toSuperview: scrollView, behind: containerView).customize {
@@ -183,7 +186,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
         }
         
         statusBarCover.add(toSuperview: view).customize {
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top)
+            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self)
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.backgroundColor = .black
             
@@ -193,7 +196,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
         }
         
         statusBarBackground.add(toSuperview: view).customize {
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 50)
+            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: 50)
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.alpha = 0
             
@@ -210,7 +213,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
         }
         
         titleLabel.add(toSuperview: statusBarBackground).customize {
-            $0.pinBottom(to: statusBarBackground).pinSafely(.top, to: statusBarBackground)
+            $0.pinBottom(to: statusBarBackground).constrainHeight(to: 50)
             $0.pinLeading(to: view, plus: .padding).pinTrailing(to: view, plus: -.closeButtonWidth)
             $0.font = .bold(size: 18)
             $0.text = content.title
@@ -270,7 +273,9 @@ final class ContentViewController: ViewController, StatusBarViewController {
         videoConstraint.isActive = isLandscape
         headerView.update(isLandscape: isLandscape)
         
-        setNeedsUpdateOfHomeIndicatorAutoHidden()
+        if #available(iOS 11.0, *) {
+            setNeedsUpdateOfHomeIndicatorAutoHidden()
+        }
     }
     
     override var prefersHomeIndicatorAutoHidden: Bool {

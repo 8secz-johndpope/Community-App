@@ -36,7 +36,7 @@ extension StatusBarViewController where Self: UIViewController {
 extension StatusBarViewController {
     
     func check(containerView: UIView, in viewController: UIViewController) {
-        let showStatusBarBackground = ((viewController.view.convert(containerView.frame, from: scrollView).minY + additionalContainerOffset) < viewController.view.safeAreaInsets.top)
+        let showStatusBarBackground = ((viewController.view.convert(containerView.frame, from: scrollView).minY + additionalContainerOffset) < viewController.view.safeInsets.top)
         
         if self.showStatusBarBackground != showStatusBarBackground {
             self.showStatusBarBackground = showStatusBarBackground

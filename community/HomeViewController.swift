@@ -47,6 +47,9 @@ final class HomeViewController: ViewController {
             $0.backgroundColor = .darkBlue
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
+            
+            if #available(iOS 11, *) {}
+            else { $0.contentInset.bottom = 49 }
         }
         
         refreshControl.add(toSuperview: scrollView).customize {
@@ -122,7 +125,7 @@ final class HomeViewController: ViewController {
         
         UIView(superview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top)
+            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self)
             $0.backgroundColor = .darkBlue
         }
         

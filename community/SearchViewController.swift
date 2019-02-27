@@ -80,7 +80,7 @@ final class SearchViewController: ViewController {
         
         headerView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: headerHeight)
+            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: headerHeight)
             $0.backgroundColor = .lightBackground
         }
         

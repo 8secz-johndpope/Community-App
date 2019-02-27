@@ -77,7 +77,7 @@ final class ShelfViewController: ViewController {
         
         headerView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 60)
+            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: 60)
             $0.backgroundColor = .clear
         }
         

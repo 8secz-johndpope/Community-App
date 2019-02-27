@@ -117,7 +117,10 @@ final class VideoView: UIView {
         timeObserver = nil
         playerLayer.backgroundColor = UIColor.black.cgColor
         playerLayer.videoGravity = .resizeAspect
-        accessibilityIgnoresInvertColors = true
+        
+        if #available(iOS 11.0, *) {
+            accessibilityIgnoresInvertColors = true
+        }
         
         self.widthConstraint = self.constrain(.width, to: self, .height, times: 16/9, atPriority: .required - 1)
         self.widthConstraint.isActive = false
@@ -133,7 +136,10 @@ final class VideoView: UIView {
         timeObserver = nil
         playerLayer.backgroundColor = UIColor.black.cgColor
         playerLayer.videoGravity = .resizeAspect
-        accessibilityIgnoresInvertColors = true
+        
+        if #available(iOS 11.0, *) {
+            accessibilityIgnoresInvertColors = true
+        }
     }
     
     deinit {

@@ -30,6 +30,15 @@ extension UIView.AnimationCurve {
 
 extension UIView {
     
+    var safeInsets: UIEdgeInsets {
+        if #available(iOS 11, *) {
+            return safeAreaInsets
+        }
+        else {
+            return .zero
+        }
+    }
+    
     var isReadyToAnimate: Bool {
         // Check if we have a superview
         if superview == nil {
@@ -137,6 +146,15 @@ extension UIView {
                 $0.priority = priority
                 $0.isActive = true
             }
+        }
+    }
+    
+    func pinBottomToTopSafeArea(in controller: UIViewController, plus: CGFloat = 0) {
+        if #available(iOS 11, *) {
+            pinSafely(.bottom, to: controller.view, .top, plus: plus)
+        }
+        else {
+            pinBottom(to: controller.topLayoutGuide, plus: plus)
         }
     }
     

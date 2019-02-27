@@ -489,7 +489,6 @@ open class MarqueeLabel: UILabel, CAAnimationDelegate {
         forwardPropertiesToSublabel()
     }
     
-    @available(iOS 8.0, *)
     override open func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         forwardPropertiesToSublabel()

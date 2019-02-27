@@ -46,7 +46,10 @@ final class LoadingImageView: UIImageView {
     
     private func setup() {
         backgroundColor = .lightest
-        accessibilityIgnoresInvertColors = true
+        
+        if #available(iOS 11.0, *) {
+            accessibilityIgnoresInvertColors = true
+        }
         
         dimmerView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()

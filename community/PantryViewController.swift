@@ -70,7 +70,7 @@ final class PantryViewController: ViewController {
         
         headerView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 50)
+            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: 50)
             $0.backgroundColor = .lightBackground
             $0.alpha = 0
             $0.isHidden = true

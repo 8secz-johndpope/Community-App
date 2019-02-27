@@ -10,7 +10,12 @@ import UIKit
 extension UIScrollView {
     
     var adjustedOffset: CGPoint {
-        return CGPoint(x: contentOffset.x, y: contentOffset.y + adjustedContentInset.top)
+        if #available(iOS 11.0, *) {
+            return CGPoint(x: contentOffset.x, y: contentOffset.y + adjustedContentInset.top)
+        }
+        else {
+            return CGPoint(x: contentOffset.x, y: contentOffset.y + contentInset.top)
+        }
     }
     
     var currentIndex: Int {
@@ -23,10 +28,10 @@ extension UIScrollView {
     
     var adjustedInset: UIEdgeInsets {
         return UIEdgeInsets(
-            top: contentInset.top + safeAreaInsets.top,
-            left: contentInset.left + safeAreaInsets.left,
-            bottom: contentInset.bottom + safeAreaInsets.bottom,
-            right: contentInset.right + safeAreaInsets.right
+            top: contentInset.top + safeInsets.top,
+            left: contentInset.left + safeInsets.left,
+            bottom: contentInset.bottom + safeInsets.bottom,
+            right: contentInset.right + safeInsets.right
         )
     }
     

@@ -125,7 +125,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
         }
         
         statusBarBackground.add(toSuperview: view).customize {
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 50)
+            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: 50)
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.backgroundColor = .lightBackground
             $0.alpha = 0
@@ -187,7 +187,7 @@ extension SeriesViewController: UICollectionViewDataSource {
 extension SeriesViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let showStatusBarBackground = (scrollView.adjustedOffset.y - topOffset + additionalContainerOffset > -view.safeAreaInsets.top)
+        let showStatusBarBackground = (scrollView.adjustedOffset.y - topOffset + additionalContainerOffset > -view.safeInsets.top)
         
         if self.showStatusBarBackground != showStatusBarBackground {
             self.showStatusBarBackground = showStatusBarBackground
