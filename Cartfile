@@ -1,2 +1,4 @@
 github "jlandon/alexandria" "swift4.2"
 github "kean/nuke" "7.3"
+binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json" == 5.18.1
+binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseMessagingBinary.json" == 5.18.1
