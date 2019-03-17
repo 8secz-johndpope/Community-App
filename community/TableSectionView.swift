@@ -78,12 +78,7 @@ extension TableSectionView: UICollectionViewDelegate, UICollectionViewDelegateFl
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let post = posts.at(indexPath.row) else { return }
-        switch post {
-        case .external(let post): DeepLink.handle(url: post.url)
-        case .text(let post):     ContentViewController(textPost: post).show()
-        }
-        Analytics.viewed(tablePost: post)
+        posts.at(indexPath.row)?.show(from: .table)
     }
     
 }

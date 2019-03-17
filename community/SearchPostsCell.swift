@@ -79,14 +79,7 @@ extension SearchPostsCell: UICollectionViewDelegate, UICollectionViewDelegateFlo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let post = self.posts.at(indexPath.row) else { return }
-        
-        switch post {
-        case .external(let post): DeepLink.handle(url: post.url)
-        case .text(let post):     ContentViewController(textPost: post).show()
-        }
-        
-        Analytics.viewed(searchPost: post)
+        posts.at(indexPath.row)?.show(from: .search)
     }
     
 }

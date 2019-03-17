@@ -187,7 +187,7 @@ extension PantryViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard case .shelf(let shelf)? = cells.at(indexPath.row) else { return }
         navigationController?.pushViewController(ShelfViewController(shelf: shelf), animated: true)
-        Analytics.viewed(pantryShelf: shelf)
+        Analytics.viewed(shelf: shelf, source: .pantry)
     }
     
 }

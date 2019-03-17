@@ -12,6 +12,14 @@ extension Contentful {
     enum Post {
         case text(Contentful.TextPost)
         case external(Contentful.ExternalPost)
+        
+        func show(in viewController: UIViewController? = .current, from source: Analytics.PostSource) {
+            switch self {
+            case .external(let post): DeepLink.handle(url: post.url)
+            case .text(let post):     ContentViewController(textPost: post).show(in: viewController)
+            }
+            Analytics.viewed(post: self, source: source)
+        }
     }
     
     enum PostType: String {

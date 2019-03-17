@@ -111,6 +111,8 @@ extension Contentful {
                 Contentful.LocalStorage.search             = search
                 Contentful.LocalStorage.intro              = intro
                 
+                Notifier.onContentLoaded.fire(())
+                
                 dequeue()
             }
         }

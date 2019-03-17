@@ -13,13 +13,22 @@ enum Analytics {
     enum Event: String {
         case app_opened
         case viewed_question
-        case viewed_table_post
         case viewed_intro_video
-        case viewed_pantry_shelf
-        case viewed_pantry_post
         case searched
-        case viewed_search_shelf
-        case viewed_search_post
+        case viewed_post
+        case viewed_shelf
+    }
+    
+    enum PostSource: String {
+        case table
+        case pantry
+        case search
+        case deepLink
+    }
+    
+    enum ShelfSource: String {
+        case pantry
+        case search
     }
     
     static func log(_ event: Event, with parameters: [String : Any] = [:]) {
@@ -45,11 +54,20 @@ extension Analytics {
         ])
     }
     
-    static func viewed(tablePost post: Contentful.Post) {
-        log(.viewed_table_post, with: [
+    static func viewed(post: Contentful.Post, source: PostSource) {
+        log(.viewed_post, with: [
             "id" : post.id,
             "title" : post.title,
-            "type" : post.type.title
+            "type" : post.type.title,
+            "source" : source.rawValue.capitalized
+        ])
+    }
+    
+    static func viewed(shelf: Contentful.Shelf, source: ShelfSource) {
+        log(.viewed_shelf, with: [
+            "id" : shelf.id,
+            "title" : shelf.name,
+            "source" : source.rawValue.capitalized
         ])
     }
     
@@ -57,41 +75,11 @@ extension Analytics {
         log(.viewed_intro_video)
     }
     
-    static func viewed(pantryShelf shelf: Contentful.Shelf) {
-        log(.viewed_pantry_shelf, with: [
-            "id" : shelf.id,
-            "title" : shelf.name
-        ])
-    }
-    
-    static func viewed(pantryPost post: Contentful.Post) {
-        log(.viewed_pantry_post, with: [
-            "id" : post.id,
-            "title" : post.title,
-            "type" : post.type.title
-        ])
-    }
-    
     static func searched(query: String, shelfCount: Int, postCount: Int) {
         log(.searched, with: [
             "query" : query,
             "shelf_count" : shelfCount,
             "post_count" : postCount
-        ])
-    }
-    
-    static func viewed(searchShelf shelf: Contentful.Shelf) {
-        log(.viewed_search_shelf, with: [
-            "id" : shelf.id,
-            "title" : shelf.name
-        ])
-    }
-    
-    static func viewed(searchPost post: Contentful.Post) {
-        log(.viewed_search_post, with: [
-            "id" : post.id,
-            "title" : post.title,
-            "type" : post.type.title
         ])
     }
 }

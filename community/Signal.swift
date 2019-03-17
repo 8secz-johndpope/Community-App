@@ -13,6 +13,7 @@ enum Notifier {
     static let onCommunityQuestionsChanged = Signal<Void>()
     static let onSearchChanged             = Signal<Void>()
     static let onIntroChanged              = Signal<Void>()
+    static let onContentLoaded             = Signal<Void>()
 }
 
 /// Create instances of `Signal` and assign them to constants on your class for each event type that your
@@ -47,8 +48,8 @@ final class Signal<T> {
     /// Initializer.
     ///
     /// - parameter retainLastData: Whether or not the Signal should retain a reference to the last data it was fired
-    ///   with. Defaults to false.
-    init(retainLastData: Bool = false) {
+    ///   with. Defaults to true.
+    init(retainLastData: Bool = true) {
         self.retainLastData = retainLastData
     }
     
