@@ -609,6 +609,8 @@ extension AudioPlayer {
             playbackState = .failed((item.error as NSError?).flatMap(PlaybackError.ns) ?? .avPlayerFailed)
         case .unknown:
             break
+        @unknown default:
+            break
         }
     }
     
@@ -633,6 +635,8 @@ extension AudioPlayer {
         case .failed:
             playbackState = .failed(.avPlayerFailed)
         case .unknown:
+            break
+        @unknown default:
             break
         }
     }
@@ -664,6 +668,8 @@ extension AudioPlayer {
         case .failed:
             playbackState = .failed(.avPlayerFailed)
         case .unknown:
+            break
+        @unknown default:
             break
         }
     }

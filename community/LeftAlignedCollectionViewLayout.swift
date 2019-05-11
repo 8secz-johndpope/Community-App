@@ -19,6 +19,7 @@ final class LeftAlignedCollectionViewLayout: UICollectionViewFlowLayout {
             else {
                 return CGSize(width: maxX, height: super.collectionViewContentSize.height)
             }
+        @unknown default: return super.collectionViewContentSize
         }
     }
     
@@ -52,6 +53,19 @@ final class LeftAlignedCollectionViewLayout: UICollectionViewFlowLayout {
             }
             
             return attributesToReturn
+        @unknown default:
+            var attributesToReturn: [UICollectionViewLayoutAttributes] = []
+            for attributes in super.layoutAttributesForElements(in: rect) ?? [] {
+                guard let attributesCopy = attributes.copy() as? UICollectionViewLayoutAttributes else { continue }
+                
+                if attributesCopy.representedElementKind == nil {
+                    let indexPath = attributesCopy.indexPath
+                    attributesCopy.frame = layoutAttributesForItem(at: indexPath)?.frame ?? .zero
+                }
+                
+                attributesToReturn.append(attributesCopy)
+            }
+            return attributesToReturn
         }
     }
     
@@ -65,6 +79,7 @@ final class LeftAlignedCollectionViewLayout: UICollectionViewFlowLayout {
         switch scrollDirection {
         case .vertical:   return layoutVertical(at: indexPath)
         case .horizontal: return layoutHorizontal(at: indexPath)
+        @unknown default: return layoutVertical(at: indexPath)
         }
     }
     

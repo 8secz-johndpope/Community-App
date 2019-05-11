@@ -83,8 +83,8 @@ extension Watermark.Message: Hashable {
         return lhs.id == rhs.id
     }
     
-    var hashValue: Int {
-        return "message_\(id)".hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
     
 }

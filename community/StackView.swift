@@ -75,6 +75,7 @@ final class StackView: UIView {
                         switch stackView.axis {
                         case .horizontal: $0.constrainWidth(to: space)
                         case .vertical:   $0.constrainHeight(to: space)
+                        @unknown default: $0.constrainHeight(to: space)
                         }
                     }
                 )
@@ -92,6 +93,7 @@ final class StackView: UIView {
                         switch stackView.axis {
                         case .horizontal: $0.constrainWidth(to: size)
                         case .vertical:   $0.constrainHeight(to: size)
+                        @unknown default: $0.constrainHeight(to: size)
                         }
                     }
                 )

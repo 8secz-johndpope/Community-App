@@ -757,6 +757,8 @@ extension VideoView {
             }
         case .unknown:
             break
+        @unknown default:
+            break
         }
     }
     
@@ -782,6 +784,8 @@ extension VideoView {
         case .failed:
             playbackState = .failed(.avPlayerFailed)
         case .unknown:
+            break
+        @unknown default:
             break
         }
     }
@@ -817,6 +821,8 @@ extension VideoView {
             playbackState = .failed(.avPlayerFailed)
         case .unknown:
             break
+        @unknown default:
+            break
         }
     }
     
@@ -842,6 +848,7 @@ extension AVPlayerItem.Status: CustomStringConvertible {
         case .readyToPlay: return "Ready to play"
         case .failed:      return "Failed"
         case .unknown:     return "Unknown"
+        @unknown default:  return "Unknown"
         }
     }
     
@@ -854,6 +861,7 @@ extension AVPlayer.Status: CustomStringConvertible {
         case .readyToPlay: return "Ready to play"
         case .failed:      return "Failed"
         case .unknown:     return "Unknown"
+        @unknown default:  return "Unknown"
         }
     }
     

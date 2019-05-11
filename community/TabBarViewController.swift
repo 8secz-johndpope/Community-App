@@ -34,7 +34,7 @@ final class TabBarViewController: UITabBarController {
     }
     
     func viewController(forTab tab: Tab) -> UIViewController? {
-        guard let index = tabs.index(of: tab) else { return nil }
+        guard let index = tabs.firstIndex(of: tab) else { return nil }
         return viewControllers?.at(index)
     }
     

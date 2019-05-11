@@ -20,10 +20,11 @@ extension UILayoutGuide {
 extension UIView.AnimationCurve {
     var animationOptionsCurve: UIView.AnimationOptions {
         switch self {
-        case .easeInOut: return .curveEaseInOut
-        case .easeIn:    return .curveEaseIn
-        case .easeOut:   return .curveEaseOut
-        case .linear:    return .curveLinear
+        case .easeInOut:  return .curveEaseInOut
+        case .easeIn:     return .curveEaseIn
+        case .easeOut:    return .curveEaseOut
+        case .linear:     return .curveLinear
+        @unknown default: return .curveLinear
         }
     }
 }

@@ -54,6 +54,10 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
                 inset = (collectionView.bounds.size.height - itemSize.height) / 2
                 collectionView.contentInset = UIEdgeInsets(top: inset, bottom: inset)
                 collectionView.contentOffset = CGPoint(x: 0, y: -inset)
+            @unknown default:
+                inset = (collectionView.bounds.size.height - itemSize.height) / 2
+                collectionView.contentInset = UIEdgeInsets(top: inset, bottom: inset)
+                collectionView.contentOffset = CGPoint(x: 0, y: -inset)
             }
             lastCollectionViewSize = currentCollectionViewSize
             lastScrollDirection = scrollDirection
@@ -66,6 +70,7 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
         switch scrollDirection {
         case .horizontal: origin = CGPoint(x: proposedContentOffset.x, y: 0)
         case .vertical:   origin = CGPoint(x: 0, y: proposedContentOffset.y)
+        @unknown default: origin = CGPoint(x: 0, y: proposedContentOffset.y)
         }
         return CGRect(origin: origin, size: size)
     }
@@ -82,6 +87,7 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
         switch scrollDirection {
         case .horizontal: proposedCenterOffset = proposedContentOffset.x + collectionView.bounds.size.width / 2
         case .vertical:   proposedCenterOffset = proposedContentOffset.y + collectionView.bounds.size.height / 2
+        @unknown default: proposedCenterOffset = proposedContentOffset.y + collectionView.bounds.size.height / 2
         }
         
         for attributes: UICollectionViewLayoutAttributes in layoutAttributes {
@@ -97,6 +103,10 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
                     candidateAttributes = attributes
                 }
             case .vertical:
+                if abs(attributes.center.y - proposedCenterOffset) < abs(candidateAttributes!.center.y - proposedCenterOffset) {
+                    candidateAttributes = attributes
+                }
+            @unknown default:
                 if abs(attributes.center.y - proposedCenterOffset) < abs(candidateAttributes!.center.y - proposedCenterOffset) {
                     candidateAttributes = attributes
                 }
@@ -140,6 +150,15 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
                 newOffset += velocity.y > 0 ? pageHeight : -pageHeight
             }
             return CGPoint(x: proposedContentOffset.x, y: newOffset)
+        @unknown default:
+            newOffset = candidateAttributesForRect.center.y - collectionView.bounds.size.height / 2
+            offset = newOffset - collectionView.contentOffset.y
+            
+            if (velocity.y < 0 && offset > 0) || (velocity.y > 0 && offset < 0) {
+                let pageHeight = itemSize.height + minimumLineSpacing
+                newOffset += velocity.y > 0 ? pageHeight : -pageHeight
+            }
+            return CGPoint(x: proposedContentOffset.x, y: newOffset)
         }
     }
     
@@ -147,6 +166,7 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
         switch scrollDirection {
         case .horizontal: return itemSize.width + minimumLineSpacing
         case .vertical:   return itemSize.height + minimumLineSpacing
+        @unknown default: return itemSize.height + minimumLineSpacing
         }
     }
     
@@ -167,6 +187,10 @@ final class CarouselFlowLayout: UICollectionViewFlowLayout {
             proposedContentOffset = CGPoint(x: pageOffset, y: 0)
             shouldAnimate = abs(collectionView.contentOffset.x - pageOffset) > 1 ? animated : false
         case .vertical:
+            pageOffset = CGFloat(index) * pageWidth - collectionView.contentInset.top
+            proposedContentOffset = CGPoint(x: 0, y: pageOffset)
+            shouldAnimate = abs(collectionView.contentOffset.y - pageOffset) > 1 ? animated : false
+        @unknown default:
             pageOffset = CGFloat(index) * pageWidth - collectionView.contentInset.top
             proposedContentOffset = CGPoint(x: 0, y: pageOffset)
             shouldAnimate = abs(collectionView.contentOffset.y - pageOffset) > 1 ? animated : false

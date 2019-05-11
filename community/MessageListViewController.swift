@@ -88,7 +88,8 @@ final class MessageListViewController: ViewController, StatusBarViewController {
             $0.tintColor = .lightBackground
         }
         
-        let latestMessageCellHeight = (view.width - .padding * 2) * 9/16 + 64
+        let cellWidth = view.width - .padding * 2
+        let latestMessageCellHeight = cellWidth * 9/16 + 64
         
         containerView.add(toSuperview: scrollView).customize {
             $0.constrainEdgesToSuperview()

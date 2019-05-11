@@ -1,4 +1,4 @@
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json" "5.18.1"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseMessagingBinary.json" "5.18.1"
 github "jlandon/alexandria" "bca4d6de765b5158f68216ff6d555093155b57e3"
-github "kean/nuke" "7.3"
+github "kean/nuke" "7.6.3"

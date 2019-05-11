@@ -29,6 +29,7 @@ enum NotificationManager {
             case .denied:        result = false
             case .authorized:    result = true
             case .provisional:   result = true
+            @unknown default:    result = nil
             }
             
             DispatchQueue.main.async {
