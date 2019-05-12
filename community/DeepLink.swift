@@ -50,7 +50,20 @@ enum DeepLink {
                 Contentful.LocalStorage.posts.first(where: { $0.id == id })?.show(from: .deepLink)
             }.onQueue(.main)
         case .url(let url):
-            if url.isHTTP {
+            let pathComponents = url.path.components(separatedBy: "/").filter { !$0.isEmpty }
+            
+            if url.host == "www.watermark.org" {
+                if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "message" {
+                    DeepLink.message(id).handle(fallback: url)
+                }
+                else if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "series" {
+                    DeepLink.series(id).handle(fallback: url)
+                }
+                else {
+                    UIViewController.current?.showInSafari(url: url)
+                }
+            }
+            else if url.isHTTP {
                 UIViewController.current?.showInSafari(url: url)
             }
             else if url.isEmail, MFMailComposeViewController.canSendMail(), UIViewController.current is MFMailComposeViewControllerDelegate {
@@ -64,25 +77,6 @@ enum DeepLink {
             }
         case .unknown:
             break
-        }
-    }
-    
-    static func handle(url: URL) {
-        let pathComponents = url.path.components(separatedBy: "/").filter { !$0.isEmpty }
-        
-        if url.host == "www.watermark.org" {
-            if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "message" {
-                DeepLink.message(id).handle(fallback: url)
-            }
-            else if let id = pathComponents.at(1).flatMap(Int.init), pathComponents.at(0) == "series" {
-                DeepLink.series(id).handle(fallback: url)
-            }
-            else {
-                UIViewController.current?.showInSafari(url: url)
-            }
-        }
-        else {
-            DeepLink.url(url).handle()
         }
     }
 }

@@ -8,6 +8,7 @@
 import UIKit
 import UserNotifications
 import FirebaseMessaging
+import OneSignal
 
 enum NotificationManager {
     
@@ -15,6 +16,7 @@ enum NotificationManager {
         case message = "messageID"
         case series = "seriesID"
         case post = "postID"
+        case url
         case unknown
     }
     
@@ -38,9 +40,18 @@ enum NotificationManager {
         }
     }
     
-    static func setup(_ delegate: UNUserNotificationCenterDelegate & MessagingDelegate) {
+    static func setup(launchOptions: [UIApplication.LaunchOptionsKey : Any]?, delegate: UNUserNotificationCenterDelegate & MessagingDelegate) {
         UNUserNotificationCenter.current().delegate = delegate
         Messaging.messaging().delegate = delegate
+        
+        OneSignal.initWithLaunchOptions(
+            launchOptions ?? [:],
+            appId: "2e1f4fe9-313c-4775-894c-f97a4116c96f",
+            handleNotificationAction: { $0.flatMap(NotificationManager.handleNotification(result:)) },
+            settings: [kOSSettingsKeyAutoPrompt: false]
+        )
+        
+        OneSignal.inFocusDisplayType = .notification
         
         isPermissionsGranted { granted in
             DispatchQueue.main.async {
@@ -51,18 +62,20 @@ enum NotificationManager {
         }
     }
     
-    static func register(completion: @escaping (Bool) -> Void = { _ in }) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
-            DispatchQueue.main.async {
-                if granted {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-                completion(granted)
-            }
-        }
+    static func handleNotification(result: OSNotificationOpenedResult) {
+        guard
+            let payload = result.notification.payload,
+            let data = payload.additionalData
+        else { return }
+        
+        parse(userInfo: data).handle()
     }
     
-    static func parse(userInfo: [String : Any]) -> DeepLink {
+    static func register(completion: @escaping (Bool) -> Void = { _ in }) {
+        OneSignal.promptForPushNotifications(userResponse: completion)
+    }
+    
+    static func parse(userInfo: [AnyHashable : Any]) -> DeepLink {
         if let id = userInfo[.message] as? String {
             return Int(id).flatMap(DeepLink.message) ?? .unknown
         }
@@ -71,6 +84,9 @@ enum NotificationManager {
         }
         else if let id = userInfo[.post] as? String {
             return .post(id)
+        }
+        else if let url = userInfo[.url] as? String {
+            return URL(string: url).flatMap(DeepLink.url) ?? .unknown
         }
         else {
             return .unknown
@@ -87,7 +103,7 @@ enum NotificationManager {
     
 }
 
-extension Dictionary where Key == String, Value: Any {
+extension Dictionary where Key == AnyHashable, Value: Any {
     
     subscript(_ key: NotificationManager.NotificationKey) -> Value? {
         return self[key.rawValue]

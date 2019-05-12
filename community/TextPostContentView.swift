@@ -37,7 +37,7 @@ extension TextPostContentView: UITextViewDelegate {
     }
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        DeepLink.handle(url: URL)
+        DeepLink.url(URL).handle()
         return false
     }
     

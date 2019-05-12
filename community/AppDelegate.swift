@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         Analytics.appOpened()
         
-        NotificationManager.setup(self)
+        NotificationManager.setup(launchOptions: launchOptions, delegate: self)
         
         return true
     }

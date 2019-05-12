@@ -15,7 +15,7 @@ extension Contentful {
         
         func show(in viewController: UIViewController? = .current, from source: Analytics.PostSource) {
             switch self {
-            case .external(let post): DeepLink.handle(url: post.url)
+            case .external(let post): DeepLink.url(post.url).handle()
             case .text(let post):     ContentViewController(textPost: post).show(in: viewController)
             }
             Analytics.viewed(post: self, source: source)
