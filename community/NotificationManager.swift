@@ -52,11 +52,14 @@ enum NotificationManager {
         )
         
         OneSignal.inFocusDisplayType = .notification
+        OneSignal.setLocationShared(false)
         
         isPermissionsGranted { granted in
             DispatchQueue.main.async {
-                if granted == true {
-                    UIApplication.shared.registerForRemoteNotifications()
+                switch granted {
+                case true: UIApplication.shared.registerForRemoteNotifications()
+                case nil:  NotificationPromptViewController().present()
+                default:   break
                 }
             }
         }

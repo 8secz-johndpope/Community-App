@@ -63,13 +63,11 @@ class AsyncTextAttachment: NSTextAttachment
             }
             
             if let image = UIImage(data: data) {
-                let imageSize = image.size
-                
                 if self.displaySize == nil {
                     displaySizeChanged = true
                 }
                 
-                self.originalImageSize = imageSize
+                self.image = image
             }
             
             DispatchQueue.main.async {

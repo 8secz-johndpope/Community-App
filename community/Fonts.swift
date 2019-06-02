@@ -54,9 +54,9 @@ extension UIFont {
 extension UIFont {
     
     enum FontAwesome: String {
-        case regular = "FontAwesome5ProRegular"
-        case solid   = "FontAwesome5ProSolid"
-        case light   = "FontAwesome5ProLight"
+        case regular = "FontAwesome5Pro-Regular"
+        case solid   = "FontAwesome5Pro-Solid"
+        case light   = "FontAwesome5Pro-Light"
     }
     
     enum CrimsonText: String {

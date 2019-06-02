@@ -10,7 +10,8 @@ import Foundation
 enum Storage {
     
     enum Key: String {
-        case introVideoWasShown = "IntroVideoWasShown"
+        case introVideoWasShown             = "IntroVideoWasShown"
+        case notificationPromptDisplayCount = "NotificationPromptDisplayCount"
         
         var domain: String {
             return [Bundle.main.bundleIdentifier ?? "", rawValue].joined(separator: ".")

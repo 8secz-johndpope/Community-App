@@ -19,7 +19,7 @@ extension UIViewController {
     }
     
     func showInSafari(url: URL?) {
-        guard let url = url else { return }
+        guard let url = url, url.isHTTP else { return }
         SFSafariViewController(url: url).show(in: self)
     }
     

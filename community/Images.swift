@@ -29,6 +29,7 @@ enum Icon: Int {
     case article      = 0xf1ea
     case headphone    = 0xf58f
     case file         = 0xf15c
+    case notification = 0xf77f
     
     var string: String {
         return String(format: "%C", rawValue)

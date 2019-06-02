@@ -40,6 +40,7 @@
 		81206A0A20FD790B00696D32 /* UIGestureRecognizer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81206A0920FD790B00696D32 /* UIGestureRecognizer+Extensions.swift */; };
 		81206A0C20FD7D5300696D32 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81206A0B20FD7D5300696D32 /* Operators.swift */; };
 		812311D9211BD7A100D596EB /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812311D8211BD7A100D596EB /* SettingsViewController.swift */; };
+		8123D60522A3836C00A084EE /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8123D60422A3836C00A084EE /* OneSignal.framework */; };
 		81245D5B217B9501007B2277 /* CrimsonText-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81245D55217B9501007B2277 /* CrimsonText-SemiBold.ttf */; };
 		81245D5C217B9501007B2277 /* CrimsonText-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81245D56217B9501007B2277 /* CrimsonText-BoldItalic.ttf */; };
 		81245D5D217B9501007B2277 /* CrimsonText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81245D57217B9501007B2277 /* CrimsonText-Bold.ttf */; };
@@ -203,8 +204,7 @@
 		81ED74FF20FA8FF200BE1F4C /* Contentful+Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74FE20FA8FF200BE1F4C /* Contentful+Post.swift */; };
 		81FB6CB222875FCD00CC430D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81FB6CB122875FCD00CC430D /* NotificationService.swift */; };
 		81FB6CB622875FCD00CC430D /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 81FB6CAF22875FCD00CC430D /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		81FB6CC3228760E900CC430D /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FB6CC2228760E900CC430D /* OneSignal.framework */; };
-		81FB6CC4228760E900CC430D /* OneSignal.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 81FB6CC2228760E900CC430D /* OneSignal.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		81FB6CC62287B96E00CC430D /* NotificationPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81FB6CC52287B96E00CC430D /* NotificationPromptViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,7 +232,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				8101D49520FAEC010085BF0D /* CommonMark.framework in Embed Frameworks */,
-				81FB6CC4228760E900CC430D /* OneSignal.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -287,6 +286,7 @@
 		81206A0920FD790B00696D32 /* UIGestureRecognizer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIGestureRecognizer+Extensions.swift"; sourceTree = "<group>"; };
 		81206A0B20FD7D5300696D32 /* Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		812311D8211BD7A100D596EB /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		8123D60422A3836C00A084EE /* OneSignal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OneSignal.framework; path = Carthage/Build/iOS/OneSignal.framework; sourceTree = "<group>"; };
 		81245D55217B9501007B2277 /* CrimsonText-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CrimsonText-SemiBold.ttf"; sourceTree = "<group>"; };
 		81245D56217B9501007B2277 /* CrimsonText-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CrimsonText-BoldItalic.ttf"; sourceTree = "<group>"; };
 		81245D57217B9501007B2277 /* CrimsonText-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CrimsonText-Bold.ttf"; sourceTree = "<group>"; };
@@ -457,7 +457,7 @@
 		81FB6CAF22875FCD00CC430D /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		81FB6CB122875FCD00CC430D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		81FB6CB322875FCD00CC430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		81FB6CC2228760E900CC430D /* OneSignal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OneSignal.framework; sourceTree = "<group>"; };
+		81FB6CC52287B96E00CC430D /* NotificationPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPromptViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -487,7 +487,7 @@
 				81938BCC20F9AA2A0080DEFF /* Alexandria.framework in Frameworks */,
 				81ED74F320FA886100BE1F4C /* Nuke.framework in Frameworks */,
 				8101D49420FAEC010085BF0D /* CommonMark.framework in Frameworks */,
-				81FB6CC3228760E900CC430D /* OneSignal.framework in Frameworks */,
+				8123D60522A3836C00A084EE /* OneSignal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -609,6 +609,7 @@
 				81938C1F20FA68610080DEFF /* TabBarViewController.swift */,
 				81938C2320FA6A110080DEFF /* Button.swift */,
 				81992F04223D82D900ACD1DC /* NotificationManager.swift */,
+				81FB6CC52287B96E00CC430D /* NotificationPromptViewController.swift */,
 				81ED74DD20FA763C00BE1F4C /* MessageListViewController.swift */,
 				81ED74F020FA87BF00BE1F4C /* LoadingImageView.swift */,
 				81ED74F620FA8A4800BE1F4C /* MessageCellView.swift */,
@@ -674,7 +675,7 @@
 		8116F21420F9A8C7005A2171 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				81FB6CC2228760E900CC430D /* OneSignal.framework */,
+				8123D60422A3836C00A084EE /* OneSignal.framework */,
 				819F0832223898F500A2CB28 /* FIRAnalyticsConnector.framework */,
 				819F0838223898F500A2CB28 /* Firebase.framework */,
 				819F0839223898F500A2CB28 /* FirebaseAnalytics.framework */,
@@ -1050,6 +1051,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81ED74F920FA8C7100BE1F4C /* SeriesCell.swift in Sources */,
+				81FB6CC62287B96E00CC430D /* NotificationPromptViewController.swift in Sources */,
 				81ED74E320FA7B1400BE1F4C /* URL+Extensions.swift in Sources */,
 				81ED74E720FA7BB300BE1F4C /* Watermark+Pagination.swift in Sources */,
 				816A4F8B2116B29300179C76 /* UIImage+Extensions.swift in Sources */,
