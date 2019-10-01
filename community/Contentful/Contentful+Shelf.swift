@@ -5,11 +5,11 @@
 //  Created by Jonathan Landon on 7/13/18.
 //
 
-import Foundation
+import Diakoneo
 
 extension Contentful {
     
-    struct Shelf: Initializable {
+    struct Shelf {
         let id: String
         let name: String
         let postIDs: [String]
@@ -42,19 +42,18 @@ extension Contentful {
             return shelves
         }
         
-        init?(json: [String : Any]) {
+        init?(entry: Contentful.Entry) {
             guard
-                let id = json.dictionary(forKey: "sys").string(forKey: "id"),
-                let name = json.dictionary(forKey: "fields").string(forKey: "name")
+                let name = entry.fields.string(forKey: "name")
             else { return nil }
             
-            self.id        = id
+            self.id        = entry.id
             self.name      = name
-            self.postIDs   = json.dictionary(forKey: "fields").array(forKey: "posts").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
-            self.shelfIDs  = json.dictionary(forKey: "fields").array(forKey: "shelves").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
-            self.icon      = json.dictionary(forKey: "fields").string(forKey: "icon").flatMap(Icon.init(string:))
-            self.createdAt = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
-            self.updatedAt = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
+            self.postIDs   = entry.fields.array(forKey: "posts").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
+            self.shelfIDs  = entry.fields.array(forKey: "shelves").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
+            self.icon      = entry.fields.string(forKey: "icon").flatMap(Icon.init(string:))
+            self.createdAt = entry.createdAt
+            self.updatedAt = entry.updatedAt
         }
     }
 

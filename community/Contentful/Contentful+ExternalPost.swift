@@ -5,11 +5,11 @@
 //  Created by Jonathan Landon on 7/13/18.
 //
 
-import Foundation
+import Diakoneo
 
 extension Contentful {
     
-    struct ExternalPost: Initializable {
+    struct ExternalPost {
         let id: String
         let title: String
         let publishDate: Date
@@ -24,25 +24,24 @@ extension Contentful {
             return Contentful.LocalStorage.assets.first(where: { $0.id == postImageAssetID })
         }
         
-        init?(json: [String : Any]) {
+        init?(entry: Contentful.Entry) {
             guard
-                let id = json.dictionary(forKey: "sys").string(forKey: "id"),
-                let title = json.dictionary(forKey: "fields").string(forKey: "title"),
-                let publishDate = json.dictionary(forKey: "fields").date(forKey: "publishDate", formatter: .yearMonthDay),
-                let url = json.dictionary(forKey: "fields").url(forKey: "url"),
-                let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue"),
+                let title = entry.fields.string(forKey: "title"),
+                let publishDate = entry.fields.date(forKey: "publishDate", formatter: .yearMonthDay),
+                let url = entry.fields.url(forKey: "url"),
+                let isInTable = entry.fields.bool(forKey: "tableQueue"),
                 publishDate < Date()
             else { return nil }
             
-            self.id               = id
+            self.id               = entry.id
             self.title            = title
             self.publishDate      = publishDate
             self.url              = url
-            self.postImageAssetID = json.dictionary(forKeys: "fields", "postImage", "sys").string(forKey: "id") ?? ""
+            self.postImageAssetID = entry.fields.dictionary(forKeys: "postImage", "sys").string(forKey: "id") ?? ""
             self.isInTable        = isInTable
-            self.createdAt        = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
-            self.updatedAt        = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
-            self.type             = json.dictionary(forKey: "fields").enum(forKey: "type") ?? .post
+            self.createdAt        = entry.createdAt
+            self.updatedAt        = entry.updatedAt
+            self.type             = entry.fields.enum(forKey: "type") ?? .post
         }
     }
 

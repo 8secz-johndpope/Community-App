@@ -6,10 +6,28 @@
 //
 
 import Foundation
+import Diakoneo
 
-extension Contentful {
+extension Contentful.API {
     
-    enum Entry {
+    enum ContentType: String {
+        case author
+        case externalPost
+        case pantry
+        case table
+        case textPost = "post"
+        case shelf
+        case question
+        case communityQuestions
+        case search
+        case intro
+    }
+    
+}
+
+extension Contentful.Entry {
+    
+    enum Community {
         case author(Contentful.Author)
         case externalPost(Contentful.ExternalPost)
         case pantry(Contentful.Pantry)
@@ -24,77 +42,77 @@ extension Contentful {
     
 }
 
-extension Contentful.Entry: Initializable {
+extension Contentful.Entry.Community {
     
-    init?(json: [String : Any]) {
-        guard let type: Contentful.API.ContentType = json.dictionary(forKeys: "sys", "contentType", "sys").enum(forKey: "id") else { return nil }
+    init?(entry: Contentful.Entry) {
+        guard let type = Contentful.API.ContentType(rawValue: entry.contentType) else { return nil }
         
         switch type {
         case .author:
-            if let author = Contentful.Author(json: json) {
+            if let author = Contentful.Author(entry: entry) {
                 self = .author(author)
             }
             else {
                 return nil
             }
         case .externalPost:
-            if let externalPost = Contentful.ExternalPost(json: json) {
+            if let externalPost = Contentful.ExternalPost(entry: entry) {
                 self = .externalPost(externalPost)
             }
             else {
                 return nil
             }
         case .pantry:
-            if let pantry = Contentful.Pantry(json: json) {
+            if let pantry = Contentful.Pantry(entry: entry) {
                 self = .pantry(pantry)
             }
             else {
                 return nil
             }
         case .table:
-            if let table = Contentful.Table(json: json) {
+            if let table = Contentful.Table(entry: entry) {
                 self = .table(table)
             }
             else {
                 return nil
             }
         case .shelf:
-            if let shelf = Contentful.Shelf(json: json) {
+            if let shelf = Contentful.Shelf(entry: entry) {
                 self = .shelf(shelf)
             }
             else {
                 return nil
             }
         case .textPost:
-            if let textPost = Contentful.TextPost(json: json) {
+            if let textPost = Contentful.TextPost(entry: entry) {
                 self = .textPost(textPost)
             }
             else {
                 return nil
             }
         case .question:
-            if let question = Contentful.Question(json: json) {
+            if let question = Contentful.Question(entry: entry) {
                 self = .question(question)
             }
             else {
                 return nil
             }
         case .communityQuestions:
-            if let communityQuestions = Contentful.CommunityQuestions(json: json) {
+            if let communityQuestions = Contentful.CommunityQuestions(entry: entry) {
                 self = .communityQuestions(communityQuestions)
             }
             else {
                 return nil
             }
         case .search:
-            if let search = Contentful.Search(json: json) {
+            if let search = Contentful.Search(entry: entry) {
                 self = .search(search)
             }
             else {
                 return nil
             }
         case .intro:
-            if let intro = Contentful.Intro(json: json) {
+            if let intro = Contentful.Intro(entry: entry) {
                 self = .intro(intro)
             }
             else {
@@ -105,7 +123,7 @@ extension Contentful.Entry: Initializable {
     
 }
 
-extension Contentful.Entry {
+extension Contentful.Entry.Community {
     
     var createdAt: Date {
         switch self {

@@ -5,11 +5,11 @@
 //  Created by Jonathan Landon on 10/20/18.
 //
 
-import Foundation
+import Diakoneo
 
 extension Contentful {
     
-    struct CommunityQuestions: Initializable {
+    struct CommunityQuestions {
         let id: String
         let title: String
         let questionIDs: [String]
@@ -31,18 +31,17 @@ extension Contentful {
             return questions
         }
         
-        init?(json: [String : Any]) {
+        init?(entry: Contentful.Entry) {
             guard
-                let id = json.dictionary(forKey: "sys").string(forKey: "id"),
-                let title = json.dictionary(forKey: "fields").string(forKey: "title")
+                let title = entry.fields.string(forKey: "title")
             else { return nil }
             
-            self.id          = id
+            self.id          = entry.id
             self.title       = title
-            self.questionIDs = json.dictionary(forKey: "fields").array(forKey: "questions").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
-            self.info        = json.dictionary(forKeys: "fields").string(forKey: "description") ?? ""
-            self.createdAt   = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
-            self.updatedAt   = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
+            self.questionIDs = entry.fields.array(forKey: "questions").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
+            self.info        = entry.fields.string(forKey: "description") ?? ""
+            self.createdAt   = entry.createdAt
+            self.updatedAt   = entry.updatedAt
         }
     }
     

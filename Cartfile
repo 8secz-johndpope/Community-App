@@ -1,5 +1,6 @@
-github "jlandon/alexandria" "swift4.2"
-github "kean/nuke" "7.6.3"
-github "OneSignal/OneSignal-iOS-SDK" "2.10.0"
+github "jlandon/diakoneo" "master"
+github "jlandon/alexandria" "4.0.0"
+github "kean/nuke" "8.0"
+github "OneSignal/OneSignal-iOS-SDK" "2.11.0"
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.json" == 5.18.1
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseMessagingBinary.json" == 5.18.1

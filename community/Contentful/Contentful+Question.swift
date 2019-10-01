@@ -5,28 +5,27 @@
 //  Created by Jonathan Landon on 10/20/18.
 //
 
-import Foundation
+import Diakoneo
 
 extension Contentful {
     
-    struct Question: Initializable {
+    struct Question {
         let id: String
         let question: String
         let info: String
         let createdAt: Date
         let updatedAt: Date
         
-        init?(json: [String : Any]) {
+        init?(entry: Contentful.Entry) {
             guard
-                let id = json.dictionary(forKey: "sys").string(forKey: "id"),
-                let question = json.dictionary(forKey: "fields").string(forKey: "question")
+                let question = entry.fields.string(forKey: "question")
             else { return nil }
             
-            self.id        = id
+            self.id        = entry.id
             self.question  = question
-            self.info      = json.dictionary(forKey: "fields").string(forKey: "description") ?? ""
-            self.createdAt = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
-            self.updatedAt = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
+            self.info      = entry.fields.string(forKey: "description") ?? ""
+            self.createdAt = entry.createdAt
+            self.updatedAt = entry.updatedAt
         }
     }
     

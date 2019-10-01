@@ -7,6 +7,7 @@
 
 import UIKit
 import MessageUI
+import Diakoneo
 
 private final class Observer: NSObject {}
 

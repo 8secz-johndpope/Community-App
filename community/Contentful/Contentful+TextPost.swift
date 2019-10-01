@@ -5,7 +5,7 @@
 //  Created by Jonathan Landon on 7/13/18.
 //
 
-import Foundation
+import Diakoneo
 
 enum MediaType {
     case audio
@@ -33,26 +33,26 @@ enum Media: Equatable {
         case .message(let id):
             Watermark.API.Messages.fetch(id: id) { result in
                 DispatchQueue.main.async {
-                    guard let message = result.value else { return completion(.error(.missingURL)) }
+                    guard let message = result.value else { return completion(.failure(.missingURL)) }
                     
                     switch message.mediaAsset {
-                    case .audio(let asset): completion(.value(Data(url: asset.url, mediaType: .audio, message: message)))
-                    case .video(let asset): completion(.value(Data(url: asset.url, mediaType: .video, message: message)))
+                    case .audio(let asset): completion(.success(Data(url: asset.url, mediaType: .audio, message: message)))
+                    case .video(let asset): completion(.success(Data(url: asset.url, mediaType: .video, message: message)))
                     }
                 }
             }
         case .raw(let url):
             if url.isAudio {
-                completion(.value(Data(url: url, mediaType: .audio, message: nil)))
+                completion(.success(Data(url: url, mediaType: .audio, message: nil)))
             }
             else if url.isVideo {
-                completion(.value(Data(url: url, mediaType: .video, message: nil)))
+                completion(.success(Data(url: url, mediaType: .video, message: nil)))
             }
         case .youtube(let id):
             YouTube.fetchVideo(id: id) { url in
                 DispatchQueue.main.async {
-                    guard let url = url else { return completion(.error(.missingURL)) }
-                    completion(.value(Data(url: url, mediaType: .video, message: nil)))
+                    guard let url = url else { return completion(.failure(.missingURL)) }
+                    completion(.success(Data(url: url, mediaType: .video, message: nil)))
                 }
             }
         }
@@ -61,7 +61,7 @@ enum Media: Equatable {
 
 extension Contentful {
     
-    struct TextPost: Initializable, Equatable {
+    struct TextPost: Equatable {
         let id: String
         let title: String
         let content: String
@@ -87,27 +87,26 @@ extension Contentful {
             return Contentful.LocalStorage.assets.first(where: { $0.id == postImageAssetID })
         }
         
-        init?(json: [String : Any]) {
+        init?(entry: Contentful.Entry) {
             guard
-                let id = json.dictionary(forKey: "sys").string(forKey: "id"),
-                let title = json.dictionary(forKey: "fields").string(forKey: "title"),
-                let content = json.dictionary(forKey: "fields").string(forKey: "content"),
-                let publishDate = json.dictionary(forKey: "fields").date(forKey: "publishDate", formatter: .yearMonthDay),
-                let isInTable = json.dictionary(forKey: "fields").bool(forKey: "tableQueue"),
+                let title = entry.fields.string(forKey: "title"),
+                let content = entry.fields.string(forKey: "content"),
+                let publishDate = entry.fields.date(forKey: "publishDate", formatter: .yearMonthDay),
+                let isInTable = entry.fields.bool(forKey: "tableQueue"),
                 publishDate < Date()
             else { return nil }
             
-            self.id               = id
+            self.id               = entry.id
             self.title            = title
             self.content          = content
             self.publishDate      = publishDate
-            self.authorID         = json.dictionary(forKeys: "fields", "author", "sys").string(forKey: "id") ?? ""
-            self.postImageAssetID = json.dictionary(forKeys: "fields", "postImage", "sys").string(forKey: "id") ?? ""
-            self.mediaURL         = json.dictionary(forKey: "fields").url(forKey: "mediaUrl")
+            self.authorID         = entry.fields.dictionary(forKeys: "author", "sys").string(forKey: "id") ?? ""
+            self.postImageAssetID = entry.fields.dictionary(forKeys: "postImage", "sys").string(forKey: "id") ?? ""
+            self.mediaURL         = entry.fields.url(forKey: "mediaUrl")
             self.isInTable        = isInTable
-            self.createdAt        = json.dictionary(forKey: "sys").date(forKey: "createdAt", formatter: .iso8601) ?? Date()
-            self.updatedAt        = json.dictionary(forKey: "sys").date(forKey: "updatedAt", formatter: .iso8601) ?? Date()
-            self.type             = json.dictionary(forKey: "fields").enum(forKey: "type") ?? .post
+            self.createdAt        = entry.createdAt
+            self.updatedAt        = entry.updatedAt
+            self.type             = entry.fields.enum(forKey: "type") ?? .post
             
             if let mediaURL = self.mediaURL {
                 switch mediaURL.host {

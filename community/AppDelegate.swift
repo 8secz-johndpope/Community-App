@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Diakoneo
 import Firebase
 import FirebaseMessaging
 import UserNotifications
@@ -23,7 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = TabBarViewController()
         window?.makeKeyAndVisible()
         
-        Contentful.API.loadAllContent()
+        Contentful.API.initiailize(space: "943xvw9uyovc", token: "8884b9dc975dbcd97a1f5727f18c174c6453fccc98b2be07bbda40d28fc9b9f0")
+        Content.loadAll()
         
         Analytics.appOpened()
         

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Diakoneo
 
 final class CloseButton: UIButton {
     
@@ -30,7 +31,7 @@ final class CloseButton: UIButton {
 extension CloseButton {
     
     private func setup() {
-        setTitle(Icon.close.string, for: .normal)
+        setTitle(Icon.times.string, for: .normal)
         titleLabel?.font = .fontAwesome(.light, size: 24)
         configure(normal: .lightBackground, highlighted: .lightest)
     }
