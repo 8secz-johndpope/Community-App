@@ -21,14 +21,14 @@ final class SearchPostsCell: CollectionViewCell {
     override func setup() {
         super.setup()
         
-        backgroundColor = .lightBackground
+        backgroundColor = .background
         
         collectionView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(Cell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsHorizontalScrollIndicator = false
             $0.decelerationRate = .fast
             $0.alwaysBounceHorizontal = true
@@ -97,7 +97,7 @@ extension SearchPostsCell {
             
             let shadowView = ContainerShadowView(superview: contentView).customize {
                 $0.constrainEdgesToSuperview()
-                $0.backgroundColor = .darkBlue
+                $0.backgroundColor = .headerBackground
                 $0.containerCornerRadius = 8
                 $0.shadowOpacity = 0.2
             }

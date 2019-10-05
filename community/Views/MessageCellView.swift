@@ -23,7 +23,7 @@ final class MessageCellView: View {
         
         containerView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.containerCornerRadius = 4
         }
         
@@ -34,32 +34,32 @@ final class MessageCellView: View {
             $0.isHidden = true
             $0.clipsToBounds = true
             $0.defaultGradient = .empty
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
         }
         
         infoView.add(toSuperview: containerView.container).customize {
             $0.pinLeading(to: containerView.container).pinTrailing(to: containerView.container)
             $0.pinTop(to: imageView, .bottom).pinBottom(to: containerView.container)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         UIView(superview: infoView).customize {
             $0.pinLeading(to: infoView).pinTrailing(to: infoView)
             $0.pinTop(to: infoView).constrainHeight(to: 1)
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
         }
         
         let holderView = UIView(superview: infoView).customize {
             $0.pinLeading(to: infoView, plus: .padding).pinTrailing(to: infoView, plus: -.padding)
             $0.pinTop(to: infoView, plus: .padding/2).pinBottom(to: infoView, plus: -.padding/2)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         titleLabel.add(toSuperview: holderView).customize {
             $0.pinLeading(to: holderView).pinTrailing(to: holderView)
             $0.pinTop(to: holderView).constrainSize(toFit: .vertical)
             $0.font = .bold(size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .left
             $0.numberOfLines = 0
         }
@@ -69,7 +69,7 @@ final class MessageCellView: View {
             $0.pinTop(to: titleLabel, .bottom, plus: 5).pinBottom(to: holderView)
             $0.constrainSize(toFit: .vertical)
             $0.font = .regular(size: 12)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .left
             $0.numberOfLines = 0
         }

@@ -2,5 +2,5 @@ binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.j
 binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseMessagingBinary.json" "5.18.1"
 github "OneSignal/OneSignal-iOS-SDK" "2.11.0"
 github "jlandon/alexandria" "4.0.0"
-github "jlandon/diakoneo" "ef74122ef68249feca845c385a7fcab0ac7d5ed2"
+github "jlandon/diakoneo" "cef5dda8df08aa82479eefe34cbc903ebb5b7bce"
 github "kean/nuke" "8.0"

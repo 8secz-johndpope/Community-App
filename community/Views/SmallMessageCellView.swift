@@ -17,7 +17,7 @@ final class SmallMessageCellView: View {
     override func setup() {
         super.setup()
         
-        backgroundColor = .lightBackground
+        backgroundColor = .background
         
         let shadowView = ContainerShadowView(superview: self).customize {
             $0.pinTop(to: self).pinBottom(to: self).pinLeading(to: self, plus: .padding)
@@ -31,20 +31,20 @@ final class SmallMessageCellView: View {
             $0.contentMode = .scaleAspectFill
             $0.clipsToBounds = true
             $0.defaultGradient = .empty
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
         }
         
         let holderView = UIView(superview: self).customize {
             $0.pinLeading(to: shadowView, .trailing, plus: .padding).pinTrailing(to: self, plus: -.padding)
             $0.pinCenterY(to: self)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         titleLabel.add(toSuperview: holderView).customize {
             $0.pinLeading(to: holderView).pinTrailing(to: holderView)
             $0.pinTop(to: holderView).constrainSize(toFit: .vertical)
             $0.font = .bold(size: 14)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .left
             $0.numberOfLines = 2
         }
@@ -54,7 +54,7 @@ final class SmallMessageCellView: View {
             $0.pinTop(to: titleLabel, .bottom, plus: 5).pinBottom(to: holderView)
             $0.constrainSize(toFit: .vertical)
             $0.font = .regular(size: 12)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.numberOfLines = 1
         }
     }

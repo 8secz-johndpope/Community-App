@@ -39,8 +39,8 @@ final class TableHeaderView: View {
             $0.pinTop(to: titleLabel).pinTrailing(to: self, plus: -.padding)
             $0.constrainHeight(to: 45).constrainWidth(to: 45)
             $0.setTitle(Icon.video.string, for: .normal)
-            $0.setTitleColor(.lightBackground, for: .normal)
-            $0.setTitleColor(.light, for: .highlighted)
+            $0.setTitleColor(.headerText, for: .normal)
+            $0.setTitleColor(.headerTextHighlighted, for: .highlighted)
             $0.contentHorizontalAlignment = .right
             $0.adjustsImageWhenHighlighted = false
             $0.titleLabel?.font = .fontAwesome(.solid, size: 27)
@@ -55,8 +55,8 @@ final class TableHeaderView: View {
     }
     
     func configure(table: Contentful.Table?) {
-        titleLabel.attributedText    = table?.title.attributed.font(.header).color(.lightBackground)
-        subtitleLabel.attributedText = table?.info.attributed.font(.subHeader).color(.lightBackground)
+        titleLabel.attributedText    = table?.title.attributed.font(.header).color(.headerText)
+        subtitleLabel.attributedText = table?.info.attributed.font(.subHeader).color(.headerText)
     }
     
 }

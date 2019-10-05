@@ -21,14 +21,14 @@ final class HeaderCell: CollectionViewCell {
         titleLabel.add(toSuperview: contentView).customize {
             $0.pinLeading(to: contentView).pinTrailing(to: contentView)
             $0.pinTop(to: contentView).constrainSize(toFit: .vertical)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.font = .header
         }
         
         subtitleLabel.add(toSuperview: contentView).customize {
             $0.pinTop(to: titleLabel, .bottom).pinBottom(to: contentView)
             $0.pinLeading(to: contentView).pinTrailing(to: contentView)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.font = .subHeader
             $0.numberOfLines = 0
         }

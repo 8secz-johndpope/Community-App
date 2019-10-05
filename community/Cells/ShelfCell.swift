@@ -15,7 +15,7 @@ final class ShelfCell: CollectionViewCell {
     
     override var isHighlighted: Bool {
         didSet {
-            contentView.backgroundColor = isHighlighted ? .lightest : .clear
+            contentView.backgroundColor = isHighlighted ? .backgroundAlt : .clear
         }
     }
     
@@ -29,13 +29,13 @@ final class ShelfCell: CollectionViewCell {
             $0.pinLeading(to: contentView, plus: .padding)
             $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 18)
-            $0.textColor = .dark
+            $0.textColor = .text
         }
         
         chevronView.add(toSuperview: contentView).customize {
             $0.pinTrailing(to: contentView, plus: -.padding).pinLeading(to: titleLabel, .trailing, plus: .padding)
             $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical, .horizontal)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.font = .fontAwesome(.regular, size: 18)
             $0.set(icon: .angleRight)
         }

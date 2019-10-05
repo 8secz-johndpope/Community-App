@@ -41,17 +41,6 @@ extension Contentful {
             }
         }
         
-        var backgroundColor: UIColor {
-            switch self {
-            case .sermonGuide: return .goldPattern
-            case .sermon:      return .goldPattern
-            case .rtrq:        return .lightBluePattern
-            case .website:     return .darkBluePattern
-            case .post:        return .greyPattern
-            case .file:        return .greyPattern
-            }
-        }
-        
         var image: UIImage {
             switch self {
             case .sermonGuide: return #imageLiteral(resourceName: "tile4")

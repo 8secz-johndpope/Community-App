@@ -17,14 +17,14 @@ final class SearchMessagesCell: CollectionViewCell {
     override func setup() {
         super.setup()
         
-        backgroundColor = .lightBackground
+        backgroundColor = .background
         
         collectionView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(Cell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsHorizontalScrollIndicator = false
             $0.decelerationRate = .fast
             $0.alwaysBounceHorizontal = true
@@ -105,7 +105,7 @@ extension SearchMessagesCell {
                 $0.constrainEdgesToSuperview()
                 $0.contentMode = .scaleAspectFill
                 $0.defaultGradient = .empty
-                $0.backgroundColor = .lightest
+                $0.backgroundColor = .backgroundAlt
             }
             
             let holderView = UIView(superview: contentView).customize {
@@ -117,7 +117,7 @@ extension SearchMessagesCell {
                 $0.pinLeading(to: holderView).pinTrailing(to: holderView)
                 $0.pinTop(to: holderView).constrainSize(toFit: .vertical)
                 $0.font = .bold(size: 16)
-                $0.textColor = .dark
+                $0.textColor = .text
                 $0.numberOfLines = 2
             }
             
@@ -126,7 +126,7 @@ extension SearchMessagesCell {
                 $0.pinTop(to: titleLabel, .bottom, plus: 10).pinBottom(to: holderView)
                 $0.constrainSize(toFit: .vertical)
                 $0.font = .regular(size: 14)
-                $0.textColor = .dark
+                $0.textColor = .text
             }
             
         }

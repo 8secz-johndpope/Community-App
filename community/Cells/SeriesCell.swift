@@ -21,7 +21,7 @@ final class SeriesCell: CollectionViewCell {
         
         containerView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.containerCornerRadius = 8
         }
         
@@ -31,7 +31,7 @@ final class SeriesCell: CollectionViewCell {
             $0.isHidden = true
             $0.clipsToBounds = true
             $0.defaultGradient = .empty
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
         }
         
         titleLabel.add(toSuperview: containerView.container).customize {
@@ -39,7 +39,7 @@ final class SeriesCell: CollectionViewCell {
             $0.pinCenterY(to: containerView.container).constrainSize(toFit: .vertical)
             $0.numberOfLines = 3
             $0.font = .bold(size: 20)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .center
         }
     }

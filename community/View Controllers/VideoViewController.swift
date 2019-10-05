@@ -9,6 +9,22 @@ import UIKit
 import AVFoundation
 import Diakoneo
 
+extension UITraitCollection {
+    
+    var isDarkMode: Bool {
+        if #available(iOS 13, *) {
+            switch userInterfaceStyle {
+            case .dark: return true
+            default:    return false
+            }
+        }
+        else {
+            return false
+        }
+    }
+    
+}
+
 final class TriangleView : UIView {
     
     var color: UIColor = .white {
@@ -34,7 +50,7 @@ final class TriangleView : UIView {
 
 final class VideoViewController: ViewController {
     
-    private let blurView           = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    private let blurView           = UIVisualEffectView()
     private let videoContainerView = UIView()
     private let videoView          = VideoView()
     private let loadingIndicator   = LoadingView()
@@ -52,6 +68,10 @@ final class VideoViewController: ViewController {
         return true
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        blurView.effect = UIBlurEffect(style: traitCollection.isDarkMode ? .dark : .light)
+    }
+    
     override func setup() {
         super.setup()
         
@@ -60,14 +80,15 @@ final class VideoViewController: ViewController {
         blurView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
             $0.addGesture(type: .tap) { [weak self] _ in self?.hide() }
+            $0.effect = UIBlurEffect(style: traitCollection.isDarkMode ? .dark : .light)
         }
         
         videoButton.add(toSuperview: view).customize {
             $0.pinTrailing(to: view, plus: -.padding).pinTop(to: view, plus: startingButtonMinY ?? (.safeTop + 44))
             $0.constrainHeight(to: 45).constrainWidth(to: 45)
             $0.setTitle(Icon.video.string, for: .normal)
-            $0.setTitleColor(.lightBackground, for: .normal)
-            $0.setTitleColor(.light, for: .highlighted)
+            $0.setTitleColor(.headerText, for: .normal)
+            $0.setTitleColor(.headerTextHighlighted, for: .highlighted)
             $0.contentHorizontalAlignment = .right
             $0.adjustsImageWhenHighlighted = false
             $0.titleLabel?.font = .fontAwesome(.solid, size: 27)
@@ -84,22 +105,26 @@ final class VideoViewController: ViewController {
         }
         
         videoView.add(toSuperview: videoContainerView).customize {
-            $0.pinLeading(to: videoContainerView).pinTrailing(to: videoContainerView)
-            $0.pinTop(to: videoContainerView, plus: 10).pinBottom(to: videoContainerView)
+            $0.constrainEdgesToSuperview(top: 10)
             $0.videoGravity = .resizeAspectFill
             $0.backgroundColor = .black
-            $0.borderColor = .white
             $0.cornerRadius = 8
-            $0.borderWidth = 2
             $0.delegate = self
             $0.playbackDelegate = self
             $0.setup(url: Contentful.LocalStorage.intro?.videoURL)
         }
         
+        UIView(superview: videoContainerView).customize {
+            $0.constrainEdgesToSuperview(top: 10)
+            $0.borderColor = .white
+            $0.cornerRadius = 8
+            $0.borderWidth = 2
+        }
+        
         loadingIndicator.add(toSuperview: videoView).customize {
             $0.pinCenterX(to: videoView).pinCenterY(to: videoView)
             $0.constrainWidth(to: 30).constrainHeight(to: 30)
-            $0.color = .lightest
+            $0.color = .white
             $0.startAnimating()
         }
         

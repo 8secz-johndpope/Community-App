@@ -23,7 +23,7 @@ final class MessageContentView: View {
             $0.pinTop(to: self, plus: 30).constrainSize(toFit: .vertical)
             $0.numberOfLines = 0
             $0.font = .bold(size: 22)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .left
         }
         
@@ -37,11 +37,11 @@ final class MessageContentView: View {
             $0.pinTop(to: subtitleLabel, .bottom)
             $0.pinLeading(to: self).pinTrailing(to: self)
             $0.textContainerInset = UIEdgeInsets(inset: .textInset)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.isEditable = false
             $0.isSelectable = true
             $0.delegate = self
-            $0.linkTextAttributes = [.foregroundColor : UIColor.orange]
+            $0.linkTextAttributes = [.foregroundColor : UIColor.link]
         }
     }
     
@@ -52,10 +52,10 @@ final class MessageContentView: View {
         subtitleLabel.attributedText = (
             message.speakers.map { $0.name }.joined(separator: ", ").attributed.font(.bold(size: 16)) +
             "\n\(DateFormatter.readable.string(from: message.date))".attributed.font(.regular(size: 16))
-        ).color(.dark)
+        ).color(.text)
         
         descriptionView.attributedText = message.details.attributed
-            .color(.dark)
+            .color(.text)
             .font(.regular(size: 16))
             .lineSpacing(5)
         
@@ -65,7 +65,7 @@ final class MessageContentView: View {
                 $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
                 $0.pinTop(to: descriptionView, .bottom).constrainSize(toFit: .vertical)
                 $0.font = .bold(size: 18)
-                $0.textColor = .dark
+                $0.textColor = .text
                 $0.text = "Scripture References"
             }
             

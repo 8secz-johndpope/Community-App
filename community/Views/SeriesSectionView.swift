@@ -17,7 +17,7 @@ final class SeriesSectionView: View {
     override func setup() {
         super.setup()
         
-        backgroundColor = .lightBackground
+        backgroundColor = .background
         
         collectionView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
@@ -25,7 +25,7 @@ final class SeriesSectionView: View {
             $0.registerCell(SeriesCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsHorizontalScrollIndicator = false
             $0.decelerationRate = .fast
             $0.clipsToBounds = false

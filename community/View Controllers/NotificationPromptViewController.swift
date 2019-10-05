@@ -25,6 +25,10 @@ final class NotificationPromptViewController: ViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        notificationsButton.setBackgroundColor(.notificationsButton, for: .normal)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,7 +38,7 @@ final class NotificationPromptViewController: ViewController {
             $0.pinLeading(to: view, plus: .padding * 2).pinTrailing(to: view, plus: -.padding * 2)
             $0.pinCenterY(to: view)
             $0.cornerRadius = 8
-            $0.backgroundColor = .white
+            $0.backgroundColor = .backgroundAlt
             $0.addGesture(type: .pan) { [weak self] in self?.onDrag(gesture: $0) }
         }
         
@@ -42,7 +46,7 @@ final class NotificationPromptViewController: ViewController {
             $0.pinLeading(to: holderView, plus: .padding).pinTrailing(to: holderView, plus: -.padding)
             $0.pinTop(to: holderView, plus: 30).constrainSize(toFit: .vertical)
             $0.font = .karla(.regular, size: 20)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.text = "Find out when new content is available in the app."
             $0.textAlignment = .center
             $0.numberOfLines = 0
@@ -52,14 +56,14 @@ final class NotificationPromptViewController: ViewController {
             $0.pinCenterX(to: holderView).pinTop(to: infoLabel, .bottom, plus: 30)
             $0.constrainSize(toFit: .vertical, .horizontal)
             $0.font = .fontAwesome(.light, size: 80)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.set(icon: .bells)
         }
         
         notificationsButton.add(toSuperview: holderView).customize {
             $0.pinLeading(to: holderView, plus: .padding).pinTrailing(to: holderView, plus: -.padding)
             $0.pinTop(to: iconView, .bottom, plus: 35).constrainHeight(to: 50)
-            $0.setBackgroundColor(.darkBlue, for: .normal)
+            $0.setBackgroundColor(.notificationsButton, for: .normal)
             $0.setTitle("Enable Notifications", for: .normal)
             $0.setTitleColor(.white, for: .normal)
             $0.titleLabel?.font = .karla(.bold, size: 18)
@@ -77,7 +81,7 @@ final class NotificationPromptViewController: ViewController {
             $0.pinTop(to: notificationsButton, .bottom, plus: 10).pinBottom(to: holderView, plus: -10)
             $0.constrainHeight(to: 40)
             $0.setTitle("No thanks", for: .normal)
-            $0.setTitleColor(.grey, for: .normal)
+            $0.setTitleColor(.text, for: .normal)
             $0.titleLabel?.font = .karla(.regular, size: 16)
             $0.addTarget(for: .touchUpInside) { [weak self] in self?.hide() }
         }

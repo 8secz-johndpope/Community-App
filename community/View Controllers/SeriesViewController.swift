@@ -23,7 +23,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
             updateStatusBarBackground()
             
             if showStatusBarBackground {
-                closeButton.configure(normal: .dark, highlighted: .black)
+                closeButton.configure(normal: .text, highlighted: .black)
             }
             else {
                 closeButton.configure(normal: closeButtonColors.normal, highlighted: closeButtonColors.highlighted)
@@ -45,7 +45,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
     private let titleLabel      = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 20)
     
     private var statusBarStyle: UIStatusBarStyle = .lightContent
-    private var closeButtonColors: (normal: UIColor, highlighted: UIColor) = (.lightBackground, .lightest)
+    private var closeButtonColors: (normal: UIColor, highlighted: UIColor) = (.background, .backgroundAlt)
     
     private var topOffset: CGFloat {
         let imageHeight = (view.width - .padding * 2) * 9/16
@@ -68,7 +68,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
     override func setup() {
         super.setup()
         
-        view.backgroundColor = .lightBackground
+        view.backgroundColor = .background
         
         backgroundView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
@@ -88,7 +88,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
                             let isLightColor = colors.background.isLightColor
                             
                             self.statusBarStyle = isLightColor ? .default : .lightContent
-                            self.closeButtonColors = isLightColor ? (.dark, .black) : (.lightBackground, .lightest)
+                            self.closeButtonColors = isLightColor ? (.text, .black) : (.background, .backgroundAlt)
                             
                             UIView.animate(withDuration: 0.25) {
                                 self.closeButton.configure(normal: self.closeButtonColors.normal, highlighted: self.closeButtonColors.highlighted)
@@ -113,7 +113,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
             $0.contentMode = .scaleAspectFill
             $0.load(url: series.image?.url)
             $0.defaultGradient = .empty
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
         }
         
         collectionView.add(toSuperview: view, behind: backgroundView).customize {
@@ -121,7 +121,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
             $0.registerCell(SeriesMessageCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
             $0.contentInset.top = topOffset
@@ -131,7 +131,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
         statusBarBackground.add(toSuperview: view).customize {
             $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: 50)
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.alpha = 0
         }
         
@@ -145,7 +145,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
             $0.pinBottom(to: statusBarBackground).pinSafely(.top, to: statusBarBackground)
             $0.pinLeading(to: view, plus: .padding).pinTrailing(to: view, plus: -.closeButtonWidth)
             $0.font = .bold(size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .left
             $0.text = series.title
             $0.isUserInteractionEnabled = true

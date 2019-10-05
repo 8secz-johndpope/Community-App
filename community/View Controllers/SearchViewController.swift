@@ -58,7 +58,7 @@ final class SearchViewController: ViewController {
         super.setup()
         
         navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = .lightBackground
+        view.backgroundColor = .background
         
         collectionView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
@@ -75,13 +75,13 @@ final class SearchViewController: ViewController {
             $0.contentInset.bottom = .padding
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         headerView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: headerHeight)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         headerShadowView.add(toSuperview: view, behind: headerView).customize {
@@ -111,23 +111,24 @@ final class SearchViewController: ViewController {
             }
             $0.leftViewMode = .always
             $0.font = .regular(size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.returnKeyType = .search
             $0.delegate = self
             $0.clearButtonMode = .always
+            $0.borderColor = .text
         }
         
         headerLabel.add(toSuperview: headerView).customize {
             $0.pinLeading(to: headerView, plus: .padding).pinTrailing(to: headerView, plus: -.padding)
             $0.pinBottom(to: searchField, .top, plus: -10).constrainSize(toFit: .vertical)
             $0.font = .header
-            $0.textColor = .dark
+            $0.textColor = .text
         }
         
         loadingIndicator.add(toSuperview: view).customize {
             $0.pinCenterX(to: view).pinCenterY(to: view)
             $0.constrainWidth(to: 30).constrainHeight(to: 30)
-            $0.color = .dark
+            $0.color = .text
         }
         
         reload()

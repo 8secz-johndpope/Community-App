@@ -149,7 +149,6 @@
 		81EA5675211919C2005F25DB /* TableSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA5674211919C1005F25DB /* TableSectionView.swift */; };
 		81EA567B21191EF0005F25DB /* PantrySectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA567A21191EF0005F25DB /* PantrySectionView.swift */; };
 		81EA568121192670005F25DB /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EA568021192670005F25DB /* StackView.swift */; };
-		81ED74DE20FA763C00BE1F4C /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74DD20FA763C00BE1F4C /* MessageListViewController.swift */; };
 		81ED74F320FA886100BE1F4C /* Nuke.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81ED74F220FA886100BE1F4C /* Nuke.framework */; };
 		81ED74F720FA8A4800BE1F4C /* MessageCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74F620FA8A4800BE1F4C /* MessageCellView.swift */; };
 		81ED74F920FA8C7100BE1F4C /* SeriesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */; };
@@ -157,6 +156,7 @@
 		81ED74FD20FA8F1100BE1F4C /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74FC20FA8F1100BE1F4C /* Signal.swift */; };
 		81ED74FF20FA8FF200BE1F4C /* Contentful+Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ED74FE20FA8FF200BE1F4C /* Contentful+Post.swift */; };
 		81EFD78A2342CDF50036D9D6 /* Diakoneo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81EFD7892342CDF50036D9D6 /* Diakoneo.framework */; };
+		81F6127D2347BA8E0096E68F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81F6127C2347BA8E0096E68F /* Launch Screen.storyboard */; };
 		81F833252344083E00D20DF9 /* Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F833242344083E00D20DF9 /* Content.swift */; };
 		81FB6CB222875FCD00CC430D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81FB6CB122875FCD00CC430D /* NotificationService.swift */; };
 		81FB6CB622875FCD00CC430D /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 81FB6CAF22875FCD00CC430D /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -357,7 +357,6 @@
 		81EA5674211919C1005F25DB /* TableSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSectionView.swift; sourceTree = "<group>"; };
 		81EA567A21191EF0005F25DB /* PantrySectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PantrySectionView.swift; sourceTree = "<group>"; };
 		81EA568021192670005F25DB /* StackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
-		81ED74DD20FA763C00BE1F4C /* MessageListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewController.swift; sourceTree = "<group>"; };
 		81ED74F220FA886100BE1F4C /* Nuke.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nuke.framework; path = Carthage/Build/iOS/Nuke.framework; sourceTree = "<group>"; };
 		81ED74F620FA8A4800BE1F4C /* MessageCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellView.swift; sourceTree = "<group>"; };
 		81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesCell.swift; sourceTree = "<group>"; };
@@ -365,6 +364,7 @@
 		81ED74FC20FA8F1100BE1F4C /* Signal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signal.swift; sourceTree = "<group>"; };
 		81ED74FE20FA8FF200BE1F4C /* Contentful+Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contentful+Post.swift"; sourceTree = "<group>"; };
 		81EFD7892342CDF50036D9D6 /* Diakoneo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Diakoneo.framework; path = Carthage/Build/iOS/Diakoneo.framework; sourceTree = "<group>"; };
+		81F6127C2347BA8E0096E68F /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		81F833242344083E00D20DF9 /* Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Content.swift; sourceTree = "<group>"; };
 		81FB6CAF22875FCD00CC430D /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		81FB6CB122875FCD00CC430D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -520,6 +520,7 @@
 				81938C1E20FA40BE0080DEFF /* Contentful */,
 				81938BFC20F9B3760080DEFF /* Extensions */,
 				8116F20820F9A7D8005A2171 /* Assets.xcassets */,
+				81F6127C2347BA8E0096E68F /* Launch Screen.storyboard */,
 				8116F20D20F9A7D8005A2171 /* Info.plist */,
 				81357F0121F7F6AB0089BE3E /* GoogleService-Info.plist */,
 			);
@@ -615,7 +616,6 @@
 				811BEB17211A7BA900C037C2 /* SearchViewController.swift */,
 				812311D8211BD7A100D596EB /* SettingsViewController.swift */,
 				8116F21720F9A918005A2171 /* PantryViewController.swift */,
-				81ED74DD20FA763C00BE1F4C /* MessageListViewController.swift */,
 				81FB6CC52287B96E00CC430D /* NotificationPromptViewController.swift */,
 				81A812832111272900F90891 /* SeriesViewController.swift */,
 				816A4F842116906000179C76 /* ShelfViewController.swift */,
@@ -849,6 +849,7 @@
 				81245D60217B9501007B2277 /* CrimsonText-Italic.ttf in Resources */,
 				81357F0221F7F6AB0089BE3E /* GoogleService-Info.plist in Resources */,
 				8116F20920F9A7D8005A2171 /* Assets.xcassets in Resources */,
+				81F6127D2347BA8E0096E68F /* Launch Screen.storyboard in Resources */,
 				81245D5D217B9501007B2277 /* CrimsonText-Bold.ttf in Resources */,
 				81938BEF20F9B0850080DEFF /* Font Awesome 5 Pro-Solid-900.otf in Resources */,
 				81245D5F217B9501007B2277 /* CrimsonText-Regular.ttf in Resources */,
@@ -989,7 +990,6 @@
 				81938C0120F9B8900080DEFF /* Contentful+ExternalPost.swift in Sources */,
 				81938C0520F9B89B0080DEFF /* Contentful+Shelf.swift in Sources */,
 				812069FE20FD6ECF00696D32 /* ContentContainerView.swift in Sources */,
-				81ED74DE20FA763C00BE1F4C /* MessageListViewController.swift in Sources */,
 				81B61F6F211D2715001B517F /* LeftAlignedCollectionViewLayout.swift in Sources */,
 				81938C2220FA69590080DEFF /* Images.swift in Sources */,
 				81EA568121192670005F25DB /* StackView.swift in Sources */,
@@ -1228,7 +1228,6 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = community/community.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1239,7 +1238,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = community/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1258,7 +1257,6 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = community/community.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1269,7 +1267,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = community/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

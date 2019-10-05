@@ -17,14 +17,14 @@ final class SearchSpeakersCell: CollectionViewCell {
     override func setup() {
         super.setup()
         
-        backgroundColor = .lightBackground
+        backgroundColor = .background
         
         collectionView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(Cell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsHorizontalScrollIndicator = false
             $0.decelerationRate = .fast
             $0.alwaysBounceHorizontal = true
@@ -91,7 +91,7 @@ extension SearchSpeakersCell {
             
             let shadowView = ContainerShadowView(superview: contentView).customize {
                 $0.constrainEdgesToSuperview()
-                $0.backgroundColor = .lightBackground
+                $0.backgroundColor = .background
                 $0.containerCornerRadius = .searchSpeakerHeight/2
                 $0.shadowOpacity = 0.2
             }
@@ -101,14 +101,14 @@ extension SearchSpeakersCell {
                 $0.pinTop(to: shadowView.container).pinBottom(to: shadowView.container)
                 $0.contentMode = .scaleAspectFill
                 $0.defaultGradient = .empty
-                $0.backgroundColor = .lightest
+                $0.backgroundColor = .backgroundAlt
             }
             
             nameLabel.add(toSuperview: shadowView.container).customize {
                 $0.pinLeading(to: shadowView.container, plus: .padding, atPriority: .required - 2).pinTrailing(to: shadowView.container, plus: -.padding)
                 $0.pinCenterY(to: shadowView.container).constrainSize(toFit: .vertical)
                 $0.font = .regular(size: 16)
-                $0.textColor = .dark
+                $0.textColor = .text
                 $0.numberOfLines = 2
                 
                 nameConstraint = $0.constrain(.leading, to: imageView, .trailing, plus: .padding, atPriority: .required - 1)

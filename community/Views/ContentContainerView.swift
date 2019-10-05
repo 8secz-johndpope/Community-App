@@ -67,7 +67,7 @@ final class ContentContainerView: ShadowView {
     func adjustContentVisibility(isHidden: Bool) {
         messageContentView.isHidden = isHidden
         textPostContentView.isHidden = isHidden
-        colorBackgroundView.backgroundColor = isHidden ? .clear : .lightBackground
+        colorBackgroundView.backgroundColor = isHidden ? .clear : .background
     }
     
     required init(content: ContentViewController.Content) {
@@ -111,12 +111,12 @@ extension ContentContainerView {
         UIView(superview: self).customize {
             $0.pinLeading(to: self).pinTrailing(to: self)
             $0.pinTop(to: self, .bottom).constrainHeight(to: 500)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         colorBackgroundView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview(top: 50)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         playbackInfoView.add(toSuperview: self).customize {
@@ -129,7 +129,7 @@ extension ContentContainerView {
             $0.pinTop(to: playbackInfoView).pinBottom(to: playbackInfoView)
             $0.setTitle(Icon.pause.string, for: .normal)
             $0.setTitle(Icon.play.string, for: .selected)
-            $0.setTitleColor(.lightBackground, for: .normal)
+            $0.setTitleColor(.headerText, for: .normal)
             $0.titleLabel?.font = .fontAwesome(.solid, size: 25)
             $0.addTarget(for: .touchUpInside) { [weak self] in
                 guard let self = self else { return }
@@ -140,14 +140,14 @@ extension ContentContainerView {
         loadingIndicator.add(toSuperview: playbackInfoView).customize {
             $0.pinCenterX(to: playPauseButton).pinCenterY(to: playPauseButton)
             $0.constrainWidth(to: 20).constrainHeight(to: 20)
-            $0.color = .lightest
+            $0.color = .headerText
         }
         
         timeLabel.add(toSuperview: playbackInfoView).customize {
             $0.pinTrailing(to: playbackInfoView, plus: -.padding).pinCenterY(to: playbackInfoView)
             $0.constrainWidth(to: 85).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 14)
-            $0.textColor = .lightBackground
+            $0.textColor = .headerText
             $0.textAlignment = .right
             $0.text = "0:00 / 0:00"
             $0.adjustsFontSizeToFitWidth = true
@@ -170,7 +170,7 @@ extension ContentContainerView {
         
         progressButton.add(toSuperview: progressButtonHolder).customize {
             $0.frame = CGRect(width: 30, height: 30)
-            $0.backgroundColor = .orange
+            $0.backgroundColor = .link
             $0.cornerRadius = 15
             $0.transform = .scale(0.5, 0.5)
             $0.isUserInteractionEnabled = false
@@ -306,7 +306,7 @@ final class ScriptureReferenceCollectionView: SelfSizingCollectionView {
     
     private func setup() {
         customize {
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.registerCell(ScriptureReferenceCell.self)
             $0.dataSource = self
             $0.delegate = self
@@ -367,9 +367,9 @@ final class ScriptureReferenceCell: CollectionViewCell {
         
         label.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.textColor = .orange
+            $0.textColor = .link
             $0.font = .bold(size: 16)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
     }
     

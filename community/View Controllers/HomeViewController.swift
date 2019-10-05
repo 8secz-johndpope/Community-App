@@ -44,7 +44,7 @@ final class HomeViewController: ViewController {
         
         scrollView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .darkBlue
+            $0.backgroundColor = .headerBackground
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
             
@@ -54,7 +54,7 @@ final class HomeViewController: ViewController {
         
         refreshControl.add(toSuperview: scrollView).customize {
             $0.addTarget(self, action: #selector(reload), for: .valueChanged)
-            $0.tintColor = .lightBackground
+            $0.tintColor = .background
         }
         
         containerView.add(toSuperview: scrollView).customize {
@@ -86,7 +86,7 @@ final class HomeViewController: ViewController {
             let number = UILabel(superview: view).customize {
                 $0.pinTop(to: view).pinBottom(to: view, atPriority: .required - 1)
                 $0.pinLeading(to: view, plus: .padding).constrainWidth(to: 30).constrainHeight(to: 30)
-                $0.backgroundColor = .gold
+                $0.backgroundColor = .questionsTint
                 $0.cornerRadius = 15
                 $0.text = "\(value)"
                 $0.textColor = .white
@@ -100,7 +100,7 @@ final class HomeViewController: ViewController {
                 $0.constrainSize(toFit: .vertical)
                 $0.text = text
                 $0.font = .regular(size: 16)
-                $0.textColor = .dark
+                $0.textColor = .text
                 $0.numberOfLines = 0
             }
             
@@ -113,20 +113,20 @@ final class HomeViewController: ViewController {
             .view(.clear, .padding),
             .custom(tableSectionView),
             .view(.clear, .padding),
-            .view(.lightBackground, .padding),
+            .view(.background, .padding),
             .custom(questionsView),
         ])
         
         UIView().add(toSuperview: containerView, at: 0).customize {
             $0.pinLeading(to: containerView).pinTrailing(to: containerView)
             $0.pinTop(to: containerView, .bottom).constrainHeight(to: view.height)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         UIView(superview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.pinTop(to: view).pinBottomToTopSafeArea(in: self)
-            $0.backgroundColor = .darkBlue
+            $0.backgroundColor = .headerBackground
         }
         
         loadingIndicator.add(toSuperview: view).customize {

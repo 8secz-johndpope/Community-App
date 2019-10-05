@@ -17,14 +17,14 @@ final class SearchShelvesCell: CollectionViewCell {
     override func setup() {
         super.setup()
         
-        backgroundColor = .lightBackground
+        backgroundColor = .background
         
         collectionView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(Cell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsHorizontalScrollIndicator = false
             $0.decelerationRate = .fast
             $0.alwaysBounceHorizontal = true
@@ -90,7 +90,7 @@ extension SearchShelvesCell {
             
             let shadowView = ContainerShadowView(superview: contentView).customize {
                 $0.constrainEdgesToSuperview()
-                $0.backgroundColor = .lightBackground
+                $0.backgroundColor = .backgroundAlt
                 $0.containerCornerRadius = 8
                 $0.shadowOpacity = 0.1
             }
@@ -99,7 +99,7 @@ extension SearchShelvesCell {
                 $0.pinCenterX(to: shadowView.container, .leading, plus: .padding * 1.5).pinCenterY(to: shadowView.container)
                 $0.constrainSize(toFit: .vertical, .horizontal)
                 $0.font = .fontAwesome(.solid, size: 20)
-                $0.textColor = .dark
+                $0.textColor = .text
                 $0.isHidden = true
             }
             
@@ -107,7 +107,7 @@ extension SearchShelvesCell {
                 $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
                 $0.pinCenterY(to: shadowView.container).constrainSize(toFit: .vertical)
                 $0.font = .regular(size: 16)
-                $0.textColor = .dark
+                $0.textColor = .text
                 $0.numberOfLines = 2
             }
             

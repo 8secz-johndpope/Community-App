@@ -18,11 +18,11 @@ final class TextPostContentView: View {
         textView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview(top: 10, bottom: .padding)
             $0.textContainerInset = UIEdgeInsets(inset: .textInset)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.isEditable = false
             $0.isSelectable = true
             $0.delegate = self
-            $0.linkTextAttributes = [.foregroundColor : UIColor.lightBlue]
+            $0.linkTextAttributes = [.foregroundColor : UIColor.link]
         }
     }
     

@@ -48,7 +48,7 @@ final class PantryViewController: ViewController {
         
         generateCells()
         
-        view.backgroundColor = .lightBackground
+        view.backgroundColor = .background
         
         collectionView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
@@ -65,21 +65,27 @@ final class PantryViewController: ViewController {
         
         refreshControl.add(toSuperview: collectionView).customize {
             $0.addTarget(self, action: #selector(reloadContent), for: .valueChanged)
-            $0.tintColor = .dark
+            $0.tintColor = .text
         }
         
         headerView.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
             $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: 50)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.alpha = 0
             $0.isHidden = true
+        }
+        
+        UIView(superview: headerView).customize {
+            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
+            $0.pinBottom(to: headerView).constrainHeight(to: 1)
+            $0.backgroundColor = .tabBarLine
         }
         
         shadowView.add(toSuperview: view, behind: headerView).customize {
             $0.pinLeading(to: headerView).pinTrailing(to: headerView)
             $0.pinTop(to: headerView).pinBottom(to: headerView)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.shadowOpacity = 0.2
             $0.alpha = 0
         }
@@ -88,7 +94,7 @@ final class PantryViewController: ViewController {
             $0.pinBottom(to: headerView).constrainHeight(to: 50)
             $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
             $0.font = .bold(size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.text = Contentful.LocalStorage.pantry?.title
         }
         

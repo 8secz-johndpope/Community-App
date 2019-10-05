@@ -143,7 +143,7 @@ final class ContentHeaderView: View {
             $0.contentMode = .scaleAspectFill
             $0.clipsToBounds = true
             $0.defaultGradient = .empty
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
         }
         
         audioPlayer.customize {
@@ -171,7 +171,7 @@ final class ContentHeaderView: View {
             $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
             $0.pinCenterY(to: self).constrainSize(toFit: .vertical)
             $0.font = .title
-            $0.textColor = .lightBackground
+            $0.textColor = .headerText
             $0.numberOfLines = 0
             $0.textAlignment = .center
         }

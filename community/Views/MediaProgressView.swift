@@ -35,17 +35,17 @@ final class MediaProgressView: View {
         backgroundView.add(toSuperview: self).customize {
             $0.constrainEdgesToSuperview()
             $0.clipsToBounds = false
-            $0.backgroundColor = UIColor.lightBackground.alpha(0.5)
+            $0.backgroundColor = UIColor.headerText.alpha(0.5)
         }
         
         bufferView.add(toSuperview: backgroundView).customize {
             $0.size = CGSize(width: 0, height: .mediaProgressHeight)
-            $0.backgroundColor = UIColor.lightBackground.alpha(0.5)
+            $0.backgroundColor = UIColor.headerText.alpha(0.5)
         }
         
         progressView.add(toSuperview: backgroundView).customize {
             $0.size = CGSize(width: 0, height: .mediaProgressHeight)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .headerText
         }
         
     }

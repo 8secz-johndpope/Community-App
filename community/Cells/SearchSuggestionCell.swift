@@ -15,7 +15,7 @@ final class SearchSuggestionCell: CollectionViewCell {
     
     override var isHighlighted: Bool {
         didSet {
-            contentView.backgroundColor = isHighlighted ? .lightest : .lightBackground
+            contentView.backgroundColor = isHighlighted ? .backgroundAlt : .background
         }
     }
     
@@ -29,7 +29,7 @@ final class SearchSuggestionCell: CollectionViewCell {
             $0.pinCenterX(to: contentView, .leading, plus: .padding * 2).pinCenterY(to: contentView)
             $0.constrainSize(toFit: .vertical, .horizontal)
             $0.font = .fontAwesome(.regular, size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.set(icon: .search)
         }
         
@@ -37,7 +37,7 @@ final class SearchSuggestionCell: CollectionViewCell {
             $0.pinLeading(to: contentView, plus: .padding * 3.5).pinTrailing(to: contentView, plus: -.padding)
             $0.pinCenterY(to: contentView).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 18)
-            $0.textColor = .dark
+            $0.textColor = .text
         }
     }
     

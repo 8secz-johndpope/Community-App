@@ -24,7 +24,7 @@ final class SeriesMessageCell: CollectionViewCell {
         
         containerView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.containerCornerRadius = 4
         }
         
@@ -32,7 +32,7 @@ final class SeriesMessageCell: CollectionViewCell {
             $0.pinLeading(to: containerView.container, plus: .padding).pinTrailing(to: containerView.container, plus: -.padding)
             $0.pinTop(to: containerView.container, plus: .padding).constrainSize(toFit: .vertical)
             $0.font = .bold(size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .left
             $0.numberOfLines = 0
         }
@@ -43,14 +43,14 @@ final class SeriesMessageCell: CollectionViewCell {
             $0.cornerRadius = 15
             $0.contentMode = .scaleAspectFill
             $0.defaultGradient = .empty
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
         }
         
         speakerLabel.add(toSuperview: containerView.container).customize {
             $0.pinLeading(to: speakerImageView, .trailing, plus: .padding, atPriority: .required - 2).pinTrailing(to: containerView.container, plus: -.padding)
             $0.pinCenterY(to: speakerImageView).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 12)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.numberOfLines = 1
             
             speakerLabelConstraint = $0.constrain(.leading, to: containerView.container, .leading, plus: .padding)

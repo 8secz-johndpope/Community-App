@@ -18,7 +18,7 @@ final class SearchHeaderCell: CollectionViewCell {
         
         label.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview(leading: .padding, trailing: .padding)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.font = .crimsonText(.semiBold, size: 20)
             $0.numberOfLines = 0
         }

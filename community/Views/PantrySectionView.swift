@@ -22,7 +22,7 @@ final class PantrySectionView: View {
             $0.registerCell(ShelfCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
     }
     

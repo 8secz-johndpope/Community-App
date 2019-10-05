@@ -16,11 +16,11 @@ final class SettingsViewController: ViewController {
     override func setup() {
         super.setup()
         
-        view.backgroundColor = .lightBackground
+        view.backgroundColor = .background
         
         scrollView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
         }
@@ -28,14 +28,14 @@ final class SettingsViewController: ViewController {
         containerView.add(toSuperview: scrollView).customize {
             $0.constrainEdgesToSuperview()
             $0.constrainWidth(to: view)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
         }
         
         UILabel(superview: containerView).customize {
             $0.pinLeading(to: containerView, plus: .padding).pinTrailing(to: containerView, plus: -.padding)
             $0.pinTop(to: containerView, plus: 60).pinBottom(to: containerView).constrainSize(toFit: .vertical)
             $0.font = .header
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.text = "Settings"
         }
     }

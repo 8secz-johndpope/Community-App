@@ -22,7 +22,7 @@ final class PantryPostCell: CollectionViewCell {
         
         shadowView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .darkBlue
+            $0.backgroundColor = .headerBackground
             $0.containerCornerRadius = 8
             $0.shadowOpacity = 0.2
         }
@@ -32,14 +32,19 @@ final class PantryPostCell: CollectionViewCell {
             $0.contentMode = .scaleAspectFill
             $0.showDimmer = false
             $0.defaultGradient = .empty
-            $0.backgroundColor = .lightest
+            $0.backgroundColor = .backgroundAlt
+        }
+        
+        UIView(superview: shadowView.container).customize {
+            $0.constrainEdgesToSuperview()
+            $0.backgroundColor = .postOverlay
         }
         
         titleLabel.add(toSuperview: shadowView.container).customize {
             $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
             $0.pinTop(to: shadowView.container, plus: .padding).constrainSize(toFit: .vertical)
             $0.font = .bold(size: 20)
-            $0.textColor = .lightBackground
+            $0.textColor = .headerText
             $0.numberOfLines = 0
         }
         
@@ -47,7 +52,7 @@ final class PantryPostCell: CollectionViewCell {
             $0.pinLeading(to: shadowView.container, plus: .padding).pinTrailing(to: shadowView.container, plus: -.padding)
             $0.pinTop(to: titleLabel, .bottom, plus: 10).constrainSize(toFit: .vertical)
             $0.font = .regular(size: 16)
-            $0.textColor = .lightBackground
+            $0.textColor = .headerText
         }
     }
     

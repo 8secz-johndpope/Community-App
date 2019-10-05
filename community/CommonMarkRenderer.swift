@@ -108,10 +108,10 @@ extension NSTextAttachment {
 extension Inline: Render {
     func render(font: UIFont) -> NSMutableAttributedString {
         switch self {
-        case .text(let text):         return text.attributed.font(font).color(.dark)
+        case .text(let text):         return text.attributed.font(font).color(.text)
         case .softBreak:              return "\n".attributed.font(font)
         case .lineBreak:              return "\n\n".attributed.font(font)
-        case .code(let text):         return text.attributed.font(font).color(.dark)
+        case .code(let text):         return text.attributed.font(font).color(.text)
         case .html(_):                return "".attributed
         case .emphasis(let children): return children.renderedString(font: font.italic)
         case .strong(let children):   return children.renderedString(font: font.bold)
@@ -120,8 +120,8 @@ extension Inline: Render {
             guard let url = url?.removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlAllowed).flatMap(URL.init(string:)) else { return "".attributed }
             return children.renderedString(font: font.bold)
                 .url(url)
-                .color(.lightBlue)
-                .underline(style: .single, color: .lightBlue)
+                .color(.link)
+                .underline(style: .single, color: .link)
         case let .image(_, _, url):
             guard let url = url?.removingPercentEncoding?.addingPercentEncoding(withAllowedCharacters: .urlAllowed) else { return "".attributed }
             let attachment = AsyncTextAttachment(imageURL: URL(string: "https:\(url)"), delegate: nil)
@@ -142,7 +142,7 @@ extension Block {
                 let string = blocks.map { $0.render(font: font) }.join().mutable
                 
                 var attributes = string.allAttributes
-                attributes[.foregroundColor] = UIColor.dark
+                attributes[.foregroundColor] = UIColor.text
                 attributes[.font] = UIFont.regular(size: (attributes[.font] as? UIFont)?.pointSize ?? 16)
                 attributes[.link] = nil
                 attributes[.underlineColor] = nil

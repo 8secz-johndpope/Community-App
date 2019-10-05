@@ -37,6 +37,7 @@ final class ShelfViewController: ViewController {
         
         super.init(nibName: nil, bundle: nil)
         
+        modalPresentationStyle = .fullScreen
         navigationController?.isNavigationBarHidden = true
     }
     
@@ -59,7 +60,7 @@ final class ShelfViewController: ViewController {
     override func setup() {
         super.setup()
         
-        view.backgroundColor = .lightBackground
+        view.backgroundColor = .background
         
         navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
@@ -69,10 +70,14 @@ final class ShelfViewController: ViewController {
             $0.registerCell(PantryPostCell.self)
             $0.dataSource = self
             $0.delegate = self
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.showsVerticalScrollIndicator = false
             $0.alwaysBounceVertical = true
             $0.contentInset.top = 60
+            
+            if navigationController == nil {
+                $0.panGestureRecognizer.addTarget(self, action: #selector(userDidPan))
+            }
         }
         
         headerView.add(toSuperview: view).customize {
@@ -81,10 +86,16 @@ final class ShelfViewController: ViewController {
             $0.backgroundColor = .clear
         }
         
+        UIView(superview: headerView).customize {
+            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
+            $0.pinBottom(to: headerView).constrainHeight(to: 1)
+            $0.backgroundColor = .tabBarLine
+        }
+        
         shadowView.add(toSuperview: view, behind: headerView).customize {
             $0.pinLeading(to: headerView).pinTrailing(to: headerView)
             $0.pinTop(to: headerView).pinBottom(to: headerView)
-            $0.backgroundColor = .lightBackground
+            $0.backgroundColor = .background
             $0.shadowOpacity = 0.2
             $0.alpha = 0
         }
@@ -93,8 +104,8 @@ final class ShelfViewController: ViewController {
             $0.pinBottom(to: headerView).pinLeading(to: headerView)
             $0.constrainWidth(to: 60).constrainHeight(to: 60)
             $0.titleLabel?.font = .fontAwesome(.regular, size: 18)
-            $0.setTitle(Icon.chevronLeft.string, for: .normal)
-            $0.setTitleColor(.dark, for: .normal)
+            $0.setTitle(navigationController == nil ? Icon.times.string : Icon.chevronLeft.string, for: .normal)
+            $0.setTitleColor(.text, for: .normal)
             $0.addTarget(for: .touchUpInside) { [weak self] in
                 if let navigationController = self?.navigationController {
                     navigationController.popViewController(animated: true)
@@ -109,7 +120,7 @@ final class ShelfViewController: ViewController {
             $0.pinBottom(to: headerView).constrainHeight(to: 60)
             $0.pinLeading(to: headerView, plus: 60).pinTrailing(to: headerView, plus: -60)
             $0.font = .bold(size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.textAlignment = .center
             $0.text = shelf.name
         }

@@ -33,7 +33,7 @@ extension CloseButton {
     private func setup() {
         setTitle(Icon.times.string, for: .normal)
         titleLabel?.font = .fontAwesome(.light, size: 24)
-        configure(normal: .lightBackground, highlighted: .lightest)
+        configure(normal: .background, highlighted: .backgroundAlt)
     }
     
     func configure(normal: UIColor, highlighted: UIColor) {

@@ -85,7 +85,6 @@ extension TabBarViewController {
     enum Tab {
         case table
         case pantry
-        case messages
         case search
         case settings
         
@@ -93,7 +92,6 @@ extension TabBarViewController {
             switch self {
             case .table:    return HomeViewController()
             case .pantry:   return UINavigationController(rootViewController: PantryViewController())
-            case .messages: return MessageListViewController()
             case .search:   return UINavigationController(rootViewController: SearchViewController())
             case .settings: return SettingsViewController()
             }
@@ -103,7 +101,6 @@ extension TabBarViewController {
             switch self {
             case .table:    return .home
             case .pantry:   return .list
-            case .messages: return .video
             case .search:   return .search
             case .settings: return .cog
             }
@@ -136,7 +133,7 @@ extension TabBarViewController {
         }
         
         func setup() {
-            backgroundColor = .lightBackground
+            backgroundColor = .background
             
             shadowOffset = CGSize(width: 0, height: -10)
             shadowOpacity = 0.1
@@ -144,7 +141,7 @@ extension TabBarViewController {
             container.add(toSuperview: self).customize {
                 $0.pinLeading(to: self).pinTrailing(to: self)
                 $0.pinTop(to: self).constrainHeight(to: 49)
-                $0.backgroundColor = .lightBackground
+                $0.backgroundColor = .background
             }
             
             stackView.add(toSuperview: container).customize {
@@ -153,6 +150,12 @@ extension TabBarViewController {
                 $0.axis = .horizontal
                 $0.distribution = .fillEqually
                 $0.spacing = 0
+            }
+            
+            UIView(superview: container).customize {
+                $0.pinLeading(to: container).pinTrailing(to: container)
+                $0.pinTop(to: container).constrainHeight(to: 1)
+                $0.backgroundColor = .tabBarLine
             }
             
             for tab in tabs {
@@ -213,7 +216,7 @@ extension TabBarViewController {
             override var isSelected: Bool {
                 didSet {
                     iconView.font = isSelected ? .fontAwesome(.solid, size: 20) : .fontAwesome(.regular, size: 20)
-                    iconView.textColor = isSelected ? .darkBlue : .light
+                    iconView.textColor = isSelected ? .tabSelected : .tabUnselected
                 }
             }
             
@@ -228,7 +231,7 @@ extension TabBarViewController {
                 springDamping = 0.5
                 
                 backgroundView.customize {
-                    $0.backgroundColor = .lightBackground
+                    $0.backgroundColor = .clear
                     $0.shadowOpacity = 0
                 }
                 
@@ -237,7 +240,7 @@ extension TabBarViewController {
                     $0.pinTop(to: backgroundView, plus: 10, atPriority: .required - 1).pinBottom(to: backgroundView, plus: -10, atPriority: .required - 1)
                     $0.textAlignment = .center
                     $0.font = .fontAwesome(.regular, size: 20)
-                    $0.textColor = .light
+                    $0.textColor = .tabUnselected
                 }
             }
             

@@ -33,7 +33,7 @@ final class QuestionView: View {
     override func setup() {
         super.setup()
         
-        backgroundColor = .lightBackground
+        backgroundColor = .background
         clipsToBounds = true
         
         addGesture(type: .tap) { [weak self] _ in self?.toggle() }
@@ -41,7 +41,7 @@ final class QuestionView: View {
         numberLabel.add(toSuperview: self).customize {
             $0.pinTop(to: self).pinBottom(to: self, atPriority: .required - 3)
             $0.pinLeading(to: self, plus: .padding).constrainWidth(to: 30).constrainHeight(to: 30)
-            $0.backgroundColor = .gold
+            $0.backgroundColor = .questionsTint
             $0.cornerRadius = 15
             $0.textColor = .white
             $0.font = .bold(size: 16)
@@ -53,7 +53,7 @@ final class QuestionView: View {
             $0.pinLeading(to: numberLabel, .trailing, plus: .padding)
             $0.constrainSize(toFit: .vertical)
             $0.font = .regular(size: 16)
-            $0.textColor = .dark
+            $0.textColor = .text
             $0.numberOfLines = 0
         }
         
@@ -62,7 +62,7 @@ final class QuestionView: View {
             $0.pinTrailing(to: self).pinLeading(to: questionLabel, .trailing)
             $0.constrainWidth(to: 40)
             $0.font = .fontAwesome(.light, size: 22)
-            $0.textColor = .gold
+            $0.textColor = .questionsTint
             $0.textAlignment = .center
             $0.set(icon: .angleRight)
         }
@@ -71,12 +71,12 @@ final class QuestionView: View {
             $0.pinTop(to: questionLabel, .bottom, plus: .padding)
             $0.pinLeading(to: self).pinTrailing(to: self)
             $0.font = .italic(size: 14)
-            $0.textColor = .dark
-            $0.backgroundColor = .lightest
+            $0.textColor = .text
+            $0.backgroundColor = .backgroundAlt
             $0.textContainerInset = UIEdgeInsets(inset: .textInset)
             $0.isEditable = false
             $0.isSelectable = true
-            $0.linkTextAttributes = [.foregroundColor : UIColor.lightBlue]
+            $0.linkTextAttributes = [.foregroundColor : UIColor.link]
             
             infoConstraint = $0.constrain(.bottom, to: self, .bottom, atPriority: .required - 1)
             infoConstraint?.isActive = false
@@ -85,13 +85,13 @@ final class QuestionView: View {
         UIView(superview: self).customize {
             $0.pinLeading(to: infoView).pinTrailing(to: infoView)
             $0.pinTop(to: infoView).constrainHeight(to: 1)
-            $0.backgroundColor = .light
+            $0.backgroundColor = .separator
         }
         
         UIView(superview: self).customize {
             $0.pinLeading(to: infoView).pinTrailing(to: infoView)
             $0.pinBottom(to: infoView).constrainHeight(to: 1)
-            $0.backgroundColor = .light
+            $0.backgroundColor = .separator
         }
     }
     

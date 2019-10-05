@@ -43,10 +43,10 @@ final class ContentViewController: ViewController, StatusBarViewController {
             updateStatusBarBackground()
             
             if showStatusBarBackground, case .message = content {
-                closeButton.configure(normal: .dark, highlighted: .black)
+                closeButton.configure(normal: .text, highlighted: .black)
             }
             else {
-                closeButton.configure(normal: .lightBackground, highlighted: .lightest)
+                closeButton.configure(normal: .headerText, highlighted: .backgroundAlt)
             }
             
             closeButton.alpha = buttonAlpha
@@ -203,8 +203,8 @@ final class ContentViewController: ViewController, StatusBarViewController {
             $0.alpha = 0
             
             switch content {
-            case .message:  $0.backgroundColor = .lightBackground
-            case .textPost: $0.backgroundColor = .darkBlue
+            case .message:  $0.backgroundColor = .background
+            case .textPost: $0.backgroundColor = .headerBackground
             }
         }
         
@@ -212,6 +212,7 @@ final class ContentViewController: ViewController, StatusBarViewController {
             $0.pinSafely(.top, to: view, atPriority: .required - 2).pinSafely(.trailing, to: view).constrainClose(height: 50)
             $0.pinTop(to: view, relation: .greaterThanOrEqual, plus: 20, atPriority: .required - 1)
             $0.addTarget(for: .touchUpInside) { [weak self] in self?.dismiss(animated: true) }
+            $0.configure(normal: .headerText, highlighted: .backgroundAlt)
         }
         
         titleLabel.add(toSuperview: statusBarBackground).customize {
@@ -224,8 +225,8 @@ final class ContentViewController: ViewController, StatusBarViewController {
             $0.addGesture(type: .tap) { [weak self] _ in self?.scrollView.setContentOffset(x: 0, y: 0) }
             
             switch content {
-            case .message:  $0.textColor = .dark
-            case .textPost: $0.textColor = .lightBackground
+            case .message:  $0.textColor = .text
+            case .textPost: $0.textColor = .headerText
             }
         }
     }
