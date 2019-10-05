@@ -34,6 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return DeepLink.handle(url: url)
+    }
+    
     static var shared: AppDelegate {
         return UIApplication.shared.delegate as! AppDelegate
     }

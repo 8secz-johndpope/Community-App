@@ -16,6 +16,7 @@ enum NotificationManager {
         case message = "messageID"
         case series = "seriesID"
         case post = "postID"
+        case shelf = "shelfID"
         case url
         case unknown
     }
@@ -87,6 +88,9 @@ enum NotificationManager {
         }
         else if let id = userInfo[.post] as? String {
             return .post(id)
+        }
+        else if let id = userInfo[.shelf] as? String {
+            return .shelf(id)
         }
         else if let url = userInfo[.url] as? String {
             return URL(string: url).flatMap(DeepLink.url) ?? .unknown

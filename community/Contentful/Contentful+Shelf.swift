@@ -55,6 +55,19 @@ extension Contentful {
             self.createdAt = entry.createdAt
             self.updatedAt = entry.updatedAt
         }
+        
+        func show(in viewController: UIViewController? = .current, from source: Analytics.ShelfSource) {
+            let controller = ShelfViewController(shelf: self)
+            
+            if let navController = viewController?.navigationController {
+                navController.pushViewController(controller, animated: true)
+            }
+            else {
+                viewController?.present(controller, animated: true)
+            }
+            
+            Analytics.viewed(shelf: self, source: source)
+        }
     }
 
 }

@@ -15,10 +15,37 @@ enum DeepLink {
     case message(Int)
     case series(Int)
     case post(String)
+    case shelf(String)
     case url(URL)
     case unknown
     
     private static var observers: [Observer] = []
+    
+    init(path: String) {
+        guard let scanner = Scanner(path: path) else {
+            self = .unknown
+            return
+        }
+        
+        if scanner.components.first == "message", let id = scanner.components.at(1).flatMap(Int.init) {
+            self = .message(id)
+        }
+        else if scanner.components.first == "series", let id = scanner.components.at(1).flatMap(Int.init) {
+            self = .series(id)
+        }
+        else if scanner.components.first == "post", let id = scanner.components.at(1) {
+            self = .post(id)
+        }
+        else if scanner.components.first == "shelf", let id = scanner.components.at(1) {
+            self = .shelf(id)
+        }
+        else if let url = URL(string: path) {
+            self = .url(url)
+        }
+        else {
+            self = .unknown
+        }
+    }
     
     func handle(fallback: URL? = nil) {
         switch self {
@@ -50,6 +77,14 @@ enum DeepLink {
                 DeepLink.observers.remove(observer)
                 Contentful.LocalStorage.posts.first(where: { $0.id == id })?.show(from: .deepLink)
             }.onQueue(.main)
+        case .shelf(let id):
+            let observer = Observer()
+            DeepLink.observers.append(observer)
+            
+            Notifier.onContentLoaded.subscribePastOnce(with: observer) {
+                DeepLink.observers.remove(observer)
+                Contentful.LocalStorage.shelves.first(where: { $0.id == id })?.show(from: .deepLink)
+            }.onQueue(.main)
         case .url(let url):
             let pathComponents = url.path.components(separatedBy: "/").filter { !$0.isEmpty }
             
@@ -80,4 +115,26 @@ enum DeepLink {
             break
         }
     }
+    
+    @discardableResult
+    static func handle(url: URL) -> Bool {
+        DeepLink(path: url.absoluteString).handle(fallback: url)
+        return true
+    }
+}
+
+extension DeepLink {
+    
+    struct Scanner {
+        let components: [String]
+        
+        init?(path: String) {
+            let components = path.components(separatedBy: "/").filter { !$0.isEmpty }
+            
+            guard components.first == "watermark-community:" else { return nil }
+            
+            self.components = Array(components.dropFirst())
+        }
+    }
+    
 }

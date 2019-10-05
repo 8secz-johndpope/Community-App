@@ -30,6 +30,7 @@ enum Analytics {
     enum ShelfSource: String {
         case pantry
         case search
+        case deepLink
     }
     
     static func log(_ event: Event, with parameters: [String : Any] = [:]) {
