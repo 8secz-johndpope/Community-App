@@ -43,6 +43,7 @@ final class SeriesViewController: ViewController, StatusBarViewController {
     private let imageView       = LoadingImageView()
     private let closeButton     = CloseButton()
     private let titleLabel      = MarqueeLabel(frame: .zero, rate: 15, fadeLength: 10, trailingBuffer: 20)
+    private let loadingView     = LoadingView()
     
     private var statusBarStyle: UIStatusBarStyle = .lightContent
     private var closeButtonColors: (normal: UIColor, highlighted: UIColor) = (.background, .backgroundAlt)
@@ -87,8 +88,14 @@ final class SeriesViewController: ViewController, StatusBarViewController {
                             
                             let isLightColor = colors.background.isLightColor
                             
-                            self.statusBarStyle = isLightColor ? .default : .lightContent
-                            self.closeButtonColors = isLightColor ? (.text, .black) : (.background, .backgroundAlt)
+                            if #available(iOS 13, *) {
+                                self.statusBarStyle = isLightColor ? .darkContent : .lightContent
+                            }
+                            else {
+                                self.statusBarStyle = isLightColor ? .default : .lightContent
+                            }
+                            
+                            self.closeButtonColors = isLightColor ? (.black, .black) : (.white, .white)
                             
                             UIView.animate(withDuration: 0.25) {
                                 self.closeButton.configure(normal: self.closeButtonColors.normal, highlighted: self.closeButtonColors.highlighted)
@@ -135,6 +142,12 @@ final class SeriesViewController: ViewController, StatusBarViewController {
             $0.alpha = 0
         }
         
+        UIView(superview: statusBarBackground).customize {
+            $0.pinLeading(to: statusBarBackground).pinTrailing(to: statusBarBackground)
+            $0.pinBottom(to: statusBarBackground).constrainHeight(to: 1)
+            $0.backgroundColor = .tabBarLine
+        }
+        
         closeButton.add(toSuperview: view).customize {
             $0.pinSafely(.top, to: view, atPriority: .required - 2).pinSafely(.trailing, to: view).constrainClose(height: 50)
             $0.pinTop(to: view, relation: .greaterThanOrEqual, plus: 20, atPriority: .required - 1)
@@ -152,10 +165,18 @@ final class SeriesViewController: ViewController, StatusBarViewController {
             $0.addGesture(type: .tap) { [weak self] _ in self?.scrollView.setContentOffset(x: 0, y: 0) }
         }
         
+        loadingView.add(toSuperview: view).customize {
+            $0.pinCenterX(to: view).pinCenterY(to: view)
+            $0.constrainWidth(to: 20).constrainHeight(to: 20)
+            $0.color = .text
+            $0.startAnimating()
+        }
+        
         Watermark.API.Messages.fetch(series: series) { result in
             DispatchQueue.main.async {
                 self.messages = result.value?.collection ?? []
                 self.collectionView.reloadData()
+                self.loadingView.stopAnimating()
             }
         }
     }

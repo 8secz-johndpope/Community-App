@@ -208,6 +208,12 @@ final class ContentViewController: ViewController, StatusBarViewController {
             }
         }
         
+        UIView(superview: statusBarBackground).customize {
+            $0.pinLeading(to: statusBarBackground).pinTrailing(to: statusBarBackground)
+            $0.pinBottom(to: statusBarBackground).constrainHeight(to: 1)
+            $0.backgroundColor = .tabBarLine
+        }
+        
         closeButton.add(toSuperview: view).customize {
             $0.pinSafely(.top, to: view, atPriority: .required - 2).pinSafely(.trailing, to: view).constrainClose(height: 50)
             $0.pinTop(to: view, relation: .greaterThanOrEqual, plus: 20, atPriority: .required - 1)

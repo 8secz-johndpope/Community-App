@@ -61,8 +61,9 @@ extension UIColor {
     private static let darkGray        = #colorLiteral(red: 0.3333333333, green: 0.3333333333, blue: 0.3333333333, alpha: 1)  // #555555
     private static let darkJungleGreen = #colorLiteral(red: 0.1098039216, green: 0.1098039216, blue: 0.1176470588, alpha: 1)  // #1C1C1E
     private static let pictonBlue      = #colorLiteral(red: 0.2509803922, green: 0.6235294118, blue: 0.9725490196, alpha: 1)  // #409FF8
+    private static let blueDeFrance    = #colorLiteral(red: 0.2187844686, green: 0.5435426642, blue: 0.8477898158, alpha: 1)  // #398BD8
     private static let bittersweet     = #colorLiteral(red: 0.9607843137, green: 0.4392156863, blue: 0.3882352941, alpha: 1)  // #F57063
-    private static let halfbaked       = #colorLiteral(red: 0.5490196078, green: 0.7294117647, blue: 0.8196078431, alpha: 1)  // #8CBAD1
+    private static let neptune         = #colorLiteral(red: 0.4705882353, green: 0.6274509804, blue: 0.7019607843, alpha: 1)  // #78A0B3
     private static let sanJuan         = #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.4117647059, alpha: 1)  // #324E69
     private static let doveGray        = #colorLiteral(red: 0.4235294118, green: 0.431372549, blue: 0.4235294118, alpha: 1)  // #6C6E6C
     private static let sandal          = #colorLiteral(red: 0.6588235294, green: 0.5647058824, blue: 0.4352941176, alpha: 1)  // #A8906F
@@ -73,7 +74,8 @@ extension UIColor {
     // MARK: - Dynamic Colors
     
     static let text                  = UIColor(.mineShaft, .alabaster)
-    static let link                  = UIColor(.halfbaked, .pictonBlue)
+    static let link                  = UIColor(.blueDeFrance, .pictonBlue)
+    static let progressButton        = UIColor(.bittersweet, .bittersweet)
     
     static let blockQuote            = UIColor(.gray, .iron)
     static let loading               = UIColor(.beauBlue, .gray)

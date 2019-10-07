@@ -41,10 +41,33 @@ extension TextPostContentView: UITextViewDelegate {
     }
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        if interaction == .presentActions {
+        if #available(iOS 13, *) {
+            if case .presentActions = interaction {
+                DeepLink.url(URL).handle()
+            }
+        }
+        else {
             DeepLink.url(URL).handle()
         }
+
         return false
+    }
+    
+}
+
+extension UITextView {
+    
+    var isTapGestureEnded: Bool {
+        var recognizedTapGesture = false
+        
+        for recognizer in gestureRecognizers ?? [] {
+            if recognizer is UITapGestureRecognizer, recognizer.state == .ended {
+                recognizedTapGesture = true
+                break
+            }
+        }
+        
+        return recognizedTapGesture
     }
     
 }

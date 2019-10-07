@@ -24,7 +24,7 @@ final class SeriesMessageCell: CollectionViewCell {
         
         containerView.add(toSuperview: contentView).customize {
             $0.constrainEdgesToSuperview()
-            $0.backgroundColor = .background
+            $0.backgroundColor = .backgroundAlt
             $0.containerCornerRadius = 4
         }
         

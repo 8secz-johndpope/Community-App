@@ -170,7 +170,7 @@ extension ContentContainerView {
         
         progressButton.add(toSuperview: progressButtonHolder).customize {
             $0.frame = CGRect(width: 30, height: 30)
-            $0.backgroundColor = .link
+            $0.backgroundColor = .progressButton
             $0.cornerRadius = 15
             $0.transform = .scale(0.5, 0.5)
             $0.isUserInteractionEnabled = false
@@ -272,9 +272,15 @@ extension ContentContainerView {
 extension ContentContainerView: UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        if interaction == .presentActions {
-            UIViewController.current?.showInSafari(url: URL)
+        if #available(iOS 13, *) {
+            if case .presentActions = interaction {
+                DeepLink.url(URL).handle()
+            }
         }
+        else {
+            DeepLink.url(URL).handle()
+        }
+        
         return false
     }
     
