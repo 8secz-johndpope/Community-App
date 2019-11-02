@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Alexandria",
+        "repositoryURL": "https://github.com/jlandon/Alexandria.git",
+        "state": {
+          "branch": null,
+          "revision": "c672e637d886175d35fc054000783c06cb6c2c82",
+          "version": "4.1.0"
+        }
+      },
+      {
+        "package": "Diakoneo",
+        "repositoryURL": "https://github.com/jlandon/Diakoneo.git",
+        "state": {
+          "branch": "master",
+          "revision": "1a76d24f0ed3f48cbf3a349bba1293b01f00743b",
+          "version": null
+        }
+      },
+      {
+        "package": "Nuke",
+        "repositoryURL": "https://github.com/kean/Nuke",
+        "state": {
+          "branch": null,
+          "revision": "b323dd3d7b82fa973fb7350bb505d7a52795b995",
+          "version": "8.3.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
