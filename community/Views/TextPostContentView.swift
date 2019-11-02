@@ -35,18 +35,15 @@ extension TextPostContentView: UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         if let image = (textAttachment as? AsyncTextAttachment)?.image {
-            print("Image: \(image)")
+            textInteraction(interaction) {
+                ImageViewController(image: image).show()
+            }
         }
         return false
     }
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        if #available(iOS 13, *) {
-            if case .presentActions = interaction {
-                DeepLink.url(URL).handle()
-            }
-        }
-        else {
+        textInteraction(interaction) {
             DeepLink.url(URL).handle()
         }
 

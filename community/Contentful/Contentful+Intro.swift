@@ -5,6 +5,7 @@
 //  Created by Jonathan Landon on 1/21/19.
 //
 
+import Foundation
 import Diakoneo
 
 extension Contentful {

@@ -5,6 +5,7 @@
 //  Created by Jonathan Landon on 7/13/18.
 //
 
+import UIKit
 import Diakoneo
 
 extension Contentful {

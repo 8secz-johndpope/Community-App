@@ -85,12 +85,7 @@ final class MessageContentView: View {
 extension MessageContentView: UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        if #available(iOS 13, *) {
-            if case .presentActions = interaction {
-                DeepLink.url(URL).handle()
-            }
-        }
-        else {
+        textInteraction(interaction) {
             DeepLink.url(URL).handle()
         }
         

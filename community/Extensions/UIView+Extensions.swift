@@ -22,5 +22,19 @@ extension UIView {
         }
     }
     
+    func textInteraction(_ interaction: UITextItemInteraction, closure: () -> Void) {
+        if #available(iOS 13.2, *) {
+            closure()
+        }
+        else if #available(iOS 13, *) {
+            if case .presentActions = interaction {
+                closure()
+            }
+        }
+        else {
+            closure()
+        }
+    }
+    
 }
 

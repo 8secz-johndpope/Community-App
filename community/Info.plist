@@ -44,6 +44,8 @@
 	<string>Location services</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location services</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save images to your photo library</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>CrimsonText-Bold.ttf</string>
@@ -59,6 +61,7 @@
 		<string>Font Awesome 5 Pro-Light-300.otf</string>
 		<string>Font Awesome 5 Pro-Regular-400.otf</string>
 		<string>Font Awesome 5 Pro-Solid-900.otf</string>
+		<string>Font Awesome 5 Brands-Regular-400.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

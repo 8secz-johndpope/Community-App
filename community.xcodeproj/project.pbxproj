@@ -128,6 +128,8 @@
 		81938C2220FA69590080DEFF /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81938C2120FA69590080DEFF /* Images.swift */; };
 		81938C2620FA6AAC0080DEFF /* UILabel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81938C2520FA6AAC0080DEFF /* UILabel+Extensions.swift */; };
 		81938C2820FA6E1A0080DEFF /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81938C2720FA6E1A0080DEFF /* HeaderCell.swift */; };
+		8194552623554EF7000BCDBB /* Font Awesome 5 Brands-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8194552523554EF6000BCDBB /* Font Awesome 5 Brands-Regular-400.otf */; };
+		8194552823554F3F000BCDBB /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8194552723554F3F000BCDBB /* ImageViewController.swift */; };
 		81992F05223D82D900ACD1DC /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81992F04223D82D900ACD1DC /* NotificationManager.swift */; };
 		819F083C223898F500A2CB28 /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819F082F223898F500A2CB28 /* GoogleUtilities.framework */; };
 		819F083D223898F500A2CB28 /* Protobuf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 819F0830223898F500A2CB28 /* Protobuf.framework */; };
@@ -332,6 +334,8 @@
 		81938C2120FA69590080DEFF /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		81938C2520FA6AAC0080DEFF /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		81938C2720FA6E1A0080DEFF /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
+		8194552523554EF6000BCDBB /* Font Awesome 5 Brands-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Brands-Regular-400.otf"; sourceTree = "<group>"; };
+		8194552723554F3F000BCDBB /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		81992F04223D82D900ACD1DC /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		819F082F223898F500A2CB28 /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = Carthage/Build/iOS/GoogleUtilities.framework; sourceTree = "<group>"; };
 		819F0830223898F500A2CB28 /* Protobuf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Protobuf.framework; path = Carthage/Build/iOS/Protobuf.framework; sourceTree = "<group>"; };
@@ -571,6 +575,7 @@
 				81938BED20F9B0850080DEFF /* Font Awesome 5 Pro-Light-300.otf */,
 				81938BEE20F9B0850080DEFF /* Font Awesome 5 Pro-Regular-400.otf */,
 				81938BEC20F9B0850080DEFF /* Font Awesome 5 Pro-Solid-900.otf */,
+				8194552523554EF6000BCDBB /* Font Awesome 5 Brands-Regular-400.otf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -622,6 +627,7 @@
 				81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */,
 				81938C1F20FA68610080DEFF /* TabBarViewController.swift */,
 				8160E8BC21F6766900FB329B /* VideoViewController.swift */,
+				8194552723554F3F000BCDBB /* ImageViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -855,6 +861,7 @@
 				81245D65217B950C007B2277 /* Karla-BoldItalic.ttf in Resources */,
 				81938BF020F9B0850080DEFF /* Font Awesome 5 Pro-Light-300.otf in Resources */,
 				81245D68217B950C007B2277 /* Karla-Regular.ttf in Resources */,
+				8194552623554EF7000BCDBB /* Font Awesome 5 Brands-Regular-400.otf in Resources */,
 				81245D5C217B9501007B2277 /* CrimsonText-BoldItalic.ttf in Resources */,
 				81245D60217B9501007B2277 /* CrimsonText-Italic.ttf in Resources */,
 				81357F0221F7F6AB0089BE3E /* GoogleService-Info.plist in Resources */,
@@ -959,6 +966,7 @@
 				81245D6C217BBDCA007B2277 /* Contentful+Question.swift in Sources */,
 				8160E8DF21F6CE2D00FB329B /* Contentful+Intro.swift in Sources */,
 				811BEB18211A7BAA00C037C2 /* SearchViewController.swift in Sources */,
+				8194552823554F3F000BCDBB /* ImageViewController.swift in Sources */,
 				81A5DA67211E92DB00338287 /* SearchSpeakersCell.swift in Sources */,
 				81938C2820FA6E1A0080DEFF /* HeaderCell.swift in Sources */,
 				8106D82C211E4F7200CD8E7C /* SearchPostsCell.swift in Sources */,
