@@ -12,6 +12,7 @@ enum Notifier {
     static let onTableChanged              = Signal<Void>()
     static let onPantryChanged             = Signal<Void>()
     static let onCommunityQuestionsChanged = Signal<Void>()
+    static let onFeaturedSectionChanged    = Signal<Void>()
     static let onSearchChanged             = Signal<Void>()
     static let onIntroChanged              = Signal<Void>()
     static let onContentLoaded             = Signal<Void>()

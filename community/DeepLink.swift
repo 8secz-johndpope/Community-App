@@ -16,6 +16,7 @@ enum DeepLink {
     case series(Int)
     case post(String)
     case shelf(String)
+    case entry(String)
     case url(URL)
     case unknown
     
@@ -38,6 +39,9 @@ enum DeepLink {
         }
         else if scanner.components.first == "shelf", let id = scanner.components.at(1) {
             self = .shelf(id)
+        }
+        else if scanner.components.first == "entry", let id = scanner.components.at(1) {
+            self = .entry(id)
         }
         else if let url = URL(string: path) {
             self = .url(url)
@@ -85,6 +89,23 @@ enum DeepLink {
                 DeepLink.observers.remove(observer)
                 Contentful.LocalStorage.shelves.first(where: { $0.id == id })?.show(from: .deepLink)
             }.onQueue(.main)
+        case .entry(let id):
+            let observer = Observer()
+            DeepLink.observers.append(observer)
+            
+            Notifier.onContentLoaded.subscribePastOnce(with: observer) {
+                DeepLink.observers.remove(observer)
+                
+                if let post = Contentful.LocalStorage.externalPosts.first(where: { $0.id == id }) {
+                    Contentful.Post.external(post).show(from: .deepLink)
+                }
+                else if let post = Contentful.LocalStorage.textPosts.first(where: { $0.id == id }) {
+                    Contentful.Post.text(post).show(from: .deepLink)
+                }
+                else if let shelf = Contentful.LocalStorage.shelves.first(where: { $0.id == id }) {
+                    shelf.show(from: .deepLink)
+                }
+            }
         case .url(let url):
             let pathComponents = url.path.components(separatedBy: "/").filter { !$0.isEmpty }
             

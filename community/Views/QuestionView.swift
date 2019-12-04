@@ -60,7 +60,7 @@ final class QuestionView: View {
         chevronLabel.add(toSuperview: self).customize {
             $0.pinTop(to: questionLabel).pinBottom(to: questionLabel)
             $0.pinTrailing(to: self).pinLeading(to: questionLabel, .trailing)
-            $0.constrainWidth(to: 40)
+            $0.constrainWidth(to: 48)
             $0.font = .fontAwesome(.light, size: 22)
             $0.textColor = .questionsTint
             $0.textAlignment = .center

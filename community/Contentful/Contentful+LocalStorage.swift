@@ -37,6 +37,12 @@ extension Contentful.LocalStorage {
         }
     }
     
+    static var featuredSection: Contentful.FeaturedSection? {
+        didSet {
+            Notifier.onFeaturedSectionChanged.fire(())
+        }
+    }
+    
     static var search: Contentful.Search? {
         didSet {
             Notifier.onSearchChanged.fire(())

@@ -10,13 +10,14 @@ import Diakoneo
 
 final class HomeViewController: ViewController {
     
-    private let scrollView        = UIScrollView()
-    private let containerView     = StackView(axis: .vertical)
-    private let tableHeaderView   = TableHeaderView()
-    private let tableSectionView  = TableSectionView()
-    private let questionsView     = CommunityQuestionsView()
-    private let loadingIndicator  = LoadingView()
-    private let refreshControl    = UIRefreshControl()
+    private let scrollView          = UIScrollView()
+    private let containerView       = StackView(axis: .vertical)
+    private let tableHeaderView     = TableHeaderView()
+    private let tableSectionView    = TableSectionView()
+    private let featuredSectionView = FeaturedSectionView()
+    private let questionsView       = CommunityQuestionsView()
+    private let loadingIndicator    = LoadingView()
+    private let refreshControl      = UIRefreshControl()
     
     override var prefersStatusBarHidden: Bool {
         return false
@@ -63,50 +64,6 @@ final class HomeViewController: ViewController {
             $0.backgroundColor = .clear
         }
         
-        func header(text: NSAttributedString, backgroundColor: UIColor) -> UIView {
-            let view = UIView().customize {
-                $0.backgroundColor = backgroundColor
-            }
-            
-            UILabel(superview: view).customize {
-                $0.pinTop(to: view).pinBottom(to: view)
-                $0.pinLeading(to: view, plus: .padding).constrainSize(toFit: .vertical, .horizontal)
-                $0.attributedText = text
-                $0.backgroundColor = backgroundColor
-            }
-            
-            return view
-        }
-        
-        func number(_ value: Int, text: String, backgroundColor: UIColor) -> UIView {
-            let view = UIView().customize {
-                $0.backgroundColor = backgroundColor
-            }
-            
-            let number = UILabel(superview: view).customize {
-                $0.pinTop(to: view).pinBottom(to: view, atPriority: .required - 1)
-                $0.pinLeading(to: view, plus: .padding).constrainWidth(to: 30).constrainHeight(to: 30)
-                $0.backgroundColor = .questionsTint
-                $0.cornerRadius = 15
-                $0.text = "\(value)"
-                $0.textColor = .white
-                $0.font = .bold(size: 16)
-                $0.textAlignment = .center
-            }
-            
-            UILabel(superview:  view).customize {
-                $0.pinTop(to: view, plus: 4).pinBottom(to: view, relation: .lessThanOrEqual)
-                $0.pinLeading(to: number, .trailing, plus: .padding).pinTrailing(to: view, plus: -.padding)
-                $0.constrainSize(toFit: .vertical)
-                $0.text = text
-                $0.font = .regular(size: 16)
-                $0.textColor = .text
-                $0.numberOfLines = 0
-            }
-            
-            return view
-        }
-        
         containerView.configure(elements: [
             .view(.clear, 44),
             .custom(tableHeaderView),
@@ -114,6 +71,7 @@ final class HomeViewController: ViewController {
             .custom(tableSectionView),
             .view(.clear, .padding),
             .view(.background, .padding),
+            .custom(featuredSectionView),
             .custom(questionsView),
         ])
         
@@ -146,6 +104,11 @@ final class HomeViewController: ViewController {
         Notifier.onCommunityQuestionsChanged.subscribePast(with: self) { [weak self] in
             guard let questions = Contentful.LocalStorage.communityQuestions else { return }
             self?.questionsView.configure(communityQuestions: questions)
+        }.onQueue(.main)
+        
+        Notifier.onFeaturedSectionChanged.subscribePast(with: self) { [weak self] in
+            guard let featuredSection = Contentful.LocalStorage.featuredSection else { return }
+            self?.featuredSectionView.configure(featuredSection: featuredSection)
         }.onQueue(.main)
     }
     
