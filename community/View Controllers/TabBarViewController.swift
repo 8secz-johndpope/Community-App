@@ -10,7 +10,7 @@ import Diakoneo
 
 final class TabBarViewController: UITabBarController {
     
-    private let tabBarView = TabBar(tabs: .table, .questions, .pantry, .search)
+    private let tabBarView = TabBar(tabs: .sermonGuides, .leadershipLessons, .questions, .pantry, .search)
     
     var tabs: [Tab] {
         return tabBarView.tabs
@@ -74,7 +74,7 @@ extension TabBarViewController {
         tabBarView.add(toSuperview: tabBar).customize {
             $0.constrainEdgesToSuperview()
             $0.didTap = { [weak self] tab in self?.move(to: tab) }
-            $0.select(tab: .table)
+            $0.select(tab: .sermonGuides)
         }
     }
     
@@ -83,29 +83,29 @@ extension TabBarViewController {
 extension TabBarViewController {
     
     enum Tab {
-        case table
+        case sermonGuides
+        case leadershipLessons
         case questions
         case pantry
         case search
-        case settings
         
         var viewController: UIViewController {
             switch self {
-            case .table:    return HomeViewController()
-            case .questions: return QuestionsViewController()
-            case .pantry:   return UINavigationController(rootViewController: PantryViewController())
-            case .search:   return UINavigationController(rootViewController: SearchViewController())
-            case .settings: return SettingsViewController()
+            case .sermonGuides:      return SermonGuidesViewController()
+            case .leadershipLessons: return UIViewController()
+            case .questions:         return QuestionsViewController()
+            case .pantry:            return UINavigationController(rootViewController: PantryViewController())
+            case .search:            return UINavigationController(rootViewController: SearchViewController())
             }
         }
         
         var icon: Icon {
             switch self {
-            case .table:    return .home
-            case .questions: return .questionCircle
-            case .pantry:   return .list
-            case .search:   return .search
-            case .settings: return .cog
+            case .sermonGuides:      return .home
+            case .leadershipLessons: return .users
+            case .questions:         return .questionCircle
+            case .pantry:            return .list
+            case .search:            return .search
             }
         }
     }
