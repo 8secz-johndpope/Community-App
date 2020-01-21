@@ -92,7 +92,7 @@ extension TabBarViewController {
         var viewController: UIViewController {
             switch self {
             case .sermonGuides:      return SermonGuidesViewController()
-            case .leadershipLessons: return UIViewController()
+            case .leadershipLessons: return LeadershipLessonsViewController()
             case .questions:         return QuestionsViewController()
             case .pantry:            return UINavigationController(rootViewController: PantryViewController())
             case .search:            return UINavigationController(rootViewController: SearchViewController())

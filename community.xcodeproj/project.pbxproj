@@ -100,6 +100,7 @@
 		8160E8DF21F6CE2D00FB329B /* Contentful+Intro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160E8DE21F6CE2D00FB329B /* Contentful+Intro.swift */; };
 		816309FD23D697D5007EFEAB /* QuestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816309FC23D697D5007EFEAB /* QuestionsViewController.swift */; };
 		816309FF23D6A481007EFEAB /* SermonGuidesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816309FE23D6A481007EFEAB /* SermonGuidesViewController.swift */; };
+		81630A0123D6B22A007EFEAB /* LeadershipLessonsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81630A0023D6B22A007EFEAB /* LeadershipLessonsViewController.swift */; };
 		8167820121F3CA0C00E96C29 /* MessageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8167820021F3CA0C00E96C29 /* MessageContentView.swift */; };
 		8167820321F3CA1300E96C29 /* TextPostContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8167820221F3CA1300E96C29 /* TextPostContentView.swift */; };
 		816A4F852116906000179C76 /* ShelfViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F842116906000179C76 /* ShelfViewController.swift */; };
@@ -310,6 +311,7 @@
 		8160E8DE21F6CE2D00FB329B /* Contentful+Intro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contentful+Intro.swift"; sourceTree = "<group>"; };
 		816309FC23D697D5007EFEAB /* QuestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionsViewController.swift; sourceTree = "<group>"; };
 		816309FE23D6A481007EFEAB /* SermonGuidesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SermonGuidesViewController.swift; sourceTree = "<group>"; };
+		81630A0023D6B22A007EFEAB /* LeadershipLessonsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadershipLessonsViewController.swift; sourceTree = "<group>"; };
 		8167820021F3CA0C00E96C29 /* MessageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageContentView.swift; sourceTree = "<group>"; };
 		8167820221F3CA1300E96C29 /* TextPostContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPostContentView.swift; sourceTree = "<group>"; };
 		816A4F842116906000179C76 /* ShelfViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfViewController.swift; sourceTree = "<group>"; };
@@ -639,6 +641,7 @@
 				8194552723554F3F000BCDBB /* ImageViewController.swift */,
 				816309FC23D697D5007EFEAB /* QuestionsViewController.swift */,
 				816309FE23D6A481007EFEAB /* SermonGuidesViewController.swift */,
+				81630A0023D6B22A007EFEAB /* LeadershipLessonsViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -994,6 +997,7 @@
 				812311D9211BD7A100D596EB /* SettingsViewController.swift in Sources */,
 				817BB7B92113C0E6005DE341 /* SeriesSectionView.swift in Sources */,
 				817BB7B72113BE58005DE341 /* ShelfCell.swift in Sources */,
+				81630A0123D6B22A007EFEAB /* LeadershipLessonsViewController.swift in Sources */,
 				81C78A1F21F7FBC8009ACE74 /* Analytics.swift in Sources */,
 				81EA567B21191EF0005F25DB /* PantrySectionView.swift in Sources */,
 				81938C0F20F9BCB70080DEFF /* Contentful+API.swift in Sources */,

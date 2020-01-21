@@ -7,7 +7,6 @@
 
 import UIKit
 import Diakoneo
-import Nuke
 
 protocol LatestGuideViewDelegate: class {
     func didSelect(guide: Contentful.Post, in view: SermonGuidesViewController.LatestGuideView)
