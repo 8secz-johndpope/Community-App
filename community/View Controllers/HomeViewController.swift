@@ -113,7 +113,11 @@ final class HomeViewController: ViewController {
     }
     
     @objc dynamic private func reload() {
-        Contentful.API.loadAllContent()
+        Content.loadAll { [weak self] in
+            DispatchQueue.main.async {
+                self?.refreshControl.endRefreshing()
+            }
+        }
     }
     
 }

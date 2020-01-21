@@ -105,7 +105,7 @@ enum DeepLink {
                 else if let shelf = Contentful.LocalStorage.shelves.first(where: { $0.id == id }) {
                     shelf.show(from: .deepLink)
                 }
-            }
+            }.onQueue(.main)
         case .url(let url):
             let pathComponents = url.path.components(separatedBy: "/").filter { !$0.isEmpty }
             

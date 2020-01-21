@@ -9,7 +9,7 @@ import Diakoneo
 
 enum Content {
     
-    static func loadAll() {
+    static func loadAll(completion: @escaping () -> Void = {}) {
         
         Contentful.API.loadAllContent { entries, assets in
             
@@ -56,6 +56,7 @@ enum Content {
             
             Notifier.onContentLoaded.fire(())
             
+            completion()
         }
         
     }

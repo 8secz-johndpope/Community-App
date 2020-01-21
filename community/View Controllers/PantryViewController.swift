@@ -135,7 +135,11 @@ final class PantryViewController: ViewController {
     }
     
     @objc dynamic private func reloadContent() {
-        Contentful.API.loadAllContent()
+        Content.loadAll { [weak self] in
+            DispatchQueue.main.async {
+                self?.refreshControl.endRefreshing()
+            }
+        }
     }
     
 }
