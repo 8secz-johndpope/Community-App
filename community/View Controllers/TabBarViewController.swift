@@ -10,7 +10,7 @@ import Diakoneo
 
 final class TabBarViewController: UITabBarController {
     
-    private let tabBarView = TabBar(tabs: .table, .pantry, .search)
+    private let tabBarView = TabBar(tabs: .table, .questions, .pantry, .search)
     
     var tabs: [Tab] {
         return tabBarView.tabs
@@ -84,6 +84,7 @@ extension TabBarViewController {
     
     enum Tab {
         case table
+        case questions
         case pantry
         case search
         case settings
@@ -91,6 +92,7 @@ extension TabBarViewController {
         var viewController: UIViewController {
             switch self {
             case .table:    return HomeViewController()
+            case .questions: return QuestionsViewController()
             case .pantry:   return UINavigationController(rootViewController: PantryViewController())
             case .search:   return UINavigationController(rootViewController: SearchViewController())
             case .settings: return SettingsViewController()
@@ -100,6 +102,7 @@ extension TabBarViewController {
         var icon: Icon {
             switch self {
             case .table:    return .home
+            case .questions: return .questionCircle
             case .pantry:   return .list
             case .search:   return .search
             case .settings: return .cog
