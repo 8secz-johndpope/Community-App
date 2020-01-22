@@ -8,7 +8,7 @@
 import UIKit
 import Diakoneo
 
-final class PantryViewController: ViewController {
+final class PantryViewController: ViewController, HeaderViewController, ReloadingViewController {
     
     enum Cell {
         case space(CGFloat)
@@ -27,12 +27,15 @@ final class PantryViewController: ViewController {
     private var cells: [Cell] = []
     
     private let collectionView = UICollectionView(layout: .vertical(lineSpacing: 0, sectionInset: UIEdgeInsets(bottom: .padding)))
-    private let shadowView     = ShadowView()
-    private let headerView     = UIView()
-    private let headerLabel    = UILabel()
-    private let refreshControl = UIRefreshControl()
     
-    private var isShowingHeaderLabel = false
+    let refreshControl = UIRefreshControl()
+    
+    var scrollView: UIScrollView { collectionView }
+    let shadowView  = ShadowView()
+    let headerView  = UIView()
+    let headerLabel = UILabel()
+    
+    var isShowingHeaderLabel = false
     
     override func viewDidAppearForFirstTime() {
         super.viewDidAppearForFirstTime()
@@ -68,35 +71,7 @@ final class PantryViewController: ViewController {
             $0.tintColor = .text
         }
         
-        headerView.add(toSuperview: view).customize {
-            $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinBottomToTopSafeArea(in: self, plus: 50)
-            $0.backgroundColor = .background
-            $0.alpha = 0
-            $0.isHidden = true
-        }
-        
-        UIView(superview: headerView).customize {
-            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
-            $0.pinBottom(to: headerView).constrainHeight(to: 1)
-            $0.backgroundColor = .tabBarLine
-        }
-        
-        shadowView.add(toSuperview: view, behind: headerView).customize {
-            $0.pinLeading(to: headerView).pinTrailing(to: headerView)
-            $0.pinTop(to: headerView).pinBottom(to: headerView)
-            $0.backgroundColor = .background
-            $0.shadowOpacity = 0.2
-            $0.alpha = 0
-        }
-        
-        headerLabel.add(toSuperview: headerView).customize {
-            $0.pinBottom(to: headerView).constrainHeight(to: 50)
-            $0.pinCenterX(to: headerView).constrainSize(toFit: .horizontal)
-            $0.font = .bold(size: 16)
-            $0.textColor = .text
-            $0.text = Contentful.LocalStorage.pantry?.title
-        }
+        setupHeader(in: view, title: Contentful.LocalStorage.pantry?.title)
         
         Notifier.onPantryChanged.subscribePast(with: self) { [weak self] in
             self?.reload()
@@ -134,14 +109,6 @@ final class PantryViewController: ViewController {
         UIAlertController.alert(message: info).addAction(title: "OK").present()
     }
     
-    @objc dynamic private func reloadContent() {
-        Content.loadAll { [weak self] in
-            DispatchQueue.main.async {
-                self?.refreshControl.endRefreshing()
-            }
-        }
-    }
-    
 }
 
 extension PantryViewController: UICollectionViewDataSource {
@@ -170,24 +137,7 @@ extension PantryViewController: UICollectionViewDataSource {
 extension PantryViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        shadowView.alpha = scrollView.adjustedOffset.y.map(from: 40...60, to: 0...1).limited(0, 1)
-        
-        if scrollView.adjustedOffset.y > 40 {
-            if !isShowingHeaderLabel {
-                isShowingHeaderLabel = true
-                UIView.animate(withDuration: 0.25, delay: 0, options: .beginFromCurrentState, animations: {
-                    self.headerView.alpha = 1
-                }, completion: nil)
-            }
-        }
-        else {
-            if isShowingHeaderLabel {
-                isShowingHeaderLabel = false
-                UIView.animate(withDuration: 0.25, delay: 0, options: .beginFromCurrentState, animations: {
-                    self.headerView.alpha = 0
-                }, completion: nil)
-            }
-        }
+        didScroll()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

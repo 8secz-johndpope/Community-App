@@ -27,7 +27,7 @@ final class TextPostContentView: View {
     }
     
     func configure(textPost: Contentful.TextPost) {
-        textView.attributedText = textPost.content.renderMarkdown
+        textView.attributedText = textPost.content.renderMarkdown()
     }
 }
 
