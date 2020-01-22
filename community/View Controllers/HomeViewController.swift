@@ -14,7 +14,6 @@ final class HomeViewController: ViewController {
     private let containerView       = StackView(axis: .vertical)
     private let tableHeaderView     = TableHeaderView()
     private let tableSectionView    = TableSectionView()
-    private let featuredSectionView = FeaturedSectionView()
     private let questionsView       = CommunityQuestionsView()
     private let loadingIndicator    = LoadingView()
     private let refreshControl      = UIRefreshControl()
@@ -71,7 +70,6 @@ final class HomeViewController: ViewController {
             .custom(tableSectionView),
             .view(.clear, .padding),
             .view(.background, .padding),
-            .custom(featuredSectionView),
             .custom(questionsView),
         ])
         
@@ -104,11 +102,6 @@ final class HomeViewController: ViewController {
         Notifier.onCommunityQuestionsChanged.subscribePast(with: self) { [weak self] in
             guard let questions = Contentful.LocalStorage.communityQuestions else { return }
             self?.questionsView.configure(communityQuestions: questions)
-        }.onQueue(.main)
-        
-        Notifier.onFeaturedSectionChanged.subscribePast(with: self) { [weak self] in
-            guard let featuredSection = Contentful.LocalStorage.featuredSection else { return }
-            self?.featuredSectionView.configure(featuredSection: featuredSection)
         }.onQueue(.main)
     }
     

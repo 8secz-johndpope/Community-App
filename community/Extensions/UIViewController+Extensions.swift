@@ -14,3 +14,19 @@ extension UIViewController {
     }
     
 }
+
+protocol ReloadingViewController: class {
+    var refreshControl: UIRefreshControl { get }
+}
+
+extension UIViewController {
+    
+    @objc dynamic func reloadContent() {
+        Content.loadAll { [weak self] in
+            DispatchQueue.main.async {
+                (self as? ReloadingViewController)?.refreshControl.endRefreshing()
+            }
+        }
+    }
+    
+}
