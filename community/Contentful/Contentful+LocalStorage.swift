@@ -37,9 +37,9 @@ extension Contentful.LocalStorage {
         }
     }
     
-    static var featuredSection: Contentful.FeaturedSection? {
+    static var leadershipLessons: Contentful.LeadershipLessons? {
         didSet {
-            Notifier.onFeaturedSectionChanged.fire(())
+            Notifier.onLeadershipLessonsChanged.fire(())
         }
     }
     

@@ -19,7 +19,7 @@ extension Contentful.API {
         case shelf
         case question
         case communityQuestions
-        case featuredSection
+        case leadershipLessons
         case search
         case intro
     }
@@ -37,7 +37,7 @@ extension Contentful.Entry {
         case textPost(Contentful.TextPost)
         case question(Contentful.Question)
         case communityQuestions(Contentful.CommunityQuestions)
-        case featuredSection(Contentful.FeaturedSection)
+        case leadershipLessons(Contentful.LeadershipLessons)
         case search(Contentful.Search)
         case intro(Contentful.Intro)
     }
@@ -106,9 +106,9 @@ extension Contentful.Entry.Community {
             else {
                 return nil
             }
-        case .featuredSection:
-            if let featuredSection = Contentful.FeaturedSection(entry: entry) {
-                self = .featuredSection(featuredSection)
+        case .leadershipLessons:
+            if let leadershipLessons = Contentful.LeadershipLessons(entry: entry) {
+                self = .leadershipLessons(leadershipLessons)
             }
             else {
                 return nil
@@ -136,49 +136,49 @@ extension Contentful.Entry.Community {
     
     var createdAt: Date {
         switch self {
-        case .author(let author):                   return author.createdAt
-        case .externalPost(let externalPost):       return externalPost.createdAt
-        case .pantry(let pantry):                   return pantry.createdAt
-        case .table(let table):                     return table.createdAt
-        case .textPost(let textPost):               return textPost.createdAt
-        case .shelf(let shelf):                     return shelf.createdAt
-        case .question(let question):               return question.createdAt
-        case .communityQuestions(let questions):    return questions.createdAt
-        case .featuredSection(let featuredSection): return featuredSection.createdAt
-        case .search(let search):                   return search.createdAt
-        case .intro(let intro):                     return intro.createdAt
+        case .author(let author):                       return author.createdAt
+        case .externalPost(let externalPost):           return externalPost.createdAt
+        case .pantry(let pantry):                       return pantry.createdAt
+        case .table(let table):                         return table.createdAt
+        case .textPost(let textPost):                   return textPost.createdAt
+        case .shelf(let shelf):                         return shelf.createdAt
+        case .question(let question):                   return question.createdAt
+        case .communityQuestions(let questions):        return questions.createdAt
+        case .leadershipLessons(let leadershipLessons): return leadershipLessons.createdAt
+        case .search(let search):                       return search.createdAt
+        case .intro(let intro):                         return intro.createdAt
         }
     }
     
     var updatedAt: Date {
         switch self {
-        case .author(let author):                   return author.updatedAt
-        case .externalPost(let externalPost):       return externalPost.updatedAt
-        case .pantry(let pantry):                   return pantry.updatedAt
-        case .table(let table):                     return table.updatedAt
-        case .textPost(let textPost):               return textPost.updatedAt
-        case .shelf(let shelf):                     return shelf.updatedAt
-        case .question(let question):               return question.updatedAt
-        case .communityQuestions(let questions):    return questions.updatedAt
-        case .featuredSection(let featuredSection): return featuredSection.updatedAt
-        case .search(let search):                   return search.updatedAt
-        case .intro(let intro):                     return intro.updatedAt
+        case .author(let author):                       return author.updatedAt
+        case .externalPost(let externalPost):           return externalPost.updatedAt
+        case .pantry(let pantry):                       return pantry.updatedAt
+        case .table(let table):                         return table.updatedAt
+        case .textPost(let textPost):                   return textPost.updatedAt
+        case .shelf(let shelf):                         return shelf.updatedAt
+        case .question(let question):                   return question.updatedAt
+        case .communityQuestions(let questions):        return questions.updatedAt
+        case .leadershipLessons(let leadershipLessons): return leadershipLessons.updatedAt
+        case .search(let search):                       return search.updatedAt
+        case .intro(let intro):                         return intro.updatedAt
         }
     }
     
     var title: String {
         switch self {
-        case .author(let author):                   return author.name
-        case .externalPost(let externalPost):       return externalPost.title
-        case .pantry(let pantry):                   return pantry.title
-        case .table(let table):                     return table.title
-        case .textPost(let textPost):               return textPost.title
-        case .shelf(let shelf):                     return shelf.name
-        case .question(let question):               return question.question
-        case .communityQuestions(let questions):    return questions.title
-        case .featuredSection(let featuredSection): return featuredSection.title
-        case .search(let search):                   return search.title
-        case .intro(let intro):                     return intro.title
+        case .author(let author):                       return author.name
+        case .externalPost(let externalPost):           return externalPost.title
+        case .pantry(let pantry):                       return pantry.title
+        case .table(let table):                         return table.title
+        case .textPost(let textPost):                   return textPost.title
+        case .shelf(let shelf):                         return shelf.name
+        case .question(let question):                   return question.question
+        case .communityQuestions(let questions):        return questions.title
+        case .leadershipLessons(let leadershipLessons): return leadershipLessons.title
+        case .search(let search):                       return search.title
+        case .intro(let intro):                         return intro.title
         }
     }
     

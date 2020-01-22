@@ -86,6 +86,7 @@
 		81357F0221F7F6AB0089BE3E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 81357F0121F7F6AB0089BE3E /* GoogleService-Info.plist */; };
 		81357F3121F7FA560089BE3E /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81357F2F21F7FA550089BE3E /* Crashlytics.framework */; };
 		81357F3221F7FA560089BE3E /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81357F3021F7FA560089BE3E /* Fabric.framework */; };
+		8146A5C723D7F55800E57E0C /* Contentful+LeadershipLessons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8146A5C623D7F55800E57E0C /* Contentful+LeadershipLessons.swift */; };
 		814E3D482119108F00D9DA26 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814E3D472119108F00D9DA26 /* HomeViewController.swift */; };
 		81532150235C074A000EC2A5 /* Alexandria in Frameworks */ = {isa = PBXBuildFile; productRef = 8153214F235C074A000EC2A5 /* Alexandria */; };
 		81532153235C0761000EC2A5 /* Diakoneo in Frameworks */ = {isa = PBXBuildFile; productRef = 81532152235C0761000EC2A5 /* Diakoneo */; };
@@ -107,8 +108,6 @@
 		816A4F872116AEE200179C76 /* AsyncTextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F862116AEE200179C76 /* AsyncTextAttachment.swift */; };
 		816A4F892116B00B00179C76 /* NSLayoutManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816A4F882116B00B00179C76 /* NSLayoutManager+Extensions.swift */; };
 		817298F820FED61100596B35 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817298F720FED61100596B35 /* DeepLink.swift */; };
-		8179D2F0239749CE008D77BE /* Contentful+FeaturedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8179D2EF239749CE008D77BE /* Contentful+FeaturedSection.swift */; };
-		8179D2F223975060008D77BE /* FeaturedSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8179D2F123975060008D77BE /* FeaturedSectionView.swift */; };
 		817BB7B72113BE58005DE341 /* ShelfCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817BB7B62113BE58005DE341 /* ShelfCell.swift */; };
 		817BB7B92113C0E6005DE341 /* SeriesSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817BB7B82113C0E6005DE341 /* SeriesSectionView.swift */; };
 		817BB7BB2113C100005DE341 /* TablePostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817BB7BA2113C100005DE341 /* TablePostCell.swift */; };
@@ -300,6 +299,7 @@
 		81357F2F21F7FA550089BE3E /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		81357F3021F7FA560089BE3E /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		813B0FD720F9AA1B0067579D /* Alexandria.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alexandria.framework; path = Carthage/Build/iOS/Alexandria.framework; sourceTree = "<group>"; };
+		8146A5C623D7F55800E57E0C /* Contentful+LeadershipLessons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contentful+LeadershipLessons.swift"; sourceTree = "<group>"; };
 		814E3D472119108F00D9DA26 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8160E8BA21F6750E00FB329B /* MediaPlayer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaPlayer+Extensions.swift"; sourceTree = "<group>"; };
 		8160E8BC21F6766900FB329B /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
@@ -318,8 +318,6 @@
 		816A4F862116AEE200179C76 /* AsyncTextAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncTextAttachment.swift; sourceTree = "<group>"; };
 		816A4F882116B00B00179C76 /* NSLayoutManager+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+Extensions.swift"; sourceTree = "<group>"; };
 		817298F720FED61100596B35 /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
-		8179D2EF239749CE008D77BE /* Contentful+FeaturedSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contentful+FeaturedSection.swift"; sourceTree = "<group>"; };
-		8179D2F123975060008D77BE /* FeaturedSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedSectionView.swift; sourceTree = "<group>"; };
 		817BB7B62113BE58005DE341 /* ShelfCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShelfCell.swift; sourceTree = "<group>"; };
 		817BB7B82113C0E6005DE341 /* SeriesSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesSectionView.swift; sourceTree = "<group>"; };
 		817BB7BA2113C100005DE341 /* TablePostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablePostCell.swift; sourceTree = "<group>"; };
@@ -609,7 +607,7 @@
 				81ED74FA20FA8EAD00BE1F4C /* Contentful+LocalStorage.swift */,
 				81938BFE20F9B8890080DEFF /* Contentful+Author.swift */,
 				81938C0020F9B8900080DEFF /* Contentful+ExternalPost.swift */,
-				8179D2EF239749CE008D77BE /* Contentful+FeaturedSection.swift */,
+				8146A5C623D7F55800E57E0C /* Contentful+LeadershipLessons.swift */,
 				81938C1820F9C0C90080DEFF /* Contentful+Pantry.swift */,
 				81ED74FE20FA8FF200BE1F4C /* Contentful+Post.swift */,
 				8160E8DE21F6CE2D00FB329B /* Contentful+Intro.swift */,
@@ -673,7 +671,6 @@
 				8160E8C021F6772600FB329B /* CommunityQuestionsView.swift */,
 				812069FD20FD6ECF00696D32 /* ContentContainerView.swift */,
 				812069FB20FD6EC700696D32 /* ContentHeaderView.swift */,
-				8179D2F123975060008D77BE /* FeaturedSectionView.swift */,
 				81206A0520FD77C600696D32 /* MediaProgressView.swift */,
 				81ED74F620FA8A4800BE1F4C /* MessageCellView.swift */,
 				8167820021F3CA0C00E96C29 /* MessageContentView.swift */,
@@ -1002,7 +999,6 @@
 				81EA567B21191EF0005F25DB /* PantrySectionView.swift in Sources */,
 				81938C0F20F9BCB70080DEFF /* Contentful+API.swift in Sources */,
 				81938BD420F9AC720080DEFF /* UIView+Extensions.swift in Sources */,
-				8179D2F223975060008D77BE /* FeaturedSectionView.swift in Sources */,
 				816A4F872116AEE200179C76 /* AsyncTextAttachment.swift in Sources */,
 				8101D33620FAC95B0085BF0D /* UIViewController+Extensions.swift in Sources */,
 				8116F20220F9A7D5005A2171 /* AppDelegate.swift in Sources */,
@@ -1017,12 +1013,12 @@
 				81B61F6D211D198A001B517F /* PantryPostCell.swift in Sources */,
 				81992F05223D82D900ACD1DC /* NotificationManager.swift in Sources */,
 				8160E8BF21F6770800FB329B /* TableHeaderView.swift in Sources */,
+				8146A5C723D7F55800E57E0C /* Contentful+LeadershipLessons.swift in Sources */,
 				816A4F852116906000179C76 /* ShelfViewController.swift in Sources */,
 				81A81286211130F000F90891 /* SeriesMessageCell.swift in Sources */,
 				8160E8DB21F6AEE300FB329B /* Storage.swift in Sources */,
 				81938C0120F9B8900080DEFF /* Contentful+ExternalPost.swift in Sources */,
 				81938C0520F9B89B0080DEFF /* Contentful+Shelf.swift in Sources */,
-				8179D2F0239749CE008D77BE /* Contentful+FeaturedSection.swift in Sources */,
 				812069FE20FD6ECF00696D32 /* ContentContainerView.swift in Sources */,
 				81B61F6F211D2715001B517F /* LeftAlignedCollectionViewLayout.swift in Sources */,
 				81938C2220FA69590080DEFF /* Images.swift in Sources */,

@@ -21,7 +21,7 @@ enum Content {
             var pantry: Contentful.Pantry?
             var table: Contentful.Table?
             var communityQuestions: Contentful.CommunityQuestions?
-            var featuredSection: Contentful.FeaturedSection?
+            var leadershipLessons: Contentful.LeadershipLessons?
             var search: Contentful.Search?
             var intro: Contentful.Intro?
             
@@ -35,7 +35,7 @@ enum Content {
                 case .shelf(let shelf):               shelves.append(shelf)
                 case .question(let question):         questions.append(question)
                 case .communityQuestions(let c):      communityQuestions = c
-                case .featuredSection(let f):         featuredSection = f
+                case .leadershipLessons(let l):       leadershipLessons = l
                 case .search(let s):                  search = s
                 case .intro(let i):                   intro = i
                 }
@@ -50,7 +50,7 @@ enum Content {
             Contentful.LocalStorage.pantry             = pantry
             Contentful.LocalStorage.table              = table
             Contentful.LocalStorage.communityQuestions = communityQuestions
-            Contentful.LocalStorage.featuredSection    = featuredSection
+            Contentful.LocalStorage.leadershipLessons  = leadershipLessons
             Contentful.LocalStorage.search             = search
             Contentful.LocalStorage.intro              = intro
             
