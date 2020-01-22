@@ -11,9 +11,9 @@ import Alexandria
 
 extension String {
     
-    var renderMarkdown: NSMutableAttributedString? {
+    func renderMarkdown(withBaseFont font: UIFont = Block.baseFont) -> NSMutableAttributedString? {
         guard let node = Node(markdown: self) else { return nil }
-        return node.elements.map { $0.render(font: Block.baseFont) }.join(separator: "\n\n")
+        return node.elements.map { $0.render(font: font) }.join(separator: "\n\n")
     }
     
 }

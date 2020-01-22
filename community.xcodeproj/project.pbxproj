@@ -87,6 +87,11 @@
 		81357F3121F7FA560089BE3E /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81357F2F21F7FA550089BE3E /* Crashlytics.framework */; };
 		81357F3221F7FA560089BE3E /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81357F3021F7FA560089BE3E /* Fabric.framework */; };
 		8146A5C723D7F55800E57E0C /* Contentful+LeadershipLessons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8146A5C623D7F55800E57E0C /* Contentful+LeadershipLessons.swift */; };
+		8146A5C923D7F81500E57E0C /* SermonGuideCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8146A5C823D7F81500E57E0C /* SermonGuideCell.swift */; };
+		8146A5CB23D7F85200E57E0C /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8146A5CA23D7F85200E57E0C /* EpisodeCell.swift */; };
+		8146A5CD23D7F8D400E57E0C /* LatestEpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8146A5CC23D7F8D400E57E0C /* LatestEpisodeCell.swift */; };
+		8146A5CF23D7F8EF00E57E0C /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8146A5CE23D7F8EF00E57E0C /* ToggleCell.swift */; };
+		8146A5D123D7F94400E57E0C /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8146A5D023D7F94400E57E0C /* HeaderViewController.swift */; };
 		814E3D482119108F00D9DA26 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814E3D472119108F00D9DA26 /* HomeViewController.swift */; };
 		81532150235C074A000EC2A5 /* Alexandria in Frameworks */ = {isa = PBXBuildFile; productRef = 8153214F235C074A000EC2A5 /* Alexandria */; };
 		81532153235C0761000EC2A5 /* Diakoneo in Frameworks */ = {isa = PBXBuildFile; productRef = 81532152235C0761000EC2A5 /* Diakoneo */; };
@@ -300,6 +305,11 @@
 		81357F3021F7FA560089BE3E /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		813B0FD720F9AA1B0067579D /* Alexandria.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alexandria.framework; path = Carthage/Build/iOS/Alexandria.framework; sourceTree = "<group>"; };
 		8146A5C623D7F55800E57E0C /* Contentful+LeadershipLessons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contentful+LeadershipLessons.swift"; sourceTree = "<group>"; };
+		8146A5C823D7F81500E57E0C /* SermonGuideCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SermonGuideCell.swift; sourceTree = "<group>"; };
+		8146A5CA23D7F85200E57E0C /* EpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
+		8146A5CC23D7F8D400E57E0C /* LatestEpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestEpisodeCell.swift; sourceTree = "<group>"; };
+		8146A5CE23D7F8EF00E57E0C /* ToggleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleCell.swift; sourceTree = "<group>"; };
+		8146A5D023D7F94400E57E0C /* HeaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewController.swift; sourceTree = "<group>"; };
 		814E3D472119108F00D9DA26 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8160E8BA21F6750E00FB329B /* MediaPlayer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MediaPlayer+Extensions.swift"; sourceTree = "<group>"; };
 		8160E8BC21F6766900FB329B /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
@@ -525,6 +535,7 @@
 				81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */,
 				8160E8DA21F6AEE300FB329B /* Storage.swift */,
 				81C78A1E21F7FBC8009ACE74 /* Analytics.swift */,
+				8146A5D023D7F94400E57E0C /* HeaderViewController.swift */,
 				81F83323234407A900D20DF9 /* Theme */,
 				81F83320234406F500D20DF9 /* View Controllers */,
 				81F833212344071000D20DF9 /* Cells */,
@@ -648,11 +659,12 @@
 			isa = PBXGroup;
 			children = (
 				81938BCD20F9ABC70080DEFF /* CollectionViewCell.swift */,
+				8146A5CA23D7F85200E57E0C /* EpisodeCell.swift */,
 				81938C2720FA6E1A0080DEFF /* HeaderCell.swift */,
+				8146A5CC23D7F8D400E57E0C /* LatestEpisodeCell.swift */,
 				81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */,
-				817BB7BA2113C100005DE341 /* TablePostCell.swift */,
-				81A81285211130F000F90891 /* SeriesMessageCell.swift */,
 				81B61F6C211D198A001B517F /* PantryPostCell.swift */,
+				81A81285211130F000F90891 /* SeriesMessageCell.swift */,
 				8106D823211E4E7100CD8E7C /* SearchHeaderCell.swift */,
 				8106D825211E4E8F00CD8E7C /* SearchSuggestionCell.swift */,
 				8106D827211E4F5700CD8E7C /* SearchShelvesCell.swift */,
@@ -660,7 +672,10 @@
 				8106D82D211E4F8F00CD8E7C /* SearchSeriesCell.swift */,
 				8106D82F211E4F9C00CD8E7C /* SearchMessagesCell.swift */,
 				81A5DA66211E92DB00338287 /* SearchSpeakersCell.swift */,
+				8146A5C823D7F81500E57E0C /* SermonGuideCell.swift */,
 				817BB7B62113BE58005DE341 /* ShelfCell.swift */,
+				817BB7BA2113C100005DE341 /* TablePostCell.swift */,
+				8146A5CE23D7F8EF00E57E0C /* ToggleCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -973,6 +988,7 @@
 			files = (
 				81ED74F920FA8C7100BE1F4C /* SeriesCell.swift in Sources */,
 				81FB6CC62287B96E00CC430D /* NotificationPromptViewController.swift in Sources */,
+				8146A5C923D7F81500E57E0C /* SermonGuideCell.swift in Sources */,
 				81938BEB20F9AF590080DEFF /* Fonts.swift in Sources */,
 				81CFC91C20FB0C49006BF518 /* ContentViewController.swift in Sources */,
 				81245D6C217BBDCA007B2277 /* Contentful+Question.swift in Sources */,
@@ -984,6 +1000,7 @@
 				8106D82C211E4F7200CD8E7C /* SearchPostsCell.swift in Sources */,
 				8160E8DD21F6B5BF00FB329B /* Contentful+Search.swift in Sources */,
 				81ED74FD20FA8F1100BE1F4C /* Signal.swift in Sources */,
+				8146A5CF23D7F8EF00E57E0C /* ToggleCell.swift in Sources */,
 				81A812842111272900F90891 /* SeriesViewController.swift in Sources */,
 				816309FF23D6A481007EFEAB /* SermonGuidesViewController.swift in Sources */,
 				8106D828211E4F5700CD8E7C /* SearchShelvesCell.swift in Sources */,
@@ -998,6 +1015,7 @@
 				81C78A1F21F7FBC8009ACE74 /* Analytics.swift in Sources */,
 				81EA567B21191EF0005F25DB /* PantrySectionView.swift in Sources */,
 				81938C0F20F9BCB70080DEFF /* Contentful+API.swift in Sources */,
+				8146A5D123D7F94400E57E0C /* HeaderViewController.swift in Sources */,
 				81938BD420F9AC720080DEFF /* UIView+Extensions.swift in Sources */,
 				816A4F872116AEE200179C76 /* AsyncTextAttachment.swift in Sources */,
 				8101D33620FAC95B0085BF0D /* UIViewController+Extensions.swift in Sources */,
@@ -1026,6 +1044,7 @@
 				81ED74F720FA8A4800BE1F4C /* MessageCellView.swift in Sources */,
 				8160E8C321F6773200FB329B /* QuestionView.swift in Sources */,
 				81206A0620FD77C600696D32 /* MediaProgressView.swift in Sources */,
+				8146A5CD23D7F8D400E57E0C /* LatestEpisodeCell.swift in Sources */,
 				8160E8C121F6772600FB329B /* CommunityQuestionsView.swift in Sources */,
 				81938BCE20F9ABC70080DEFF /* CollectionViewCell.swift in Sources */,
 				816309FD23D697D5007EFEAB /* QuestionsViewController.swift in Sources */,
@@ -1041,6 +1060,7 @@
 				8106D82E211E4F8F00CD8E7C /* SearchSeriesCell.swift in Sources */,
 				817E11BF210941D800EB51A6 /* SmallMessageCellView.swift in Sources */,
 				81938BFF20F9B8890080DEFF /* Contentful+Author.swift in Sources */,
+				8146A5CB23D7F85200E57E0C /* EpisodeCell.swift in Sources */,
 				8167820321F3CA1300E96C29 /* TextPostContentView.swift in Sources */,
 				8106D824211E4E7100CD8E7C /* SearchHeaderCell.swift in Sources */,
 				81F833252344083E00D20DF9 /* Content.swift in Sources */,

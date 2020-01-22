@@ -78,12 +78,12 @@ final class CommunityQuestionsView: View {
         
         var elements: [StackView.Element] = []
         
-        for (index, question) in communityQuestions.questions.enumerated() {
-            elements.append(contentsOf: [
-                .view(.background, .padding),
-                .custom(QuestionView(number: index + 1, question: question)),
-            ])
-        }
+//        for (index, question) in communityQuestions.questions.enumerated() {
+//            elements.append(contentsOf: [
+//                .view(.background, .padding),
+//                .custom(QuestionView(number: index + 1, question: question)),
+//            ])
+//        }
         
         elements.append(.view(.background, .padding))
         
