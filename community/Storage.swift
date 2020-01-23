@@ -12,6 +12,8 @@ enum Storage {
     enum Key: String {
         case introVideoWasShown             = "IntroVideoWasShown"
         case notificationPromptDisplayCount = "NotificationPromptDisplayCount"
+        case launchCount                    = "LaunchCount"
+        case notificationsWereDeclined      = "NotificationsWereDeclined"
         
         var domain: String {
             return [Bundle.main.bundleIdentifier ?? "", rawValue].joined(separator: ".")

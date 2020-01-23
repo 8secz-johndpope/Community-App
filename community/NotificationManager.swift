@@ -41,9 +41,26 @@ enum NotificationManager {
         }
     }
     
+    static func shouldShowPrompt(completion: @escaping (Bool) -> Void) {
+        isPermissionsGranted { granted in
+            let launchCount = Storage.get(.launchCount) ?? 0
+            let notificationsDeclined = Storage.get(.notificationsWereDeclined) ?? false
+            
+            if granted == nil, launchCount >= 5, !notificationsDeclined {
+                completion(true)
+            }
+            else {
+                completion(false)
+            }
+        }
+    }
+    
     static func setup(launchOptions: [UIApplication.LaunchOptionsKey : Any]?, delegate: UNUserNotificationCenterDelegate & MessagingDelegate) {
         UNUserNotificationCenter.current().delegate = delegate
         Messaging.messaging().delegate = delegate
+        
+        let launchCount: Int = Storage.get(.launchCount) ?? 0
+        Storage.set(launchCount + 1, for: .launchCount)
         
         OneSignal.initWithLaunchOptions(
             launchOptions ?? [:],
@@ -59,7 +76,6 @@ enum NotificationManager {
             DispatchQueue.main.async {
                 switch granted {
                 case true: UIApplication.shared.registerForRemoteNotifications()
-                case nil:  NotificationPromptViewController().present()
                 default:   break
                 }
             }

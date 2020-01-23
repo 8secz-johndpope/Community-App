@@ -157,6 +157,7 @@
 		81B61F6F211D2715001B517F /* LeftAlignedCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */; };
 		81BABDFC23D93200006F40BF /* MediaProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BABDFB23D93200006F40BF /* MediaProgressManager.swift */; };
 		81BABDFE23D9409D006F40BF /* EmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BABDFD23D9409D006F40BF /* EmptyStateCell.swift */; };
+		81BBE7AE23D9448C00405C7D /* NotificationPromptCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BBE7AD23D9448C00405C7D /* NotificationPromptCell.swift */; };
 		81C78A1F21F7FBC8009ACE74 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C78A1E21F7FBC8009ACE74 /* Analytics.swift */; };
 		81CFC91420FAFF26006BF518 /* CommonMarkRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */; };
 		81CFC91A20FB03C0006BF518 /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */; };
@@ -173,7 +174,6 @@
 		81F833252344083E00D20DF9 /* Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F833242344083E00D20DF9 /* Content.swift */; };
 		81FB6CB222875FCD00CC430D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81FB6CB122875FCD00CC430D /* NotificationService.swift */; };
 		81FB6CB622875FCD00CC430D /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 81FB6CAF22875FCD00CC430D /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		81FB6CC62287B96E00CC430D /* NotificationPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81FB6CC52287B96E00CC430D /* NotificationPromptViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -376,6 +376,7 @@
 		81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedCollectionViewLayout.swift; sourceTree = "<group>"; };
 		81BABDFB23D93200006F40BF /* MediaProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaProgressManager.swift; sourceTree = "<group>"; };
 		81BABDFD23D9409D006F40BF /* EmptyStateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateCell.swift; sourceTree = "<group>"; };
+		81BBE7AD23D9448C00405C7D /* NotificationPromptCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPromptCell.swift; sourceTree = "<group>"; };
 		81C78A1E21F7FBC8009ACE74 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonMarkRenderer.swift; sourceTree = "<group>"; };
 		81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
@@ -395,7 +396,6 @@
 		81FB6CAF22875FCD00CC430D /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		81FB6CB122875FCD00CC430D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		81FB6CB322875FCD00CC430D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		81FB6CC52287B96E00CC430D /* NotificationPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPromptViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -646,7 +646,6 @@
 				811BEB17211A7BA900C037C2 /* SearchViewController.swift */,
 				812311D8211BD7A100D596EB /* SettingsViewController.swift */,
 				8116F21720F9A918005A2171 /* PantryViewController.swift */,
-				81FB6CC52287B96E00CC430D /* NotificationPromptViewController.swift */,
 				81A812832111272900F90891 /* SeriesViewController.swift */,
 				816A4F842116906000179C76 /* ShelfViewController.swift */,
 				81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */,
@@ -668,7 +667,7 @@
 				8146A5CA23D7F85200E57E0C /* EpisodeCell.swift */,
 				81938C2720FA6E1A0080DEFF /* HeaderCell.swift */,
 				8146A5CC23D7F8D400E57E0C /* LatestEpisodeCell.swift */,
-				81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */,
+				81BBE7AD23D9448C00405C7D /* NotificationPromptCell.swift */,
 				81B61F6C211D198A001B517F /* PantryPostCell.swift */,
 				81A81285211130F000F90891 /* SeriesMessageCell.swift */,
 				8106D823211E4E7100CD8E7C /* SearchHeaderCell.swift */,
@@ -678,6 +677,7 @@
 				8106D82D211E4F8F00CD8E7C /* SearchSeriesCell.swift */,
 				8106D82F211E4F9C00CD8E7C /* SearchMessagesCell.swift */,
 				81A5DA66211E92DB00338287 /* SearchSpeakersCell.swift */,
+				81ED74F820FA8C7100BE1F4C /* SeriesCell.swift */,
 				8146A5C823D7F81500E57E0C /* SermonGuideCell.swift */,
 				817BB7B62113BE58005DE341 /* ShelfCell.swift */,
 				817BB7BA2113C100005DE341 /* TablePostCell.swift */,
@@ -993,11 +993,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				81ED74F920FA8C7100BE1F4C /* SeriesCell.swift in Sources */,
-				81FB6CC62287B96E00CC430D /* NotificationPromptViewController.swift in Sources */,
 				8146A5C923D7F81500E57E0C /* SermonGuideCell.swift in Sources */,
 				81938BEB20F9AF590080DEFF /* Fonts.swift in Sources */,
 				81CFC91C20FB0C49006BF518 /* ContentViewController.swift in Sources */,
 				81245D6C217BBDCA007B2277 /* Contentful+Question.swift in Sources */,
+				81BBE7AE23D9448C00405C7D /* NotificationPromptCell.swift in Sources */,
 				8160E8DF21F6CE2D00FB329B /* Contentful+Intro.swift in Sources */,
 				811BEB18211A7BAA00C037C2 /* SearchViewController.swift in Sources */,
 				8194552823554F3F000BCDBB /* ImageViewController.swift in Sources */,
@@ -1289,7 +1289,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = community/community.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5Z8S3JU749;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1319,7 +1319,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = community/community.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5Z8S3JU749;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1346,7 +1346,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = 5Z8S3JU749;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1373,7 +1373,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = 5Z8S3JU749;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

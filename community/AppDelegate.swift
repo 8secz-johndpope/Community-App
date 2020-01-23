@@ -21,6 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MediaProgressManager.initialize()
         FirebaseApp.configure()
         
+        let promptCount: Int = Storage.get(.notificationPromptDisplayCount) ?? 0
+        Storage.set(promptCount + 1, for: .notificationPromptDisplayCount)
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = TabBarViewController()
         window?.makeKeyAndVisible()

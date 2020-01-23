@@ -12,11 +12,13 @@ final class SermonGuidesViewController: ViewController, HeaderViewController, Re
     
     enum Cell {
         case header(String, String)
+        case notificationPrompt
         case guide(Contentful.Post)
         
         func size(in collectionView: UICollectionView) -> CGSize {
             switch self {
             case let .header(title, subtitle): return HeaderCell.size(ofTitle: title, subtitle: subtitle, in: collectionView)
+            case .notificationPrompt:          return NotificationPromptCell.size(in: collectionView)
             case .guide:                       return CGSize(width: collectionView.width - .padding * 2, height: collectionView.width - .padding * 2)
             }
         }
@@ -50,6 +52,7 @@ final class SermonGuidesViewController: ViewController, HeaderViewController, Re
         collectionView.add(toSuperview: view).customize {
             $0.constrainEdgesToSuperview()
             $0.registerCell(HeaderCell.self)
+            $0.registerCell(NotificationPromptCell.self)
             $0.registerCell(SermonGuideCell.self)
             $0.dataSource = self
             $0.delegate = self
@@ -85,12 +88,21 @@ final class SermonGuidesViewController: ViewController, HeaderViewController, Re
     private func reload() {
         headerLabel.text = Contentful.LocalStorage.table?.title
         
-        cells.removeAll()
-        cells.append(.header(Contentful.LocalStorage.table?.title ?? "", Contentful.LocalStorage.table?.info ?? ""))
-        cells.append(contentsOf: Contentful.LocalStorage.table?.posts.map(Cell.guide) ?? [])
-        
-        loadingIndicator.stopAnimating()
-        collectionView.reloadData()
+        NotificationManager.shouldShowPrompt { [weak self] shouldShow in
+            guard let self = self else { return }
+            
+            self.cells.removeAll()
+            self.cells.append(.header(Contentful.LocalStorage.table?.title ?? "", Contentful.LocalStorage.table?.info ?? ""))
+            
+            if shouldShow {
+                self.cells.append(.notificationPrompt)
+            }
+            
+            self.cells.append(contentsOf: Contentful.LocalStorage.table?.posts.map(Cell.guide) ?? [])
+            
+            self.loadingIndicator.stopAnimating()
+            self.collectionView.reloadData()
+        }
     }
     
 }
@@ -106,6 +118,20 @@ extension SermonGuidesViewController: UICollectionViewDataSource {
         case let .header(title, subtitle):
             let cell: HeaderCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(title: title, subtitle: subtitle)
+            return cell
+        case .notificationPrompt:
+            let cell: NotificationPromptCell = collectionView.dequeueCell(for: indexPath)
+            cell.didDecide = { [weak self] granted in
+                if granted {
+                    NotificationManager.register { _ in
+                        self?.reload()
+                    }
+                }
+                else {
+                    Storage.set(true, for: .notificationsWereDeclined)
+                    self?.reload()
+                }
+            }
             return cell
         case let .guide(guide):
             let cell: SermonGuideCell = collectionView.dequeueCell(for: indexPath)
