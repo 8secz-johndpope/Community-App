@@ -8,7 +8,7 @@
 import UIKit
 import Diakoneo
 
-final class SermonGuidesViewController: ViewController, HeaderViewController {
+final class SermonGuidesViewController: ViewController, HeaderViewController, ReloadingViewController {
     
     enum Cell {
         case header(String, String)
@@ -28,11 +28,12 @@ final class SermonGuidesViewController: ViewController, HeaderViewController {
     let shadowView  = ShadowView()
     let headerView  = UIView()
     let headerLabel = UILabel()
+    let refreshControl = UIRefreshControl()
     
     var isShowingHeaderLabel = false
     
     private let collectionView = UICollectionView(layout: .vertical(lineSpacing: .padding, sectionInset: UIEdgeInsets(bottom: .padding)))
-    private let refreshControl = UIRefreshControl()
+    private let loadingIndicator = LoadingView()
     
     override func viewDidAppearForFirstTime() {
         super.viewDidAppearForFirstTime()
@@ -58,6 +59,13 @@ final class SermonGuidesViewController: ViewController, HeaderViewController {
             $0.contentInset.top = 44
         }
         
+        loadingIndicator.add(toSuperview: view).customize {
+            $0.pinCenterX(to: view).pinCenterY(to: view)
+            $0.constrainWidth(to: 30).constrainHeight(to: 30)
+            $0.color = .text
+            $0.startAnimating()
+        }
+        
         refreshControl.add(toSuperview: collectionView).customize {
             $0.addTarget(self, action: #selector(reloadContent), for: .valueChanged)
             $0.tintColor = .text
@@ -81,6 +89,7 @@ final class SermonGuidesViewController: ViewController, HeaderViewController {
         cells.append(.header(Contentful.LocalStorage.table?.title ?? "", Contentful.LocalStorage.table?.info ?? ""))
         cells.append(contentsOf: Contentful.LocalStorage.table?.posts.map(Cell.guide) ?? [])
         
+        loadingIndicator.stopAnimating()
         collectionView.reloadData()
     }
     

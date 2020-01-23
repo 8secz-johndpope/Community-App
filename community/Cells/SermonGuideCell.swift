@@ -36,7 +36,7 @@ final class SermonGuideCell: CollectionViewCell {
             $0.pinBottom(to: containerView.container).constrainHeight(to: 60)
             
             if #available(iOS 13, *) {
-                blurView.effect = UIBlurEffect(style: .systemUltraThinMaterial)
+                blurView.effect = UIBlurEffect(style: .systemChromeMaterialDark)
             }
         }
 

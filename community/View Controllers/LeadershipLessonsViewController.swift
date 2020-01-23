@@ -8,7 +8,7 @@
 import UIKit
 import Diakoneo
 
-final class LeadershipLessonsViewController: ViewController, HeaderViewController {
+final class LeadershipLessonsViewController: ViewController, HeaderViewController, ReloadingViewController {
     
     enum Cell {
         case latest(Contentful.Post)
@@ -32,9 +32,8 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
         }
     }
     
-    private let collectionView = UICollectionView(layout: .vertical(itemSpacing: .padding, lineSpacing: .padding, sectionInset: UIEdgeInsets(bottom: .padding)))
-    private let imageView      = LoadingImageView()
-    private let refreshControl = UIRefreshControl()
+    private let collectionView  = UICollectionView(layout: .vertical(itemSpacing: .padding, lineSpacing: .padding, sectionInset: UIEdgeInsets(bottom: .padding)))
+    private let imageViewHolder = UIStackView()
     
     private var cells: [Cell] = []
     
@@ -42,6 +41,7 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
     let shadowView  = ShadowView()
     let headerView  = UIView()
     let headerLabel = UILabel()
+    let refreshControl = UIRefreshControl()
     
     var isShowingHeaderLabel = false
     
@@ -55,12 +55,24 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
     override func setup() {
         super.setup()
         
-        imageView.add(toSuperview: view).customize {
+        imageViewHolder.add(toSuperview: view).customize {
             $0.pinLeading(to: view).pinTrailing(to: view)
-            $0.pinTop(to: view).pinSafely(.bottom, to: view, .top, plus: 400)
-            $0.image = UIImage(named: "tile3")
-            $0.contentMode = .scaleAspectFill
-            $0.showDimmer = true
+            $0.pinSafely(.bottom, to: view, .top, plus: 400)
+            $0.spacing = 0
+            $0.axis = .vertical
+            $0.alignment = .fill
+            $0.distribution = .fillEqually
+        }
+        
+        (0...1).forEach { index in
+            LoadingImageView().add(toStackview: imageViewHolder).customize {
+                $0.pinLeading(to: imageViewHolder).pinTrailing(to: imageViewHolder)
+                $0.constrainHeight(to: $0, .width)
+                $0.image = UIImage(named: "tile3")
+                $0.contentMode = .scaleAspectFill
+                $0.showDimmer = true
+                $0.transform = .rotate(index.isEven ? .pi : 0)
+            }
         }
         
         view.backgroundColor = .background
@@ -77,7 +89,7 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
         
         refreshControl.add(toSuperview: collectionView).customize {
             $0.addTarget(self, action: #selector(reloadContent), for: .valueChanged)
-            $0.tintColor = .text
+            $0.tintColor = .white
         }
         
         setupHeader(in: view, title: Contentful.LocalStorage.leadershipLessons?.title)
@@ -132,7 +144,8 @@ extension LeadershipLessonsViewController: UICollectionViewDataSource {
 extension LeadershipLessonsViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        imageView.transform = .translate(0, -scrollView.adjustedOffset.y)//.limited(0, .greatestFiniteMagnitude))
+        //imageView.transform = .translate(0, -scrollView.adjustedOffset.y)//.limited(0, .greatestFiniteMagnitude))
+        imageViewHolder.transform = .translate(0, -scrollView.adjustedOffset.y)//.limited(0, .greatestFiniteMagnitude))
         didScroll()
     }
     
