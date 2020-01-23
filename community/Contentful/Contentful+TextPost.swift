@@ -49,6 +49,9 @@ enum Media: Equatable {
             else if url.isVideo {
                 completion(.success(Data(url: url, mediaType: .video, message: nil)))
             }
+            else {
+                completion(.failure(.missingURL))
+            }
         case .youtube(let id):
             YouTube.fetchVideo(id: id) { url in
                 DispatchQueue.main.async {

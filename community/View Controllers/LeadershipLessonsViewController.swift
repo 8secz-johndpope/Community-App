@@ -35,7 +35,16 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
     private let collectionView  = UICollectionView(layout: .vertical(itemSpacing: .padding, lineSpacing: .padding, sectionInset: UIEdgeInsets(bottom: .padding)))
     private let imageViewHolder = UIStackView()
     
-    private var cells: [Cell] = []
+    private var cells: [Cell] {
+        switch selection {
+        case .latest:   return latestCells
+        case .unplayed: return unplayedCells
+        }
+    }
+    
+    private var latestCells: [Cell] = []
+    private var unplayedCells: [Cell] = []
+    private var selection: ToggleCell.Selection = .latest
     
     var scrollView: UIScrollView { collectionView }
     let shadowView  = ShadowView()
@@ -85,6 +94,7 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
             $0.dataSource = self
             $0.delegate = self
             $0.backgroundColor = .clear
+            $0.alwaysBounceVertical = true
         }
         
         refreshControl.add(toSuperview: collectionView).customize {
@@ -97,6 +107,10 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
         Notifier.onLeadershipLessonsChanged.subscribePast(with: self) { [weak self] in
             self?.reload()
         }.onQueue(.main)
+        
+        Notifier.onMediaProgressSaved.subscribePast(with: self) { [weak self] in
+            self?.reload()
+        }.onQueue(.main)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -104,11 +118,16 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
     }
     
     private func reload() {
-        guard let leadershipLessons = Contentful.LocalStorage.leadershipLessons else { return }
+        guard
+            let leadershipLessons = Contentful.LocalStorage.leadershipLessons,
+            let latest = leadershipLessons.latest
+        else { return }
         
         headerLabel.text = leadershipLessons.title
         
-        cells = [.latest(leadershipLessons.episodes[0]), .toggle] + Array(leadershipLessons.episodes.dropFirst()).map(Cell.episode)
+        latestCells = [.latest(latest), .toggle] + leadershipLessons.recent.map(Cell.episode)
+        unplayedCells = [.latest(latest), .toggle] + leadershipLessons.unplayed.map(Cell.episode)
+        
         collectionView.reloadData()
     }
     
@@ -117,7 +136,7 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
 extension LeadershipLessonsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cells.count
+        cells.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -128,8 +147,9 @@ extension LeadershipLessonsViewController: UICollectionViewDataSource {
             return cell
         case .toggle:
             let cell: ToggleCell = collectionView.dequeueCell(for: indexPath)
-            cell.didSelect = { selection in
-                print("Selected: \(selection)")
+            cell.didSelect = { [weak self] selection in
+                self?.selection = selection
+                self?.collectionView.reloadData()
             }
             return cell
         case .episode(let episode):
@@ -144,8 +164,7 @@ extension LeadershipLessonsViewController: UICollectionViewDataSource {
 extension LeadershipLessonsViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        //imageView.transform = .translate(0, -scrollView.adjustedOffset.y)//.limited(0, .greatestFiniteMagnitude))
-        imageViewHolder.transform = .translate(0, -scrollView.adjustedOffset.y)//.limited(0, .greatestFiniteMagnitude))
+        imageViewHolder.transform = .translate(0, -scrollView.adjustedOffset.y)
         didScroll()
     }
     

@@ -18,6 +18,10 @@ extension Contentful {
         let createdAt: Date
         let updatedAt: Date
         
+        var latest: Contentful.Post? {
+            episodes.at(0)
+        }
+        
         var episodes: [Contentful.Post] {
             var episodes: [Contentful.Post] = []
             
@@ -28,6 +32,14 @@ extension Contentful {
             }
             
             return episodes
+        }
+        
+        var recent: [Contentful.Post] {
+            Array(episodes.dropFirst())
+        }
+        
+        var unplayed: [Contentful.Post] {
+            recent.filter { !MediaProgressManager.isComplete(post: $0) }
         }
         
         init?(entry: Contentful.Entry) {
