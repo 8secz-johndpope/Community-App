@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/jlandon/Diakoneo.git",
         "state": {
           "branch": "master",
-          "revision": "1a76d24f0ed3f48cbf3a349bba1293b01f00743b",
+          "revision": "805392e2f90f48ca26e37fde00dd0d7455910967",
           "version": null
         }
       },
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/kean/Nuke",
         "state": {
           "branch": null,
-          "revision": "b323dd3d7b82fa973fb7350bb505d7a52795b995",
-          "version": "8.3.0"
+          "revision": "051fb936fbc0176655acb1085b15be477f3d5015",
+          "version": "8.4.0"
         }
       }
     ]

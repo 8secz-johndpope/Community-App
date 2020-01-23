@@ -14,6 +14,7 @@ extension Contentful {
         let id: String
         let question: String
         let info: String
+        let references: [String]
         let createdAt: Date
         let updatedAt: Date
         
@@ -22,11 +23,12 @@ extension Contentful {
                 let question = entry.fields.string(forKey: "question")
             else { return nil }
             
-            self.id        = entry.id
-            self.question  = question
-            self.info      = entry.fields.string(forKey: "description") ?? ""
-            self.createdAt = entry.createdAt
-            self.updatedAt = entry.updatedAt
+            self.id         = entry.id
+            self.question   = question
+            self.info       = entry.fields.string(forKey: "description") ?? ""
+            self.references = entry.fields.array(forKey: "references").strings
+            self.createdAt  = entry.createdAt
+            self.updatedAt  = entry.updatedAt
         }
     }
     

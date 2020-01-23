@@ -13,12 +13,15 @@ final class QuestionView: View {
     private let question: Contentful.Question
     private var isExpanded = false
     
-    private let titleLabel  = UILabel()
-    private let chevronView = UILabel()
-    private let lineView    = UIView()
-    private let contentView = SelfSizingTextView()
+    private let titleLabel     = UILabel()
+    private let chevronView    = UILabel()
+    private let lineView       = UIView()
+    private let contentView    = SelfSizingTextView()
+    private let scriptureStack = UIStackView()
     
     private var infoConstraint = NSLayoutConstraint()
+    
+    private var scripture: [String : String] = [:]
     
     required init(question: Contentful.Question) {
         self.question = question
@@ -80,10 +83,27 @@ final class QuestionView: View {
             $0.isEditable = false
             $0.isSelectable = true
             $0.linkTextAttributes = [.foregroundColor : UIColor.link]
+        }
+        
+        let stackBackground = UIView(superview: self).customize {
+            $0.pinLeading(to: self).pinTrailing(to: self)
+            $0.pinTop(to: contentView, .bottom)
+            $0.backgroundColor = .backgroundAlt
+        }
+        
+        scriptureStack.add(toSuperview: self).customize {
+            $0.pinLeading(to: self, plus: .padding).pinTrailing(to: self, plus: -.padding)
+            $0.pinTop(to: contentView, .bottom)
+            $0.alignment = .fill
+            $0.distribution = .equalSpacing
+            $0.spacing = .padding
+            $0.axis = .vertical
             
-            infoConstraint = $0.constrain(.bottom, to: self, .bottom, atPriority: .required - 1)
+            infoConstraint = $0.constrain(.bottom, to: self, .bottom, plus: -.padding, atPriority: .required - 1)
             infoConstraint.isActive = false
         }
+        
+        stackBackground.pinBottom(to: self, atPriority: .required - 5)
         
         configure()
         
@@ -114,6 +134,88 @@ final class QuestionView: View {
     private func configure() {
         titleLabel.text = question.question
         contentView.attributedText = question.info.renderMarkdown(withBaseFont: .regular(size: 14))
+        
+        let parameters: [ESV.Parameter] = ESV.Parameter.default + [
+            .includeReferences(false),
+            .includeVerseNumbers(false),
+            .includeFirstVerseNumbers(false),
+        ]
+        
+        let processor = SerialProcessor()
+        
+        for reference in question.references {
+            processor.enqueue { [weak self] dequeue in
+                ESV.fetch(endpoint: .text, reference: reference, parameters: parameters) { result in
+                    if let value = result.value, let passage = value.passages.first {
+                        self?.scripture[value.canonical] = passage.trimmingCharacters(in: .whitespacesAndNewlines)
+                    }
+                    dequeue()
+                }
+            }
+        }
+        
+        processor.enqueue { [weak self] dequeue in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                for (reference, passage) in self.scripture {
+                    QuestionScriptureView(reference: reference, passage: passage).add(toStackview: self.scriptureStack)
+                }
+            }
+            dequeue()
+        }
+    }
+    
+}
+
+final class QuestionScriptureView: View {
+    
+    private let reference: String
+    private let passage: String
+    
+    private let referenceLabel = UILabel()
+    private let passageView = SelfSizingTextView()
+    private let lineView = UIView()
+    
+    required init(reference: String, passage: String) {
+        self.reference = reference
+        self.passage = passage
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func setup() {
+        
+        backgroundColor = .backgroundAlt
+        
+        referenceLabel.add(toSuperview: self).customize {
+            $0.pinLeading(to: self).pinTrailing(to: self)
+            $0.pinTop(to: self).constrainSize(toFit: .vertical)
+            $0.numberOfLines = 0
+            $0.font = .karla(.bold, size: 14)
+            $0.textColor = .text
+            $0.text = reference
+        }
+        
+        passageView.add(toSuperview: self).customize {
+            $0.pinLeading(to: self).pinTrailing(to: self)
+            $0.pinTop(to: referenceLabel, .bottom).pinBottom(to: self)
+            $0.backgroundColor = .backgroundAlt
+            $0.textContainerInset = UIEdgeInsets(top: 8, bottom: 0, left: 8, right: 0)
+            $0.isEditable = false
+            $0.isSelectable = true
+            $0.linkTextAttributes = [.foregroundColor : UIColor.link]
+            $0.attributedText = passage.attributed.font(.karla(.italic, size: 14)).color(.text).lineSpacing(5)
+        }
+        
+        lineView.add(toSuperview: self).customize {
+            $0.pinLeading(to: self).constrainWidth(to: 3)
+            $0.pinTop(to: passageView, plus: 8).pinBottom(to: passageView)
+            $0.backgroundColor = .blockQuote
+        }
+        
     }
     
 }
