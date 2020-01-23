@@ -155,6 +155,7 @@
 		81A81286211130F000F90891 /* SeriesMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A81285211130F000F90891 /* SeriesMessageCell.swift */; };
 		81B61F6D211D198A001B517F /* PantryPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6C211D198A001B517F /* PantryPostCell.swift */; };
 		81B61F6F211D2715001B517F /* LeftAlignedCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */; };
+		81BABDFC23D93200006F40BF /* MediaProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BABDFB23D93200006F40BF /* MediaProgressManager.swift */; };
 		81C78A1F21F7FBC8009ACE74 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C78A1E21F7FBC8009ACE74 /* Analytics.swift */; };
 		81CFC91420FAFF26006BF518 /* CommonMarkRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */; };
 		81CFC91A20FB03C0006BF518 /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */; };
@@ -372,6 +373,7 @@
 		81A81285211130F000F90891 /* SeriesMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesMessageCell.swift; sourceTree = "<group>"; };
 		81B61F6C211D198A001B517F /* PantryPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PantryPostCell.swift; sourceTree = "<group>"; };
 		81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedCollectionViewLayout.swift; sourceTree = "<group>"; };
+		81BABDFB23D93200006F40BF /* MediaProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaProgressManager.swift; sourceTree = "<group>"; };
 		81C78A1E21F7FBC8009ACE74 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonMarkRenderer.swift; sourceTree = "<group>"; };
 		81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
@@ -536,6 +538,7 @@
 				8160E8DA21F6AEE300FB329B /* Storage.swift */,
 				81C78A1E21F7FBC8009ACE74 /* Analytics.swift */,
 				8146A5D023D7F94400E57E0C /* HeaderViewController.swift */,
+				81BABDFB23D93200006F40BF /* MediaProgressManager.swift */,
 				81F83323234407A900D20DF9 /* Theme */,
 				81F83320234406F500D20DF9 /* View Controllers */,
 				81F833212344071000D20DF9 /* Cells */,
@@ -995,6 +998,7 @@
 				8160E8DF21F6CE2D00FB329B /* Contentful+Intro.swift in Sources */,
 				811BEB18211A7BAA00C037C2 /* SearchViewController.swift in Sources */,
 				8194552823554F3F000BCDBB /* ImageViewController.swift in Sources */,
+				81BABDFC23D93200006F40BF /* MediaProgressManager.swift in Sources */,
 				81A5DA67211E92DB00338287 /* SearchSpeakersCell.swift in Sources */,
 				81938C2820FA6E1A0080DEFF /* HeaderCell.swift in Sources */,
 				8106D82C211E4F7200CD8E7C /* SearchPostsCell.swift in Sources */,

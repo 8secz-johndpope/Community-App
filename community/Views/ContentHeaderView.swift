@@ -78,7 +78,33 @@ final class ContentHeaderView: View {
         }
     }
     
+    var percentComplete: Double {
+        let duration = self.duration
+        let currentTime = self.currentTime
+        
+        if duration > 0 {
+            return currentTime/duration
+        }
+        else {
+            return 0
+        }
+    }
+    
     deinit {
+        if !currentTime.isNaN && !currentTime.isInfinite {
+            if let content = content {
+                switch content {
+                case .message(let message):
+                    MediaProgressManager.add(message: message, timestamp: currentTime, progress: percentComplete)
+                case .textPost(let post):
+                    MediaProgressManager.add(post: .text(post), timestamp: currentTime, progress: percentComplete)
+                }
+            }
+            else if let message = message {
+                MediaProgressManager.add(message: message, timestamp: currentTime, progress: percentComplete)
+            }
+        }
+        
         audioPlayer.stop()
         videoView.stop()
         AVAudioSession.configureBackgroundAudio(isEnabled: false)
@@ -385,11 +411,19 @@ extension ContentHeaderView {
             mediaType = .audio
             audioPlayer.autoPlay = true
             audioPlayer.setup(url: asset.url)
+            
+            let startTime = MediaProgressManager.timestamp(forMessage: message)
+            audioPlayer.seek(to: startTime ?? 0)
+            
             imageView.isHidden = false
         case .video(let asset):
             mediaType = .video
             videoView.autoPlay = true
             videoView.setup(url: asset.url)
+            
+            let startTime = MediaProgressManager.timestamp(forMessage: message)
+            videoView.seek(to: startTime ?? 0)
+            
             imageView.isHidden = true
         }
     }
@@ -430,10 +464,16 @@ extension ContentHeaderView {
                         self.mediaType = .audio
                         self.audioPlayer.autoPlay = false
                         self.audioPlayer.setup(url: data.url)
+                        
+                        let startTime = MediaProgressManager.timestamp(forPost: .text(textPost))
+                        self.audioPlayer.seek(to: startTime ?? 0)
                     case .video:
                         self.mediaType = .video
                         self.videoView.autoPlay = false
                         self.videoView.setup(url: data.url)
+                        
+                        let startTime = MediaProgressManager.timestamp(forPost: .text(textPost))
+                        self.videoView.seek(to: startTime ?? 0)
                     }
                 case .failure:
                     self.imageView.isHidden = false

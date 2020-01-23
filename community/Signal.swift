@@ -16,4 +16,5 @@ enum Notifier {
     static let onSearchChanged             = Signal<Void>()
     static let onIntroChanged              = Signal<Void>()
     static let onContentLoaded             = Signal<Void>()
+    static let onMediaProgressSaved        = Signal<Void>()
 }
