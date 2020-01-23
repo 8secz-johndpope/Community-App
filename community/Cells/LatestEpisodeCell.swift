@@ -10,10 +10,10 @@ import Diakoneo
 
 final class LatestEpisodeCell: CollectionViewCell {
         
-        private let titleLabel    = UILabel()
-        private let subtitleLabel = UILabel()
-        private let dateLabel     = UILabel()
-        private let button        = UIButton()
+        private let titleLabel   = UILabel()
+        private let authorsLabel = UILabel()
+        private let dateLabel    = UILabel()
+        private let button       = UIButton()
         
         override func setup() {
             super.setup()
@@ -35,34 +35,42 @@ final class LatestEpisodeCell: CollectionViewCell {
 //                }
             }
             
-            dateLabel.add(toSuperview: contentView).customize {
-                $0.pinLeading(to: contentView, plus: .padding).pinBottom(to: button, .top, plus: -.padding)
-                $0.constrainSize(toFit: .vertical, .horizontal)
-                $0.font = .karla(.bold, size: 14)
+            let stackView = UIStackView(superview: contentView).customize {
+                $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
+                $0.pinBottom(to: button, .top, plus: -.padding)
+                $0.axis = .vertical
+                $0.alignment = .fill
+                $0.distribution = .fill
+            }
+            
+            titleLabel.add(toStackview: stackView).customize {
+                $0.constrainSize(toFit: .vertical)
+                $0.numberOfLines = 0
+                $0.font = .crimsonText(.semiBold, size: 22)
                 $0.textColor = .white
             }
             
-            subtitleLabel.add(toSuperview: contentView).customize {
-                $0.pinLeading(to: contentView, plus: .padding).pinBottom(to: dateLabel, .top, plus: -5)
-                $0.constrainSize(toFit: .vertical, .horizontal)
+            authorsLabel.add(toStackview: stackView).customize {
+                $0.constrainSize(toFit: .vertical)
                 $0.font = .karla(.italic, size: 14)
                 $0.textColor = .white
             }
             
-            titleLabel.add(toSuperview: contentView).customize {
-                $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
-                $0.pinBottom(to: subtitleLabel, .top, plus: -10).constrainSize(toFit: .vertical)
-                $0.numberOfLines = 0
-                $0.font = .crimsonText(.semiBold, size: 25)
+            dateLabel.add(toStackview: stackView).customize {
+                $0.constrainSize(toFit: .vertical)
+                $0.font = .karla(.bold, size: 14)
                 $0.textColor = .white
             }
+            
+            stackView.setCustomSpacing(10, after: titleLabel)
+            stackView.setCustomSpacing(5, after: authorsLabel)
             
             let leaderTitle = UILabel(superview: contentView).customize {
                 $0.pinLeading(to: contentView, plus: .padding).pinTrailing(to: contentView, plus: -.padding)
                 $0.pinTop(to: contentView, plus: 44).constrainSize(toFit: .vertical)
                 $0.textColor = .white
                 $0.font = .header
-                $0.text = "Leadership Lessons"
+                $0.text = Contentful.LocalStorage.leadershipLessons?.title
             }
             
             UILabel(superview: contentView).customize {
@@ -71,7 +79,7 @@ final class LatestEpisodeCell: CollectionViewCell {
                 $0.textColor = .white
                 $0.font = .subHeader
                 $0.numberOfLines = 0
-                $0.text = "New Episodes Weekly"
+                $0.text = Contentful.LocalStorage.leadershipLessons?.info
             }
             
 //            addGesture(type: .tap) { [weak self] _ in
@@ -89,8 +97,10 @@ final class LatestEpisodeCell: CollectionViewCell {
             //self.episode = episode
             
             titleLabel.text = episode.title
-            subtitleLabel.text = "Joe Daly, John Elmore, and Blake Holmes"
+            authorsLabel.text = episode.authors.map { $0.name }.joined(separator: ", ")
             dateLabel.text = DateFormatter.readable.string(from: episode.publishDate)
+            
+            authorsLabel.isHidden = episode.authors.isEmpty
         }
         
     }

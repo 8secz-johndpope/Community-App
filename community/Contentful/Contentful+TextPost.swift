@@ -67,10 +67,9 @@ extension Contentful {
         let title: String
         let content: String
         let publishDate: Date
-        let authorID: String
+        let authorIDs: [String]
         let postImageAssetID: String
         let mediaURL: URL?
-        let isInTable: Bool
         let createdAt: Date
         let updatedAt: Date
         let type: PostType
@@ -80,8 +79,16 @@ extension Contentful {
             return media != nil
         }
         
-        var author: Contentful.Author? {
-            return Contentful.LocalStorage.authors.first(where: { $0.id == authorID })
+        var authors: [Contentful.Author] {
+            var authors: [Contentful.Author] = []
+            
+            for id in authorIDs {
+                if let author = Contentful.LocalStorage.authors.first(where: { $0.id == id }) {
+                    authors.append(author)
+                }
+            }
+            
+            return authors
         }
         
         var image: Contentful.Asset? {
@@ -93,7 +100,6 @@ extension Contentful {
                 let title = entry.fields.string(forKey: "title"),
                 let content = entry.fields.string(forKey: "content"),
                 let publishDate = entry.fields.date(forKey: "publishDate", formatter: .yearMonthDay),
-                let isInTable = entry.fields.bool(forKey: "tableQueue"),
                 publishDate < Date()
             else { return nil }
             
@@ -101,10 +107,9 @@ extension Contentful {
             self.title            = title
             self.content          = content
             self.publishDate      = publishDate
-            self.authorID         = entry.fields.dictionary(forKeys: "author", "sys").string(forKey: "id") ?? ""
+            self.authorIDs        = entry.fields.array(forKey: "authors").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
             self.postImageAssetID = entry.fields.dictionary(forKeys: "postImage", "sys").string(forKey: "id") ?? ""
-            self.mediaURL         = entry.fields.url(forKey: "mediaUrl")
-            self.isInTable        = isInTable
+            self.mediaURL         = entry.fields.url(forKey: "mediaUrl") ?? entry.fields.url(forKey: "mediaUrl", encode: true)
             self.createdAt        = entry.createdAt
             self.updatedAt        = entry.updatedAt
             self.type             = entry.fields.enum(forKey: "type") ?? .post

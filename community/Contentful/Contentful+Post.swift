@@ -107,10 +107,10 @@ extension Contentful.Post {
         }
     }
     
-    var isInTable: Bool {
+    var authors: [Contentful.Author] {
         switch self {
-        case .text(let post):     return post.isInTable
-        case .external(let post): return post.isInTable
+        case .text(let post): return post.authors
+        case .external:       return []
         }
     }
     

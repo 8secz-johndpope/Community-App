@@ -14,7 +14,7 @@ extension MPNowPlayingInfoCenter {
         update(
             title: textPost.title,
             organization: nil,
-            author: textPost.author?.name,
+            author: textPost.authors.map { $0.name }.joined(separator: ", "),
             url: textPost.mediaURL,
             image: image,
             currentTime: currentTime,

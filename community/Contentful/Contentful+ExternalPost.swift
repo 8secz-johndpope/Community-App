@@ -16,7 +16,6 @@ extension Contentful {
         let publishDate: Date
         let url: URL
         let postImageAssetID: String
-        let isInTable: Bool
         let createdAt: Date
         let updatedAt: Date
         let type: PostType
@@ -29,8 +28,7 @@ extension Contentful {
             guard
                 let title = entry.fields.string(forKey: "title"),
                 let publishDate = entry.fields.date(forKey: "publishDate", formatter: .yearMonthDay),
-                let url = entry.fields.url(forKey: "url"),
-                let isInTable = entry.fields.bool(forKey: "tableQueue"),
+                let url = entry.fields.url(forKey: "url") ?? entry.fields.url(forKey: "url", encode: true),
                 publishDate < Date()
             else { return nil }
             
@@ -39,7 +37,6 @@ extension Contentful {
             self.publishDate      = publishDate
             self.url              = url
             self.postImageAssetID = entry.fields.dictionary(forKeys: "postImage", "sys").string(forKey: "id") ?? ""
-            self.isInTable        = isInTable
             self.createdAt        = entry.createdAt
             self.updatedAt        = entry.updatedAt
             self.type             = entry.fields.enum(forKey: "type") ?? .post
