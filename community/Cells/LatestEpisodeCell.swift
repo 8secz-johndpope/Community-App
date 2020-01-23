@@ -29,10 +29,7 @@ final class LatestEpisodeCell: CollectionViewCell {
                 $0.setBackgroundColor(.background, for: .normal)
                 $0.setBackgroundColor(.backgroundAlt, for: .highlighted)
                 $0.cornerRadius = 4
-//                $0.addTarget(for: .touchUpInside) { [weak self] in
-//                    guard let self = self, let episode = self.episode else { return }
-//                    self.delegate?.didSelect(episode: episode, in: self)
-//                }
+                $0.isUserInteractionEnabled = false
             }
             
             let stackView = UIStackView(superview: contentView).customize {

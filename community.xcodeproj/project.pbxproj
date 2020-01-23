@@ -156,6 +156,7 @@
 		81B61F6D211D198A001B517F /* PantryPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6C211D198A001B517F /* PantryPostCell.swift */; };
 		81B61F6F211D2715001B517F /* LeftAlignedCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */; };
 		81BABDFC23D93200006F40BF /* MediaProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BABDFB23D93200006F40BF /* MediaProgressManager.swift */; };
+		81BABDFE23D9409D006F40BF /* EmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BABDFD23D9409D006F40BF /* EmptyStateCell.swift */; };
 		81C78A1F21F7FBC8009ACE74 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C78A1E21F7FBC8009ACE74 /* Analytics.swift */; };
 		81CFC91420FAFF26006BF518 /* CommonMarkRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */; };
 		81CFC91A20FB03C0006BF518 /* StatusBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */; };
@@ -374,6 +375,7 @@
 		81B61F6C211D198A001B517F /* PantryPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PantryPostCell.swift; sourceTree = "<group>"; };
 		81B61F6E211D2715001B517F /* LeftAlignedCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedCollectionViewLayout.swift; sourceTree = "<group>"; };
 		81BABDFB23D93200006F40BF /* MediaProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaProgressManager.swift; sourceTree = "<group>"; };
+		81BABDFD23D9409D006F40BF /* EmptyStateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateCell.swift; sourceTree = "<group>"; };
 		81C78A1E21F7FBC8009ACE74 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		81CFC91320FAFF26006BF518 /* CommonMarkRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonMarkRenderer.swift; sourceTree = "<group>"; };
 		81CFC91920FB03C0006BF518 /* StatusBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewController.swift; sourceTree = "<group>"; };
@@ -662,6 +664,7 @@
 			isa = PBXGroup;
 			children = (
 				81938BCD20F9ABC70080DEFF /* CollectionViewCell.swift */,
+				81BABDFD23D9409D006F40BF /* EmptyStateCell.swift */,
 				8146A5CA23D7F85200E57E0C /* EpisodeCell.swift */,
 				81938C2720FA6E1A0080DEFF /* HeaderCell.swift */,
 				8146A5CC23D7F8D400E57E0C /* LatestEpisodeCell.swift */,
@@ -1058,6 +1061,7 @@
 				81938C2620FA6AAC0080DEFF /* UILabel+Extensions.swift in Sources */,
 				81ED74FB20FA8EAD00BE1F4C /* Contentful+LocalStorage.swift in Sources */,
 				8116F21820F9A918005A2171 /* PantryViewController.swift in Sources */,
+				81BABDFE23D9409D006F40BF /* EmptyStateCell.swift in Sources */,
 				81938C1B20F9C1280080DEFF /* Contentful+Entry.swift in Sources */,
 				81938BF320F9B0CB0080DEFF /* Numbers.swift in Sources */,
 				8106D826211E4E8F00CD8E7C /* SearchSuggestionCell.swift in Sources */,

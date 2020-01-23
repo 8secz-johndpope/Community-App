@@ -14,6 +14,7 @@ extension Contentful {
         let id: String
         let title: String
         let info: String
+        let emptyStateMessage: String
         let episodeIDs: [String]
         let createdAt: Date
         let updatedAt: Date
@@ -47,12 +48,13 @@ extension Contentful {
                 let title = entry.fields.string(forKey: "title")
             else { return nil }
             
-            self.id         = entry.id
-            self.title      = title
-            self.info       = entry.fields.string(forKey: "description") ?? ""
-            self.episodeIDs = entry.fields.array(forKey: "episodes").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
-            self.createdAt  = entry.createdAt
-            self.updatedAt  = entry.updatedAt
+            self.id                = entry.id
+            self.title             = title
+            self.info              = entry.fields.string(forKey: "description") ?? ""
+            self.emptyStateMessage = entry.fields.string(forKey: "emptyStateMessage") ?? ""
+            self.episodeIDs        = entry.fields.array(forKey: "episodes").dictionaries.compactMap { $0.dictionary(forKey: "sys").string(forKey: "id") }
+            self.createdAt         = entry.createdAt
+            self.updatedAt         = entry.updatedAt
         }
     }
 

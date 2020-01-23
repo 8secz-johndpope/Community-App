@@ -64,7 +64,7 @@ final class EpisodeCell: CollectionViewCell {
         }
         
         stackView.setCustomSpacing(10, after: titleLabel)
-        stackView.setCustomSpacing(5, after: dateLabel)
+        stackView.setCustomSpacing(5, after: speakersLabel)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

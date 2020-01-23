@@ -14,12 +14,14 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
         case latest(Contentful.Post)
         case toggle
         case episode(Contentful.Post)
+        case empty
         
         func size(in collectionView: UICollectionView) -> CGSize {
             switch self {
             case .latest:         return CGSize(width: collectionView.width, height: 400)
             case .toggle:         return CGSize(width: collectionView.width - .padding * 2, height: 32)
             case .episode(let e): return EpisodeCell.size(forEpisode: e, in: collectionView)
+            case .empty:          return CGSize(width: collectionView.width - .padding * 2, height: 200)
             }
         }
         
@@ -28,6 +30,7 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
             case .latest(let e):  return e
             case .toggle:         return nil
             case .episode(let e): return e
+            case .empty:          return nil
             }
         }
     }
@@ -91,6 +94,7 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
             $0.registerCell(LatestEpisodeCell.self)
             $0.registerCell(ToggleCell.self)
             $0.registerCell(EpisodeCell.self)
+            $0.registerCell(EmptyStateCell.self)
             $0.dataSource = self
             $0.delegate = self
             $0.backgroundColor = .clear
@@ -126,7 +130,7 @@ final class LeadershipLessonsViewController: ViewController, HeaderViewControlle
         headerLabel.text = leadershipLessons.title
         
         latestCells = [.latest(latest), .toggle] + leadershipLessons.recent.map(Cell.episode)
-        unplayedCells = [.latest(latest), .toggle] + leadershipLessons.unplayed.map(Cell.episode)
+        unplayedCells = [.latest(latest), .toggle] + (leadershipLessons.unplayed.isEmpty ? [.empty] : leadershipLessons.unplayed.map(Cell.episode))
         
         collectionView.reloadData()
     }
@@ -155,6 +159,10 @@ extension LeadershipLessonsViewController: UICollectionViewDataSource {
         case .episode(let episode):
             let cell: EpisodeCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(episode: episode)
+            return cell
+        case .empty:
+            let cell: EmptyStateCell = collectionView.dequeueCell(for: indexPath)
+            cell.configure(text: Contentful.LocalStorage.leadershipLessons?.emptyStateMessage ?? "")
             return cell
         }
     }
